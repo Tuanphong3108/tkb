@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thời Khóa Biểu 10A2 - Material Design 3</title>
   
+  <!-- PWA Manifest & Icons -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <meta name="theme-color" content="#0f172a">
+
   <!-- Google Sans Flex Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -176,7 +182,7 @@
         </button>
       </div>
 
-      <!-- Mobile More Menu Popup (Lớp z-50 cao nhất) -->
+      <!-- Mobile More Menu Popup -->
       <div id="more-menu" class="hidden no-print absolute right-4 top-16 bg-white border border-slate-200 shadow-xl rounded-2xl p-3 z-50 w-52 flex-col gap-2">
         <div class="text-[11px] font-bold text-slate-400 px-1">TÙY CHỌN</div>
         <div>
@@ -223,7 +229,7 @@
 
         <!-- Tabs Chuyển Thứ Mobile -->
         <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-3 border-b border-slate-100" id="mobile-tabs">
-          <button data-day="t2" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-900 text-white shadow-sm transition-all">Thứ 2</button>
+          <button data-day="t2" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 2</button>
           <button data-day="t3" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 3</button>
           <button data-day="t4" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 4</button>
           <button data-day="t5" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 5</button>
@@ -258,7 +264,7 @@
 
   </div>
 
-  <!-- DIALOG CHI TIẾT (FULLSCREEN TRÊN MOBILE, DIALOG TRÊN PC) -->
+  <!-- DIALOG CHI TIẾT -->
   <div id="subject-dialog" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-0 md:p-4">
     <div class="w-full h-full md:h-auto md:max-w-md bg-white md:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
       
@@ -281,7 +287,6 @@
       <!-- Dialog Body -->
       <div class="p-5 flex-1 overflow-y-auto space-y-4">
         
-        <!-- Giáo viên -->
         <div class="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
           <div class="w-8 h-8 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center">
             <span class="material-symbols-outlined text-lg">person</span>
@@ -292,12 +297,10 @@
           </div>
         </div>
 
-        <!-- Nhóm môn -->
         <div class="flex items-center gap-2">
           <span id="dialog-category" class="px-3 py-1 bg-teal-50 text-teal-700 text-[11px] font-bold rounded-xl border border-teal-200/60"></span>
         </div>
 
-        <!-- Mô tả môn học từ mon-hoc.json -->
         <div>
           <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
             <span class="material-symbols-outlined text-sm">description</span> Mô tả môn học
@@ -307,7 +310,6 @@
           </div>
         </div>
 
-        <!-- Keywords -->
         <div>
           <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
             <span class="material-symbols-outlined text-sm">tag</span> Từ khóa
@@ -328,6 +330,13 @@
   </div>
 
   <script>
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.error('SW reg error:', err));
+      });
+    }
+
     const subjectConfig = {
       'TOÁN': { bg: 'bg-sky-50/80', border: 'border-sky-200/60', icon: 'functions', text: 'text-sky-950', teacherText: 'text-sky-800', iconColor: 'text-sky-600' },
       'VĂN': { bg: 'bg-rose-50/80', border: 'border-rose-200/60', icon: 'menu_book', text: 'text-rose-950', teacherText: 'text-rose-800', iconColor: 'text-rose-600' },
@@ -351,21 +360,17 @@
       return subjectConfig['DEFAULT'];
     }
 
-    // Nạp dữ liệu từ asset/mon-hoc.json
     let monHocData = [];
     async function loadMonHocData() {
       try {
         const res = await fetch('./asset/mon-hoc.json');
-        if (res.ok) {
-          monHocData = await res.json();
-        }
+        if (res.ok) monHocData = await res.json();
       } catch (err) {
         console.warn('Chưa nạp được file mon-hoc.json:', err);
       }
     }
     loadMonHocData();
 
-    // Tính tuần thực tế (Tuần 1 bắt đầu từ 07/09/2026)
     const week1Start = new Date('2026-09-07T00:00:00');
     function getCurrentWeekNum() {
       const now = new Date();
@@ -376,9 +381,15 @@
 
     let selectedWeek = getCurrentWeekNum();
     let currentData = null;
-    let selectedDayMobile = 't2';
+    
+    // Auto detect today for Mobile Tab
+    function getTodayKey() {
+      const d = new Date().getDay(); // 0: Sun, 1: Mon, ..., 6: Sat
+      if (d >= 1 && d <= 6) return `t${d + 1}`;
+      return 't2'; // Default Thứ 2 nếu là Chủ Nhật
+    }
+    let selectedDayMobile = getTodayKey();
 
-    // Khởi tạo Dropdown chọn tuần
     const selectPC = document.getElementById('week-select-pc');
     const selectMobile = document.getElementById('week-select-mobile');
     for (let i = 1; i <= 20; i++) {
@@ -387,7 +398,19 @@
       selectMobile.add(new Option(txt, i, i === selectedWeek, i === selectedWeek));
     }
 
-    // Tải dữ liệu TKB của tuần
+    function updateActiveTabUI(dayKey) {
+      document.querySelectorAll('.day-tab').forEach(t => {
+        if (t.getAttribute('data-day') === dayKey) {
+          t.classList.remove('bg-slate-100', 'text-slate-600');
+          t.classList.add('bg-slate-900', 'text-white', 'shadow-sm');
+          t.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        } else {
+          t.classList.remove('bg-slate-900', 'text-white', 'shadow-sm');
+          t.classList.add('bg-slate-100', 'text-slate-600');
+        }
+      });
+    }
+
     async function loadSchedule(week) {
       selectedWeek = week;
       const weekStr = week < 10 ? '0' + week : week;
@@ -404,6 +427,8 @@
         
         currentData = await response.json();
         renderPCTable(currentData);
+        
+        updateActiveTabUI(selectedDayMobile);
         renderMobileTimeline(currentData, selectedDayMobile);
 
         document.getElementById('week-date-range').textContent = `Áp dụng: ${currentData.dateRange || 'Đang cập nhật'}`;
@@ -428,7 +453,6 @@
       }
     }
 
-    // Render Table cho PC
     function renderPCTable(data) {
       const tbody = document.getElementById('tkb-tbody');
       tbody.innerHTML = '';
@@ -478,7 +502,6 @@
       tbody.innerHTML = content;
     }
 
-    // Render Timeline cho Mobile
     function renderMobileTimeline(data, dayKey) {
       const timeline = document.getElementById('mobile-timeline');
       timeline.innerHTML = '';
@@ -525,7 +548,6 @@
       timeline.innerHTML = mobileContent;
     }
 
-    // Thời gian chuẩn các tiết học
     const periodTimesSang = [
       { start: '07:15', end: '08:00' },
       { start: '08:10', end: '08:55' },
@@ -574,7 +596,6 @@
     setInterval(updateLiveClock, 1000);
     updateLiveClock();
 
-    // Mở Dialog & Map thông tin môn học
     const dayMap = { 't2': 0, 't3': 1, 't4': 2, 't5': 3, 't6': 4, 't7': 5 };
     const dayNamesShort = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
@@ -586,7 +607,6 @@
       document.getElementById('dialog-title').textContent = subjectName;
       document.getElementById('dialog-teacher').textContent = teacher || 'Chưa cập nhật giáo viên';
 
-      // Định dạng ngày giờ thông minh
       const dayOffset = dayMap[dayCode];
       const targetDate = new Date(week1Start);
       targetDate.setDate(targetDate.getDate() + (selectedWeek - 1) * 7 + dayOffset);
@@ -607,7 +627,6 @@
       const timeSlot = isChieu ? periodTimesChieu[periodNum - 1] : periodTimesSang[periodNum - 1];
       document.getElementById('dialog-time').textContent = `${dayPrefix}, ${timeSlot.start} - ${timeSlot.end}`;
 
-      // Khớp dữ liệu từ mon-hoc.json
       const matchSubject = monHocData.find(m => 
         subjectName.toUpperCase().includes(m.code) || 
         m.name.toUpperCase().includes(subjectName.toUpperCase()) ||
@@ -632,7 +651,6 @@
         keywordsBox.innerHTML = `<span class="text-xs text-slate-400 italic">Không có từ khóa</span>`;
       }
 
-      // Đẩy state vào History để nút Back Android chỉ đóng Dialog
       window.history.pushState({ dialogOpen: true }, '');
       dialog.classList.remove('hidden');
     }
@@ -650,7 +668,6 @@
     document.getElementById('dialog-close-btn').addEventListener('click', closeSubjectDialog);
     document.getElementById('dialog-btn-close-bottom').addEventListener('click', closeSubjectDialog);
 
-    // Lắng nghe nút Back điện thoại
     window.addEventListener('popstate', () => {
       const dialog = document.getElementById('subject-dialog');
       if (!dialog.classList.contains('hidden')) {
@@ -658,7 +675,6 @@
       }
     });
 
-    // Toggle More Menu Mobile
     const moreBtn = document.getElementById('more-menu-btn');
     const moreMenu = document.getElementById('more-menu');
     moreBtn.addEventListener('click', (e) => {
@@ -671,22 +687,15 @@
       moreMenu.classList.remove('flex');
     });
 
-    // Chuyển Tab Thứ Mobile
+    // Tab switcher events
     document.querySelectorAll('.day-tab').forEach(tab => {
       tab.addEventListener('click', (e) => {
-        document.querySelectorAll('.day-tab').forEach(t => {
-          t.classList.remove('bg-slate-900', 'text-white', 'shadow-sm');
-          t.classList.add('bg-slate-100', 'text-slate-600');
-        });
-        e.target.classList.remove('bg-slate-100', 'text-slate-600');
-        e.target.classList.add('bg-slate-900', 'text-white', 'shadow-sm');
-
         selectedDayMobile = e.target.getAttribute('data-day');
+        updateActiveTabUI(selectedDayMobile);
         if (currentData) renderMobileTimeline(currentData, selectedDayMobile);
       });
     });
 
-    // Đổi tuần đồng bộ 2 chế độ
     const handleWeekChange = (e) => {
       const val = Number(e.target.value);
       selectPC.value = val;
@@ -696,16 +705,7 @@
     selectPC.addEventListener('change', handleWeekChange);
     selectMobile.addEventListener('change', handleWeekChange);
 
-    // Auto set Tab Mobile theo Thứ hiện tại
-    const todayNum = new Date().getDay();
-    if (todayNum >= 1 && todayNum <= 6) {
-      selectedDayMobile = `t${todayNum + 1}`;
-      document.querySelectorAll('.day-tab').forEach(t => {
-        if (t.getAttribute('data-day') === selectedDayMobile) t.click();
-      });
-    }
-
-    // Load tuần ban đầu
+    // Initial load
     loadSchedule(selectedWeek);
   </script>
 </body>
