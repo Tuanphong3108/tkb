@@ -675,17 +675,24 @@
       }
     });
 
-    const moreBtn = document.getElementById('more-menu-btn');
-    const moreMenu = document.getElementById('more-menu');
-    moreBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      moreMenu.classList.toggle('hidden');
-      moreMenu.classList.toggle('flex');
-    });
-    document.addEventListener('click', () => {
-      moreMenu.classList.add('hidden');
-      moreMenu.classList.remove('flex');
-    });
+const moreBtn = document.getElementById('more-menu-btn');
+const moreMenu = document.getElementById('more-menu');
+
+moreBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  moreMenu.classList.toggle('hidden');
+  moreMenu.classList.toggle('flex');
+});
+
+// THÊM ĐOẠN NÀY: Chặn sự kiện click trong menu không cho lây ra document
+moreMenu.addEventListener('click', (e) => {
+  e.stopPropagation();
+});
+
+document.addEventListener('click', () => {
+  moreMenu.classList.add('hidden');
+  moreMenu.classList.remove('flex');
+});
 
     // Tab switcher events
     document.querySelectorAll('.day-tab').forEach(tab => {
