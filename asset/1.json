@@ -1,0 +1,57 @@
+{
+  "dateRange": "07/09/2026 - 13/09/2026",
+  "sang": [
+    {
+      "t2": { "sub": "HĐTN,HN", "teacher": "Tùng" },
+      "t3": { "sub": "GDKT&PL", "teacher": "T.HƯƠNG" },
+      "t4": { "sub": "TOÁN", "teacher": "PHƯƠNG.T" },
+      "t5": { "sub": "ĐỊA", "teacher": "HIỀN.Đ" },
+      "t6": { "sub": "TOÁN", "teacher": "PHƯƠNG.T" },
+      "t7": null
+    },
+    {
+      "t2": { "sub": "GDKT&PL", "teacher": "T.HƯƠNG" },
+      "t3": { "sub": "SINH", "teacher": "L.HƯƠNG" },
+      "t4": { "sub": "SINH", "teacher": "L.HƯƠNG" },
+      "t5": { "sub": "VĂN", "teacher": "LẬP" },
+      "t6": { "sub": "TOÁN", "teacher": "PHƯƠNG.T" },
+      "t7": null
+    },
+    {
+      "t2": { "sub": "VĂN", "teacher": "LẬP" },
+      "t3": { "sub": "SINH", "teacher": "L.HƯƠNG" },
+      "t4": { "sub": "TIN", "teacher": "ĐIỆP" },
+      "t5": { "sub": "TOÁN", "teacher": "PHƯƠNG.T" },
+      "t6": { "sub": "TIN", "teacher": "ĐIỆP" },
+      "t7": null
+    },
+    {
+      "t2": { "sub": "GDTC", "teacher": "THANH" },
+      "t3": { "sub": "GDTC", "teacher": "THANH" },
+      "t4": { "sub": "TIN", "teacher": "ĐIỆP" },
+      "t5": { "sub": "VĂN", "teacher": "LẬP" },
+      "t6": { "sub": "ANH", "teacher": "TÍNH" },
+      "t7": null
+    },
+    {
+      "t2": { "sub": "ANH", "teacher": "TÍNH" },
+      "t3": { "sub": "GD Quốc Phòng", "teacher": "HÙNG" },
+      "t4": { "sub": "ANH", "teacher": "TÍNH" },
+      "t5": { "sub": "HĐTN 2", "teacher": "H.HẰNG" },
+      "t6": null,
+      "t7": null
+    }
+  ],
+  "chieu": [
+    {
+      "t2": { "sub": "SỬ", "teacher": "Đ.HƯƠNG" },
+      "t3": { "sub": "GDKT&PL", "teacher": "T.HƯƠNG" },
+      "t4": null, "t5": null, "t6": null, "t7": null
+    },
+    {
+      "t2": { "sub": "ĐỊA", "teacher": "HIỀN.Đ" },
+      "t3": { "sub": "HĐTN 3", "teacher": "L.HƯƠNG" },
+      "t4": null, "t5": null, "t6": null, "t7": null
+    }
+  ]
+}
