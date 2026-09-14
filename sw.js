@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tkb-10a2-v1';
+const CACHE_NAME = 'tkb-10a2-v2026.09.14';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -6,6 +6,7 @@ const ASSETS_TO_CACHE = [
   './icon.png'
 ];
 
+// Cài đặt và lưu cache các file tĩnh ban đầu
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -15,6 +16,7 @@ self.addEventListener('install', (e) => {
   self.skipWaiting();
 });
 
+// Kích hoạt và dọn dẹp các cache phiên bản cũ
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) => {
@@ -28,10 +30,25 @@ self.addEventListener('activate', (e) => {
   self.clients.claim();
 });
 
+// Xử lý request tài nguyên
 self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    caches.match(e.request).then((res) => {
-      return res || fetch(e.request);
-    })
-  );
+  // Với các file dữ liệu JSON (thời khóa biểu/môn học), ưu tiên Network First
+  if (e.request.url.includes('/asset/')) {
+    e.respondWith(
+      fetch(e.request)
+        .then((response) => {
+          const resClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, resClone));
+          return response;
+        })
+        .catch(() => caches.match(e.request)) // Mất mạng thì dùng bản cache gần nhất
+    );
+  } else {
+    // Với các file giao diện tĩnh, dùng Cache First
+    e.respondWith(
+      caches.match(e.request).then((res) => {
+        return res || fetch(e.request);
+      })
+    );
+  }
 });
