@@ -75,7 +75,7 @@
       }
 
       #pc-view { display: block !important; }
-      #mobile-view, .no-print, #subject-dialog, #more-menu { display: none !important; }
+      #mobile-view, .no-print, #subject-dialog, #apps-dialog, #more-menu { display: none !important; }
 
       .print-wrapper {
         padding: 0 !important;
@@ -159,6 +159,13 @@
           </div>
         </div>
 
+        <!-- Nút My Apps PC -->
+        <button onclick="openAppsDialog()" class="expressive-btn relative overflow-hidden flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3.5 py-2.5 rounded-2xl border border-slate-200 cursor-pointer shadow-xs">
+          <md-ripple></md-ripple>
+          <span class="material-symbols-outlined text-base text-teal-600">apps</span>
+          <span class="text-xs">My apps</span>
+        </button>
+
         <!-- Dropdown Chọn Tuần -->
         <div class="relative">
           <select id="week-select-pc" class="bg-slate-100 text-slate-800 text-xs font-bold py-2.5 pl-3 pr-8 rounded-2xl border border-slate-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-teal-500">
@@ -185,6 +192,9 @@
       <!-- Mobile More Menu Popup -->
       <div id="more-menu" class="hidden no-print absolute right-4 top-16 bg-white border border-slate-200 shadow-xl rounded-2xl p-3 z-50 w-52 flex-col gap-2">
         <div class="text-[11px] font-bold text-slate-400 px-1">TÙY CHỌN</div>
+        <button onclick="openAppsDialog()" class="w-full flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2 px-3 rounded-xl border border-slate-200">
+          <span class="material-symbols-outlined text-sm text-teal-600">apps</span> My apps
+        </button>
         <div>
           <label class="text-xs font-bold text-slate-600 block mb-1">Chọn tuần:</label>
           <select id="week-select-mobile" class="w-full bg-slate-100 text-slate-800 text-xs font-bold py-2 px-2.5 rounded-xl border border-slate-200">
@@ -264,7 +274,7 @@
 
   </div>
 
-  <!-- DIALOG CHI TIẾT -->
+  <!-- DIALOG CHI TIẾT MON HOC -->
   <div id="subject-dialog" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-0 md:p-4">
     <div class="w-full h-full md:h-auto md:max-w-md bg-white md:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
       
@@ -324,6 +334,34 @@
         <button id="dialog-btn-close-bottom" class="expressive-btn bg-slate-900 text-white font-bold text-xs py-2.5 px-6 rounded-2xl shadow-sm">
           Đóng
         </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DIALOG MY APPS EMBED -->
+  <div id="apps-dialog" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-0 md:p-6">
+    <div class="w-full h-full md:max-w-4xl md:h-[85vh] bg-white md:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Apps Dialog Header -->
+      <div class="p-4 md:p-5 bg-slate-900 text-white flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-teal-500/20 text-teal-300 flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl">apps</span>
+          </div>
+          <div>
+            <h2 class="font-bold text-lg md:text-xl leading-tight">My Apps</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Danh sách ứng dụng của tôi</p>
+          </div>
+        </div>
+        <button id="apps-close-btn" onclick="closeAppsDialog()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-slate-700">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Apps Dialog Body / Embed Iframe -->
+      <div class="flex-1 w-full h-full bg-slate-50 overflow-hidden relative">
+        <iframe src="https://tuanphong3108.github.io/apps.html?is_embed=true" class="w-full h-full border-none" title="My Apps"></iframe>
       </div>
 
     </div>
@@ -665,6 +703,27 @@
       }
     }
 
+    // Apps Dialog logic
+    function openAppsDialog() {
+      const appsDialog = document.getElementById('apps-dialog');
+      window.history.pushState({ appsDialogOpen: true }, '');
+      appsDialog.classList.remove('hidden');
+      
+      // Close mobile menu if open
+      moreMenu.classList.add('hidden');
+      moreMenu.classList.remove('flex');
+    }
+
+    function closeAppsDialog() {
+      const appsDialog = document.getElementById('apps-dialog');
+      if (!appsDialog.classList.contains('hidden')) {
+        appsDialog.classList.add('hidden');
+        if (window.history.state && window.history.state.appsDialogOpen) {
+          window.history.back();
+        }
+      }
+    }
+
     document.getElementById('dialog-close-btn').addEventListener('click', closeSubjectDialog);
     document.getElementById('dialog-btn-close-bottom').addEventListener('click', closeSubjectDialog);
 
@@ -673,26 +732,30 @@
       if (!dialog.classList.contains('hidden')) {
         dialog.classList.add('hidden');
       }
+      
+      const appsDialog = document.getElementById('apps-dialog');
+      if (!appsDialog.classList.contains('hidden')) {
+        appsDialog.classList.add('hidden');
+      }
     });
 
-const moreBtn = document.getElementById('more-menu-btn');
-const moreMenu = document.getElementById('more-menu');
+    const moreBtn = document.getElementById('more-menu-btn');
+    const moreMenu = document.getElementById('more-menu');
 
-moreBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  moreMenu.classList.toggle('hidden');
-  moreMenu.classList.toggle('flex');
-});
+    moreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      moreMenu.classList.toggle('hidden');
+      moreMenu.classList.toggle('flex');
+    });
 
-// THÊM ĐOẠN NÀY: Chặn sự kiện click trong menu không cho lây ra document
-moreMenu.addEventListener('click', (e) => {
-  e.stopPropagation();
-});
+    moreMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
 
-document.addEventListener('click', () => {
-  moreMenu.classList.add('hidden');
-  moreMenu.classList.remove('flex');
-});
+    document.addEventListener('click', () => {
+      moreMenu.classList.add('hidden');
+      moreMenu.classList.remove('flex');
+    });
 
     // Tab switcher events
     document.querySelectorAll('.day-tab').forEach(tab => {
