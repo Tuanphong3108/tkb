@@ -1,0 +1,6 @@
+* text=auto
+*.html text diff=html
+*.css text diff=css
+*.js text diff=javascript
+*.json text diff=json
+*.md text diff=markdown

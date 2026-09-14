@@ -24,9 +24,9 @@
       font-family: 'Google Sans Flex', sans-serif;
       background-color: #f8fafc;
       color: #1e293b;
+      -webkit-tap-highlight-color: transparent;
     }
     
-    /* Hover hiệu ứng FILL cho Material Symbols */
     .material-symbols-outlined {
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
       transition: font-variation-settings 0.2s ease, transform 0.2s ease;
@@ -36,14 +36,6 @@
       transform: scale(1.08);
     }
 
-    /* Overshoot Switch Style */
-    md-switch {
-      --md-switch-track-width: 52px;
-      --md-switch-track-height: 32px;
-      flex-shrink: 0 !important;
-    }
-
-    /* Physics effect */
     .expressive-btn {
       transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease;
     }
@@ -56,16 +48,9 @@
       filter: grayscale(1);
     }
 
-    /* Hide scrollbar for mobile tab nav */
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
-    /* CONFIG IN LỀ AN TOÀN KHI IN KHỔ NGANG A4 TRONG 1 TRANG */
     @page {
       size: A4 landscape;
       margin: 8mm 10mm;
@@ -83,35 +68,8 @@
         print-color-adjust: exact !important;
       }
 
-      /* BẮT BUỘC HIỂN THỊ UI BẢNG MA TRẬN KHI IN */
-      #pc-view {
-        display: block !important;
-      }
-      #mobile-view {
-        display: none !important;
-      }
-
-      body, h1, p, span, td, div, .material-symbols-outlined {
-        color: #000000 !important;
-        opacity: 1 !important;
-        text-shadow: none !important;
-      }
-
-      thead tr {
-        background-color: #0f172a !important;
-      }
-
-      thead th {
-        color: #ffffff !important;
-        background-color: #0f172a !important;
-        font-weight: 700 !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-
-      .no-print {
-        display: none !important;
-      }
+      #pc-view { display: block !important; }
+      #mobile-view, .no-print, #subject-dialog, #more-menu { display: none !important; }
 
       .print-wrapper {
         padding: 0 !important;
@@ -120,7 +78,6 @@
         width: 100% !important;
         box-shadow: none !important;
         border: none !important;
-        position: relative !important;
       }
 
       header {
@@ -130,25 +87,15 @@
         border: 1px solid #000 !important;
       }
 
-      main {
-        border: 1px solid #000 !important;
-      }
-
-      table {
-        min-width: 100% !important;
-        table-layout: fixed !important;
-      }
-
-      th, td {
-        padding: 1.5px !important;
-        border-color: #000000 !important;
-      }
+      table { min-width: 100% !important; table-layout: fixed !important; }
+      th, td { padding: 1.5px !important; border-color: #000000 !important; }
 
       .subject-card {
         padding: 2px 1px !important;
         border-radius: 6px !important;
         border: 1px solid #666666 !important;
         background-color: #ffffff !important;
+        box-shadow: none !important;
       }
 
       .subject-card span.material-symbols-outlined {
@@ -161,21 +108,13 @@
       .subject-card .font-bold {
         font-size: 10px !important;
         line-height: 1.1 !important;
-        font-weight: 700 !important;
         color: #000000 !important;
       }
 
       .subject-card .teacher-name {
         font-size: 8.5px !important;
         line-height: 1 !important;
-        font-weight: 600 !important;
         color: #000000 !important;
-        opacity: 1 !important;
-      }
-
-      footer {
-        margin-top: 6px !important;
-        font-size: 8.5px !important;
       }
     }
   </style>
@@ -184,37 +123,26 @@
 
   <div class="print-wrapper relative w-full max-w-7xl mx-auto flex flex-col flex-1">
 
-    <!-- Header section -->
-    <header class="relative z-10 w-full flex flex-col md:flex-row items-center justify-between gap-4 mb-4 bg-white p-4 md:p-5 rounded-3xl shadow-sm border border-slate-200/80">
-      <div class="flex items-center justify-between w-full md:w-auto gap-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-base md:text-lg shadow-inner">
-            10A2
-          </div>
-          <div>
-            <h1 class="text-lg md:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-              TKB <span id="week-title-display">TUẦN 02</span>
-              <span class="text-[10px] md:text-xs font-semibold px-2 py-0.5 bg-teal-50 text-teal-700 border border-teal-200 rounded-full">2026-2027</span>
-            </h1>
-            <p class="text-[11px] md:text-xs text-slate-500 font-medium mt-0.5" id="week-date-range">Đang tải ngày áp dụng...</p>
-          </div>
+    <!-- Header Section -->
+    <header class="relative z-30 w-full flex items-center justify-between gap-4 mb-4 bg-white p-4 md:p-5 rounded-3xl shadow-sm border border-slate-200/80">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-base md:text-lg shadow-inner">
+          10A2
         </div>
-
-        <!-- Live Badge Mobile View -->
-        <div class="md:hidden flex items-center gap-1.5 bg-slate-900 text-white px-2.5 py-1.5 rounded-xl text-[10px]">
-          <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
-          <span class="font-bold text-emerald-400" id="mobile-live-period">Đang tính...</span>
+        <div>
+          <h1 class="text-lg md:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            TKB <span id="week-title-display">TUẦN 02</span>
+            <span class="text-[10px] md:text-xs font-semibold px-2 py-0.5 bg-teal-50 text-teal-700 border border-teal-200 rounded-full">2026-2027</span>
+          </h1>
+          <p class="text-[11px] md:text-xs text-slate-500 font-medium mt-0.5" id="week-date-range">Đang tải ngày áp dụng...</p>
         </div>
       </div>
 
-      <!-- Action Bar & Live Status (Desktop & Shared) -->
-      <div class="no-print w-full md:w-auto flex flex-wrap items-center justify-between md:justify-end gap-2 md:gap-3">
+      <!-- Action Bar Desktop View -->
+      <div class="no-print hidden md:flex items-center gap-3">
         
-        <!-- Live Status Widget (PC ONLY) -->
-        <div class="hidden md:flex items-center gap-2.5 bg-slate-900 text-white px-3.5 py-2 rounded-2xl shadow-sm border border-slate-800">
+        <!-- Live Status Widget -->
+        <div class="flex items-center gap-2.5 bg-slate-900 text-white px-3.5 py-2 rounded-2xl shadow-sm border border-slate-800">
           <div class="relative flex h-3 w-3">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
@@ -226,27 +154,39 @@
         </div>
 
         <!-- Dropdown Chọn Tuần -->
-        <div class="relative flex-1 md:flex-none">
-          <select id="week-select" class="w-full bg-slate-100 text-slate-800 text-xs font-bold py-2.5 pl-3 pr-7 rounded-2xl border border-slate-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-teal-500">
+        <div class="relative">
+          <select id="week-select-pc" class="bg-slate-100 text-slate-800 text-xs font-bold py-2.5 pl-3 pr-8 rounded-2xl border border-slate-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-teal-500">
             <!-- Dynamic JS -->
           </select>
-          <span class="material-symbols-outlined text-sm absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">unfold_more</span>
-        </div>
-
-        <!-- Highlight Switch -->
-        <div class="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1.5 rounded-2xl border border-slate-200">
-          <span class="text-xs font-semibold text-slate-600">Màu</span>
-          <md-switch id="highlight-switch" selected>
-            <md-icon slot="on-icon" class="text-xs">check</md-icon>
-            <md-icon slot="off-icon" class="text-xs">close</md-icon>
-          </md-switch>
+          <span class="material-symbols-outlined text-sm absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">unfold_more</span>
         </div>
         
-        <!-- Nút In -->
-        <button id="print-btn" onclick="window.print()" class="expressive-btn relative overflow-hidden flex items-center gap-1.5 bg-teal-700 hover:bg-teal-800 text-white font-medium px-3.5 py-2 rounded-2xl shadow-sm cursor-pointer">
+        <!-- Nút In PC -->
+        <button id="print-btn" onclick="window.print()" class="expressive-btn relative overflow-hidden flex items-center gap-1.5 bg-teal-700 hover:bg-teal-800 text-white font-medium px-4 py-2.5 rounded-2xl shadow-sm cursor-pointer">
           <md-ripple></md-ripple>
           <span class="material-symbols-outlined text-base">print</span>
           <span class="text-xs font-semibold">In A4</span>
+        </button>
+      </div>
+
+      <!-- Action Mobile (Nút More) -->
+      <div class="no-print flex md:hidden items-center gap-2">
+        <button id="more-menu-btn" class="expressive-btn w-10 h-10 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700">
+          <span class="material-symbols-outlined">more_vert</span>
+        </button>
+      </div>
+
+      <!-- Mobile More Menu Popup (Lớp z-50 cao nhất) -->
+      <div id="more-menu" class="hidden no-print absolute right-4 top-16 bg-white border border-slate-200 shadow-xl rounded-2xl p-3 z-50 w-52 flex-col gap-2">
+        <div class="text-[11px] font-bold text-slate-400 px-1">TÙY CHỌN</div>
+        <div>
+          <label class="text-xs font-bold text-slate-600 block mb-1">Chọn tuần:</label>
+          <select id="week-select-mobile" class="w-full bg-slate-100 text-slate-800 text-xs font-bold py-2 px-2.5 rounded-xl border border-slate-200">
+            <!-- Dynamic JS -->
+          </select>
+        </div>
+        <button onclick="window.print()" class="w-full flex items-center gap-2 bg-teal-700 text-white text-xs font-bold py-2 px-3 rounded-xl mt-1">
+          <span class="material-symbols-outlined text-sm">print</span> In Thời Khóa Biểu
         </button>
       </div>
     </header>
@@ -254,7 +194,7 @@
     <!-- Main Content Area -->
     <main class="relative z-10 w-full flex-1 bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col justify-center min-h-[420px]">
       
-      <!-- LUỒNG PC VIEW (Màn hình lớn >= 768px) -->
+      <!-- LUỒNG PC VIEW -->
       <div id="pc-view" class="hidden md:block overflow-x-auto w-full">
         <table class="w-full text-center border-collapse">
           <thead>
@@ -274,9 +214,14 @@
         </table>
       </div>
 
-      <!-- LUỒNG MOBILE VIEW (Màn hình điện thoại < 768px) -->
+      <!-- LUỒNG MOBILE VIEW -->
       <div id="mobile-view" class="block md:hidden w-full p-3">
-        <!-- Navigation Tabs Chuyển Thứ -->
+        <div class="flex items-center justify-between bg-slate-900 text-white px-3 py-2 rounded-2xl mb-3 text-xs">
+          <span class="text-emerald-400 font-bold" id="mobile-live-period">Đang tính tiết...</span>
+          <span class="text-slate-300 font-medium" id="mobile-live-clock">00:00:00</span>
+        </div>
+
+        <!-- Tabs Chuyển Thứ Mobile -->
         <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-3 border-b border-slate-100" id="mobile-tabs">
           <button data-day="t2" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-900 text-white shadow-sm transition-all">Thứ 2</button>
           <button data-day="t3" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 3</button>
@@ -286,10 +231,8 @@
           <button data-day="t7" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 7</button>
         </div>
 
-        <!-- Timeline Tiết Học Mobile -->
-        <div id="mobile-timeline" class="mt-4 flex flex-col gap-3">
-          <!-- Render danh sách card tiết học của Thứ đang chọn -->
-        </div>
+        <!-- Timeline Mobile -->
+        <div id="mobile-timeline" class="mt-4 flex flex-col gap-3"></div>
       </div>
 
       <!-- No Data Placeholder -->
@@ -310,15 +253,81 @@
         <img src="https://lh3.googleusercontent.com/a/ACg8ocK1ghp_0vaVGK6czFhTwIBo0asg1GAhSQ4xwdm9kL9kAmu8BneC=s0-c" alt="Avatar" class="w-4 h-4 rounded-full object-cover border border-slate-400" />
         <span>Made by Phong VN - tuanphong3108.github.io</span>
       </div>
-      <div class="font-semibold text-slate-700">
-        © 2026 Phong VN
-      </div>
+      <div class="font-semibold text-slate-700">© 2026 Phong VN</div>
     </footer>
 
   </div>
 
+  <!-- DIALOG CHI TIẾT (FULLSCREEN TRÊN MOBILE, DIALOG TRÊN PC) -->
+  <div id="subject-dialog" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-0 md:p-4">
+    <div class="w-full h-full md:h-auto md:max-w-md bg-white md:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Dialog Header -->
+      <div class="p-4 md:p-5 bg-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div id="dialog-icon-wrapper" class="w-10 h-10 rounded-2xl bg-teal-500/20 text-teal-300 flex items-center justify-center">
+            <span id="dialog-icon" class="material-symbols-outlined text-2xl">school</span>
+          </div>
+          <div>
+            <h2 id="dialog-title" class="font-bold text-lg md:text-xl leading-tight">Tên Tiết Học</h2>
+            <p id="dialog-time" class="text-xs font-semibold text-emerald-400 mt-0.5">Hôm nay, 07:15 - 08:00</p>
+          </div>
+        </div>
+        <button id="dialog-close-btn" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-slate-700">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Dialog Body -->
+      <div class="p-5 flex-1 overflow-y-auto space-y-4">
+        
+        <!-- Giáo viên -->
+        <div class="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
+          <div class="w-8 h-8 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center">
+            <span class="material-symbols-outlined text-lg">person</span>
+          </div>
+          <div>
+            <div class="text-[10px] font-bold text-slate-400 uppercase">Giáo viên giảng dạy</div>
+            <div id="dialog-teacher" class="text-xs font-bold text-slate-800">Cô Nguyễn Thị...</div>
+          </div>
+        </div>
+
+        <!-- Nhóm môn -->
+        <div class="flex items-center gap-2">
+          <span id="dialog-category" class="px-3 py-1 bg-teal-50 text-teal-700 text-[11px] font-bold rounded-xl border border-teal-200/60"></span>
+        </div>
+
+        <!-- Mô tả môn học từ mon-hoc.json -->
+        <div>
+          <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">description</span> Mô tả môn học
+          </div>
+          <div id="dialog-description" class="text-xs text-slate-600 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60 leading-relaxed min-h-[80px]">
+            Đang tải dữ liệu...
+          </div>
+        </div>
+
+        <!-- Keywords -->
+        <div>
+          <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">tag</span> Từ khóa
+          </div>
+          <div id="dialog-keywords" class="flex flex-wrap gap-1.5"></div>
+        </div>
+
+      </div>
+
+      <!-- Dialog Footer -->
+      <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+        <button id="dialog-btn-close-bottom" class="expressive-btn bg-slate-900 text-white font-bold text-xs py-2.5 px-6 rounded-2xl shadow-sm">
+          Đóng
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <script>
-    // Cấu hình mảng màu & icon tương ứng môn học
     const subjectConfig = {
       'TOÁN': { bg: 'bg-sky-50/80', border: 'border-sky-200/60', icon: 'functions', text: 'text-sky-950', teacherText: 'text-sky-800', iconColor: 'text-sky-600' },
       'VĂN': { bg: 'bg-rose-50/80', border: 'border-rose-200/60', icon: 'menu_book', text: 'text-rose-950', teacherText: 'text-rose-800', iconColor: 'text-rose-600' },
@@ -335,38 +344,52 @@
     };
 
     function getSubjectStyle(name) {
-      if (!name) return null;
+      if (!name) return subjectConfig['DEFAULT'];
       for (let key in subjectConfig) {
-        if (name.includes(key)) return subjectConfig[key];
+        if (name.toUpperCase().includes(key)) return subjectConfig[key];
       }
       return subjectConfig['DEFAULT'];
     }
 
-    // TÍNH TUẦN HỌC HIỆN TẠI (Mặc định Tuần 2)
-    const startDate = new Date('2026-09-07T00:00:00'); 
+    // Nạp dữ liệu từ asset/mon-hoc.json
+    let monHocData = [];
+    async function loadMonHocData() {
+      try {
+        const res = await fetch('./asset/mon-hoc.json');
+        if (res.ok) {
+          monHocData = await res.json();
+        }
+      } catch (err) {
+        console.warn('Chưa nạp được file mon-hoc.json:', err);
+      }
+    }
+    loadMonHocData();
+
+    // Tính tuần thực tế (Tuần 1 bắt đầu từ 07/09/2026)
+    const week1Start = new Date('2026-09-07T00:00:00');
     function getCurrentWeekNum() {
       const now = new Date();
-      const diffMs = now - startDate;
-      const diffWeeks = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 7)) + 1;
-      return diffWeeks > 0 ? diffWeeks : 2;
+      const diffDays = Math.floor((now - week1Start) / (1000 * 60 * 60 * 24));
+      const calculatedWeek = Math.floor(diffDays / 7) + 1;
+      return calculatedWeek > 0 ? calculatedWeek : 1;
     }
 
-    const currentWeek = getCurrentWeekNum();
+    let selectedWeek = getCurrentWeekNum();
     let currentData = null;
     let selectedDayMobile = 't2';
 
-    // Gen danh sách Dropdown 20 tuần
-    const weekSelect = document.getElementById('week-select');
+    // Khởi tạo Dropdown chọn tuần
+    const selectPC = document.getElementById('week-select-pc');
+    const selectMobile = document.getElementById('week-select-mobile');
     for (let i = 1; i <= 20; i++) {
-      const option = document.createElement('option');
-      option.value = i;
-      option.textContent = `Tuần ${i < 10 ? '0' + i : i}${i === currentWeek ? ' (Hiện tại)' : ''}`;
-      if (i === currentWeek) option.selected = true;
-      weekSelect.appendChild(option);
+      const txt = `Tuần ${i < 10 ? '0' + i : i}${i === selectedWeek ? ' (Hiện tại)' : ''}`;
+      selectPC.add(new Option(txt, i, i === selectedWeek, i === selectedWeek));
+      selectMobile.add(new Option(txt, i, i === selectedWeek, i === selectedWeek));
     }
 
-    // TẢI DỮ LIỆU JSON TỪ /asset/<tuần>.json
+    // Tải dữ liệu TKB của tuần
     async function loadSchedule(week) {
+      selectedWeek = week;
       const weekStr = week < 10 ? '0' + week : week;
       document.getElementById('week-title-display').textContent = `TUẦN ${weekStr}`;
       
@@ -377,17 +400,14 @@
 
       try {
         const response = await fetch(`./asset/${week}.json`);
-        if (!response.ok) throw new Error("No data file");
+        if (!response.ok) throw new Error("No data");
         
         currentData = await response.json();
-        
-        // Render cả 2 luồng
         renderPCTable(currentData);
         renderMobileTimeline(currentData, selectedDayMobile);
 
         document.getElementById('week-date-range').textContent = `Áp dụng: ${currentData.dateRange || 'Đang cập nhật'}`;
         
-        // Check màn hình để show view đúng
         if (window.innerWidth >= 768) {
           pcView.style.display = 'block';
           mobileView.style.display = 'none';
@@ -408,12 +428,12 @@
       }
     }
 
-    // LUỒNG 1: RENDER PC TABLE
+    // Render Table cho PC
     function renderPCTable(data) {
       const tbody = document.getElementById('tkb-tbody');
       tbody.innerHTML = '';
 
-      const renderSection = (title, icon, periods) => {
+      const renderSection = (title, icon, periods, isChieu) => {
         let html = `
           <tr class="bg-teal-50/80 border-y border-teal-100">
             <td colspan="7" class="py-1.5 px-4 text-left font-bold text-teal-900 text-[11px] tracking-wider uppercase">
@@ -433,7 +453,8 @@
               const style = getSubjectStyle(cell.sub);
               html += `
                 <td class="p-1">
-                  <div class="subject-card p-2 rounded-xl ${style.bg} border ${style.border} flex flex-col items-center">
+                  <div onclick="openSubjectDialog('${cell.sub}', '${cell.teacher || ''}', '${day}', ${idx + 1}, ${isChieu})" 
+                       class="subject-card cursor-pointer p-2 rounded-xl ${style.bg} border ${style.border} flex flex-col items-center hover:shadow-md transition-all">
                     <span class="material-symbols-outlined ${style.iconColor} text-base mb-0.5">${style.icon}</span>
                     <span class="font-bold ${style.text} text-xs">${cell.sub}</span>
                     <span class="teacher-name text-[10px] font-semibold ${style.teacherText}">${cell.teacher || ''}</span>
@@ -452,18 +473,17 @@
       };
 
       let content = '';
-      if (data.sang) content += renderSection('Buổi Sáng', 'wb_sunny', data.sang);
-      if (data.chieu) content += renderSection('Buổi Chiều', 'wb_twilight', data.chieu);
-
+      if (data.sang) content += renderSection('Buổi Sáng', 'wb_sunny', data.sang, false);
+      if (data.chieu) content += renderSection('Buổi Chiều', 'wb_twilight', data.chieu, true);
       tbody.innerHTML = content;
     }
 
-    // LUỒNG 2: RENDER MOBILE TIMELINE CARD
+    // Render Timeline cho Mobile
     function renderMobileTimeline(data, dayKey) {
       const timeline = document.getElementById('mobile-timeline');
       timeline.innerHTML = '';
 
-      const renderMobileSection = (title, periods) => {
+      const renderMobileSection = (title, periods, isChieu) => {
         let html = `<div class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-2 mb-1">${title}</div>`;
         let hasAnySubject = false;
 
@@ -473,7 +493,8 @@
             hasAnySubject = true;
             const style = getSubjectStyle(cell.sub);
             html += `
-              <div class="subject-card p-3 rounded-2xl ${style.bg} border ${style.border} flex items-center justify-between shadow-sm">
+              <div onclick="openSubjectDialog('${cell.sub}', '${cell.teacher || ''}', '${dayKey}', ${idx + 1}, ${isChieu})" 
+                   class="subject-card active:scale-95 transition-transform p-3 rounded-2xl ${style.bg} border ${style.border} flex items-center justify-between shadow-sm cursor-pointer">
                 <div class="flex items-center gap-3">
                   <div class="w-9 h-9 rounded-xl bg-white/80 flex items-center justify-center shadow-xs">
                     <span class="material-symbols-outlined ${style.iconColor} text-xl">${style.icon}</span>
@@ -494,30 +515,29 @@
         if (!hasAnySubject) {
           html += `<div class="text-xs text-slate-400 italic py-2">Nghỉ học / Không có tiết</div>`;
         }
-
         return html;
       };
 
       let mobileContent = '';
-      if (data.sang) mobileContent += renderMobileSection('Buổi Sáng', data.sang);
-      if (data.chieu) mobileContent += renderMobileSection('Buổi Chiều', data.chieu);
+      if (data.sang) mobileContent += renderMobileSection('Buổi Sáng', data.sang, false);
+      if (data.chieu) mobileContent += renderMobileSection('Buổi Chiều', data.chieu, true);
 
       timeline.innerHTML = mobileContent;
     }
 
-    // ĐỒNG HỒ VÀ BÁO TIẾT HIỆN TẠI TỰ ĐỘNG
-    const periodTimes = [
-      { p: 'Sáng - Tiết 1', start: '07:00', end: '07:45' },
-      { p: 'Sáng - Tiết 2', start: '07:50', end: '08:35' },
-      { p: 'Sáng - Tiết 3', start: '08:45', end: '09:30' },
-      { p: 'Sáng - Tiết 4', start: '09:35', end: '10:20' },
-      { p: 'Sáng - Tiết 5', start: '10:25', end: '11:10' },
-      { p: 'Nghỉ trưa ☀️', start: '11:10', end: '13:30' },
-      { p: 'Chiều - Tiết 1', start: '13:30', end: '14:15' },
-      { p: 'Chiều - Tiết 2', start: '14:20', end: '15:05' },
-      { p: 'Chiều - Tiết 3', start: '15:15', end: '16:00' },
-      { p: 'Chiều - Tiết 4', start: '16:05', end: '16:50' },
-      { p: 'Chiều - Tiết 5', start: '16:55', end: '17:40' }
+    // Thời gian chuẩn các tiết học
+    const periodTimesSang = [
+      { start: '07:15', end: '08:00' },
+      { start: '08:10', end: '08:55' },
+      { start: '09:05', end: '09:50' },
+      { start: '09:55', end: '10:40' },
+      { start: '10:45', end: '11:30' }
+    ];
+
+    const periodTimesChieu = [
+      { start: '14:15', end: '15:00' },
+      { start: '15:10', end: '15:55' },
+      { start: '16:00', end: '16:45' }
     ];
 
     function updateLiveClock() {
@@ -527,30 +547,131 @@
       const dayName = days[now.getDay()];
       
       document.getElementById('live-clock-display').textContent = `${dayName}, ${timeStr}`;
+      document.getElementById('mobile-live-clock').textContent = timeStr;
 
       const currentMins = now.getHours() * 60 + now.getMinutes();
       let statusText = 'Nghỉ 🌙';
 
-      for (let slot of periodTimes) {
+      const checkList = [
+        { p: 'Truy bài 📖', start: '07:00', end: '07:15' },
+        ...periodTimesSang.map((t, i) => ({ p: `Sáng - Tiết ${i+1}`, ...t })),
+        ...periodTimesChieu.map((t, i) => ({ p: `Chiều - Tiết ${i+1}`, ...t }))
+      ];
+
+      for (let slot of checkList) {
         const [sh, sm] = slot.start.split(':').map(Number);
         const [eh, em] = slot.end.split(':').map(Number);
-        const sMins = sh * 60 + sm;
-        const eMins = eh * 60 + em;
-
-        if (currentMins >= sMins && currentMins <= eMins) {
+        if (currentMins >= sh * 60 + sm && currentMins <= eh * 60 + em) {
           statusText = slot.p;
           break;
         }
       }
 
-      document.getElementById('live-period-display').textContent = statusText.includes('Nghỉ') ? statusText : `Đang học: ${statusText}`;
+      document.getElementById('live-period-display').textContent = statusText.includes('Nghỉ') || statusText.includes('Truy bài') ? statusText : `Đang học: ${statusText}`;
       document.getElementById('mobile-live-period').textContent = statusText;
     }
 
     setInterval(updateLiveClock, 1000);
     updateLiveClock();
 
-    // Event Switch Mobile Tabs
+    // Mở Dialog & Map thông tin môn học
+    const dayMap = { 't2': 0, 't3': 1, 't4': 2, 't5': 3, 't6': 4, 't7': 5 };
+    const dayNamesShort = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+
+    async function openSubjectDialog(subjectName, teacher, dayCode, periodNum, isChieu) {
+      const dialog = document.getElementById('subject-dialog');
+      const style = getSubjectStyle(subjectName);
+
+      document.getElementById('dialog-icon').textContent = style.icon;
+      document.getElementById('dialog-title').textContent = subjectName;
+      document.getElementById('dialog-teacher').textContent = teacher || 'Chưa cập nhật giáo viên';
+
+      // Định dạng ngày giờ thông minh
+      const dayOffset = dayMap[dayCode];
+      const targetDate = new Date(week1Start);
+      targetDate.setDate(targetDate.getDate() + (selectedWeek - 1) * 7 + dayOffset);
+
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      
+      const targetZero = new Date(targetDate);
+      targetZero.setHours(0,0,0,0);
+
+      const diffDays = Math.round((targetZero - today) / (1000 * 60 * 60 * 24));
+      
+      let dayPrefix = '';
+      if (diffDays === 0) dayPrefix = 'Hôm nay';
+      else if (diffDays === 1) dayPrefix = 'Ngày mai';
+      else dayPrefix = `${dayNamesShort[dayOffset]} ${targetDate.getDate()}/${targetDate.getMonth() + 1}`;
+
+      const timeSlot = isChieu ? periodTimesChieu[periodNum - 1] : periodTimesSang[periodNum - 1];
+      document.getElementById('dialog-time').textContent = `${dayPrefix}, ${timeSlot.start} - ${timeSlot.end}`;
+
+      // Khớp dữ liệu từ mon-hoc.json
+      const matchSubject = monHocData.find(m => 
+        subjectName.toUpperCase().includes(m.code) || 
+        m.name.toUpperCase().includes(subjectName.toUpperCase()) ||
+        subjectName.toUpperCase().includes(m.name.toUpperCase())
+      );
+
+      const categoryBox = document.getElementById('dialog-category');
+      const descBox = document.getElementById('dialog-description');
+      const keywordsBox = document.getElementById('dialog-keywords');
+
+      if (matchSubject) {
+        categoryBox.style.display = 'inline-block';
+        categoryBox.textContent = matchSubject.category || 'Môn học';
+        descBox.textContent = matchSubject.description || 'Chưa có thông tin mô tả.';
+        
+        keywordsBox.innerHTML = (matchSubject.keywords || [])
+          .map(kw => `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-xl font-medium">#${kw}</span>`)
+          .join('');
+      } else {
+        categoryBox.style.display = 'none';
+        descBox.textContent = `Chưa có thông tin ghi chú chi tiết cho môn ${subjectName}.`;
+        keywordsBox.innerHTML = `<span class="text-xs text-slate-400 italic">Không có từ khóa</span>`;
+      }
+
+      // Đẩy state vào History để nút Back Android chỉ đóng Dialog
+      window.history.pushState({ dialogOpen: true }, '');
+      dialog.classList.remove('hidden');
+    }
+
+    function closeSubjectDialog() {
+      const dialog = document.getElementById('subject-dialog');
+      if (!dialog.classList.contains('hidden')) {
+        dialog.classList.add('hidden');
+        if (window.history.state && window.history.state.dialogOpen) {
+          window.history.back();
+        }
+      }
+    }
+
+    document.getElementById('dialog-close-btn').addEventListener('click', closeSubjectDialog);
+    document.getElementById('dialog-btn-close-bottom').addEventListener('click', closeSubjectDialog);
+
+    // Lắng nghe nút Back điện thoại
+    window.addEventListener('popstate', () => {
+      const dialog = document.getElementById('subject-dialog');
+      if (!dialog.classList.contains('hidden')) {
+        dialog.classList.add('hidden');
+      }
+    });
+
+    // Toggle More Menu Mobile
+    const moreBtn = document.getElementById('more-menu-btn');
+    const moreMenu = document.getElementById('more-menu');
+    moreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      moreMenu.classList.toggle('hidden');
+      moreMenu.classList.toggle('flex');
+    });
+    document.addEventListener('click', () => {
+      moreMenu.classList.add('hidden');
+      moreMenu.classList.remove('flex');
+    });
+
+    // Chuyển Tab Thứ Mobile
     document.querySelectorAll('.day-tab').forEach(tab => {
       tab.addEventListener('click', (e) => {
         document.querySelectorAll('.day-tab').forEach(t => {
@@ -565,50 +686,27 @@
       });
     });
 
-    // Event Select Week
-    weekSelect.addEventListener('change', (e) => loadSchedule(Number(e.target.value)));
+    // Đổi tuần đồng bộ 2 chế độ
+    const handleWeekChange = (e) => {
+      const val = Number(e.target.value);
+      selectPC.value = val;
+      selectMobile.value = val;
+      loadSchedule(val);
+    };
+    selectPC.addEventListener('change', handleWeekChange);
+    selectMobile.addEventListener('change', handleWeekChange);
 
-    // Highlight Switch
-    const highlightSwitch = document.getElementById('highlight-switch');
-    highlightSwitch.addEventListener('change', (e) => {
-      const cards = document.querySelectorAll('.subject-card');
-      cards.forEach(card => {
-        if (e.target.selected) {
-          card.classList.remove('bg-slate-100', 'border-slate-200');
-        } else {
-          card.classList.add('bg-slate-100', 'border-slate-200');
-        }
-      });
-    });
-
-    // Resize Handler để tự chuyển giao diện PC / Mobile
-    window.addEventListener('resize', () => {
-      if (currentData) {
-        const pcView = document.getElementById('pc-view');
-        const mobileView = document.getElementById('mobile-view');
-        if (window.innerWidth >= 768) {
-          pcView.style.display = 'block';
-          mobileView.style.display = 'none';
-        } else {
-          pcView.style.display = 'none';
-          mobileView.style.display = 'block';
-        }
-      }
-    });
-
-    // Auto set TAB Mobile theo Thứ thực tế hôm nay
-    const todayNum = new Date().getDay(); // 0: CN, 1: T2, 2: T3...
+    // Auto set Tab Mobile theo Thứ hiện tại
+    const todayNum = new Date().getDay();
     if (todayNum >= 1 && todayNum <= 6) {
       selectedDayMobile = `t${todayNum + 1}`;
       document.querySelectorAll('.day-tab').forEach(t => {
-        if (t.getAttribute('data-day') === selectedDayMobile) {
-          t.click();
-        }
+        if (t.getAttribute('data-day') === selectedDayMobile) t.click();
       });
     }
 
-    // Load dữ liệu
-    loadSchedule(currentWeek);
+    // Load tuần ban đầu
+    loadSchedule(selectedWeek);
   </script>
 </body>
 </html>
