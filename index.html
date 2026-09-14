@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thời Khóa Biểu 10A2 - Material Design 3</title>
+  
+  <!-- Google Sans Flex Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Material Symbols Outline -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Material Web Components (M3) -->
+  <script type="module" src="https://esm.run/@material/web/all.js"></script>
+
+  <style>
+    body {
+      font-family: 'Google Sans Flex', sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+    }
+    
+    /* Hover hiệu ứng FILL cho Material Symbols */
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      transition: font-variation-settings 0.2s ease, transform 0.2s ease;
+    }
+    .subject-card:hover .material-symbols-outlined {
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      transform: scale(1.08);
+    }
+
+    /* Overshoot Switch Style */
+    md-switch {
+      --md-switch-track-width: 52px;
+      --md-switch-track-height: 32px;
+      flex-shrink: 0 !important;
+    }
+
+    /* Physics effect */
+    .expressive-btn {
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease;
+    }
+    .expressive-btn:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+    .expressive-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(1);
+    }
+
+    /* Hide scrollbar for mobile tab nav */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    /* CONFIG IN LỀ AN TOÀN KHI IN KHỔ NGANG A4 TRONG 1 TRANG */
+    @page {
+      size: A4 landscape;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background-color: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        overflow: hidden !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      /* BẮT BUỘC HIỂN THỊ UI BẢNG MA TRẬN KHI IN */
+      #pc-view {
+        display: block !important;
+      }
+      #mobile-view {
+        display: none !important;
+      }
+
+      body, h1, p, span, td, div, .material-symbols-outlined {
+        color: #000000 !important;
+        opacity: 1 !important;
+        text-shadow: none !important;
+      }
+
+      thead tr {
+        background-color: #0f172a !important;
+      }
+
+      thead th {
+        color: #ffffff !important;
+        background-color: #0f172a !important;
+        font-weight: 700 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .print-wrapper {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+        position: relative !important;
+      }
+
+      header {
+        margin-bottom: 6px !important;
+        padding: 8px 12px !important;
+        border-radius: 12px !important;
+        border: 1px solid #000 !important;
+      }
+
+      main {
+        border: 1px solid #000 !important;
+      }
+
+      table {
+        min-width: 100% !important;
+        table-layout: fixed !important;
+      }
+
+      th, td {
+        padding: 1.5px !important;
+        border-color: #000000 !important;
+      }
+
+      .subject-card {
+        padding: 2px 1px !important;
+        border-radius: 6px !important;
+        border: 1px solid #666666 !important;
+        background-color: #ffffff !important;
+      }
+
+      .subject-card span.material-symbols-outlined {
+        display: block !important;
+        font-size: 13px !important;
+        margin-bottom: 0px !important;
+        color: #000000 !important;
+      }
+
+      .subject-card .font-bold {
+        font-size: 10px !important;
+        line-height: 1.1 !important;
+        font-weight: 700 !important;
+        color: #000000 !important;
+      }
+
+      .subject-card .teacher-name {
+        font-size: 8.5px !important;
+        line-height: 1 !important;
+        font-weight: 600 !important;
+        color: #000000 !important;
+        opacity: 1 !important;
+      }
+
+      footer {
+        margin-top: 6px !important;
+        font-size: 8.5px !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen w-full flex flex-col justify-between p-3 md:p-6 bg-slate-50 text-slate-800">
+
+  <div class="print-wrapper relative w-full max-w-7xl mx-auto flex flex-col flex-1">
+
+    <!-- Header section -->
+    <header class="relative z-10 w-full flex flex-col md:flex-row items-center justify-between gap-4 mb-4 bg-white p-4 md:p-5 rounded-3xl shadow-sm border border-slate-200/80">
+      <div class="flex items-center justify-between w-full md:w-auto gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-base md:text-lg shadow-inner">
+            10A2
+          </div>
+          <div>
+            <h1 class="text-lg md:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+              TKB <span id="week-title-display">TUẦN 02</span>
+              <span class="text-[10px] md:text-xs font-semibold px-2 py-0.5 bg-teal-50 text-teal-700 border border-teal-200 rounded-full">2026-2027</span>
+            </h1>
+            <p class="text-[11px] md:text-xs text-slate-500 font-medium mt-0.5" id="week-date-range">Đang tải ngày áp dụng...</p>
+          </div>
+        </div>
+
+        <!-- Live Badge Mobile View -->
+        <div class="md:hidden flex items-center gap-1.5 bg-slate-900 text-white px-2.5 py-1.5 rounded-xl text-[10px]">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span class="font-bold text-emerald-400" id="mobile-live-period">Đang tính...</span>
+        </div>
+      </div>
+
+      <!-- Action Bar & Live Status (Desktop & Shared) -->
+      <div class="no-print w-full md:w-auto flex flex-wrap items-center justify-between md:justify-end gap-2 md:gap-3">
+        
+        <!-- Live Status Widget (PC ONLY) -->
+        <div class="hidden md:flex items-center gap-2.5 bg-slate-900 text-white px-3.5 py-2 rounded-2xl shadow-sm border border-slate-800">
+          <div class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+          </div>
+          <div class="flex flex-col text-left">
+            <span class="text-[11px] font-bold text-emerald-400 leading-tight" id="live-period-display">Đang tính tiết...</span>
+            <span class="text-[10px] text-slate-300 font-medium leading-tight" id="live-clock-display">00:00:00</span>
+          </div>
+        </div>
+
+        <!-- Dropdown Chọn Tuần -->
+        <div class="relative flex-1 md:flex-none">
+          <select id="week-select" class="w-full bg-slate-100 text-slate-800 text-xs font-bold py-2.5 pl-3 pr-7 rounded-2xl border border-slate-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <!-- Dynamic JS -->
+          </select>
+          <span class="material-symbols-outlined text-sm absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">unfold_more</span>
+        </div>
+
+        <!-- Highlight Switch -->
+        <div class="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1.5 rounded-2xl border border-slate-200">
+          <span class="text-xs font-semibold text-slate-600">Màu</span>
+          <md-switch id="highlight-switch" selected>
+            <md-icon slot="on-icon" class="text-xs">check</md-icon>
+            <md-icon slot="off-icon" class="text-xs">close</md-icon>
+          </md-switch>
+        </div>
+        
+        <!-- Nút In -->
+        <button id="print-btn" onclick="window.print()" class="expressive-btn relative overflow-hidden flex items-center gap-1.5 bg-teal-700 hover:bg-teal-800 text-white font-medium px-3.5 py-2 rounded-2xl shadow-sm cursor-pointer">
+          <md-ripple></md-ripple>
+          <span class="material-symbols-outlined text-base">print</span>
+          <span class="text-xs font-semibold">In A4</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="relative z-10 w-full flex-1 bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col justify-center min-h-[420px]">
+      
+      <!-- LUỒNG PC VIEW (Màn hình lớn >= 768px) -->
+      <div id="pc-view" class="hidden md:block overflow-x-auto w-full">
+        <table class="w-full text-center border-collapse">
+          <thead>
+            <tr class="bg-slate-900 text-white border-b border-slate-800">
+              <th class="py-2.5 px-2 font-semibold text-xs w-20 uppercase tracking-wider text-slate-300">Buổi / Tiết</th>
+              <th class="py-2.5 px-2 font-semibold text-sm w-1/6">Thứ 2</th>
+              <th class="py-2.5 px-2 font-semibold text-sm w-1/6">Thứ 3</th>
+              <th class="py-2.5 px-2 font-semibold text-sm w-1/6">Thứ 4</th>
+              <th class="py-2.5 px-2 font-semibold text-sm w-1/6">Thứ 5</th>
+              <th class="py-2.5 px-2 font-semibold text-sm w-1/6">Thứ 6</th>
+              <th class="py-2.5 px-2 font-semibold text-sm w-1/6 text-slate-300">Thứ 7</th>
+            </tr>
+          </thead>
+          <tbody id="tkb-tbody" class="divide-y divide-slate-100 text-sm">
+            <!-- Dynamic Table Content -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- LUỒNG MOBILE VIEW (Màn hình điện thoại < 768px) -->
+      <div id="mobile-view" class="block md:hidden w-full p-3">
+        <!-- Navigation Tabs Chuyển Thứ -->
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-3 border-b border-slate-100" id="mobile-tabs">
+          <button data-day="t2" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-900 text-white shadow-sm transition-all">Thứ 2</button>
+          <button data-day="t3" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 3</button>
+          <button data-day="t4" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 4</button>
+          <button data-day="t5" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 5</button>
+          <button data-day="t6" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 6</button>
+          <button data-day="t7" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 7</button>
+        </div>
+
+        <!-- Timeline Tiết Học Mobile -->
+        <div id="mobile-timeline" class="mt-4 flex flex-col gap-3">
+          <!-- Render danh sách card tiết học của Thứ đang chọn -->
+        </div>
+      </div>
+
+      <!-- No Data Placeholder -->
+      <div id="no-data-msg" class="hidden flex-col items-center justify-center p-8 text-center my-auto">
+        <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-3 text-slate-400">
+          <span class="material-symbols-outlined text-3xl">folder_off</span>
+        </div>
+        <p class="text-sm md:text-base font-bold text-slate-700 max-w-md">
+          No data here right now, please check again later or contact to the owner of this site or school
+        </p>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 w-full mt-3 flex flex-row items-center justify-between text-[10px] md:text-[11px] text-slate-500 px-1">
+      <div class="flex items-center gap-1.5 font-bold text-slate-800">
+        <img src="https://lh3.googleusercontent.com/a/ACg8ocK1ghp_0vaVGK6czFhTwIBo0asg1GAhSQ4xwdm9kL9kAmu8BneC=s0-c" alt="Avatar" class="w-4 h-4 rounded-full object-cover border border-slate-400" />
+        <span>Made by Phong VN - tuanphong3108.github.io</span>
+      </div>
+      <div class="font-semibold text-slate-700">
+        © 2026 Phong VN
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // Cấu hình mảng màu & icon tương ứng môn học
+    const subjectConfig = {
+      'TOÁN': { bg: 'bg-sky-50/80', border: 'border-sky-200/60', icon: 'functions', text: 'text-sky-950', teacherText: 'text-sky-800', iconColor: 'text-sky-600' },
+      'VĂN': { bg: 'bg-rose-50/80', border: 'border-rose-200/60', icon: 'menu_book', text: 'text-rose-950', teacherText: 'text-rose-800', iconColor: 'text-rose-600' },
+      'ANH': { bg: 'bg-indigo-50/80', border: 'border-indigo-200/60', icon: 'translate', text: 'text-indigo-950', teacherText: 'text-indigo-800', iconColor: 'text-indigo-600' },
+      'SINH': { bg: 'bg-teal-50/80', border: 'border-teal-200/60', icon: 'biotech', text: 'text-teal-950', teacherText: 'text-teal-800', iconColor: 'text-teal-600' },
+      'TIN': { bg: 'bg-cyan-50/80', border: 'border-cyan-200/60', icon: 'terminal', text: 'text-cyan-950', teacherText: 'text-cyan-800', iconColor: 'text-cyan-600' },
+      'ĐỊA': { bg: 'bg-emerald-50/80', border: 'border-emerald-200/60', icon: 'public', text: 'text-emerald-950', teacherText: 'text-emerald-800', iconColor: 'text-emerald-600' },
+      'SỬ': { bg: 'bg-orange-50/80', border: 'border-orange-200/60', icon: 'history_edu', text: 'text-orange-950', teacherText: 'text-orange-800', iconColor: 'text-orange-600' },
+      'GDKT&PL': { bg: 'bg-purple-50/80', border: 'border-purple-200/60', icon: 'balance', text: 'text-purple-950', teacherText: 'text-purple-800', iconColor: 'text-purple-600' },
+      'GDTC': { bg: 'bg-lime-50/80', border: 'border-lime-200/60', icon: 'sports_soccer', text: 'text-lime-950', teacherText: 'text-lime-800', iconColor: 'text-lime-600' },
+      'GD Quốc Phòng': { bg: 'bg-stone-100/90', border: 'border-stone-300/60', icon: 'shield', text: 'text-stone-900', teacherText: 'text-stone-700', iconColor: 'text-stone-600' },
+      'HĐTN': { bg: 'bg-amber-50/80', border: 'border-amber-200/60', icon: 'groups', text: 'text-amber-950', teacherText: 'text-amber-800', iconColor: 'text-amber-600' },
+      'DEFAULT': { bg: 'bg-slate-100/80', border: 'border-slate-200', icon: 'school', text: 'text-slate-900', teacherText: 'text-slate-700', iconColor: 'text-slate-600' }
+    };
+
+    function getSubjectStyle(name) {
+      if (!name) return null;
+      for (let key in subjectConfig) {
+        if (name.includes(key)) return subjectConfig[key];
+      }
+      return subjectConfig['DEFAULT'];
+    }
+
+    // TÍNH TUẦN HỌC HIỆN TẠI (Mặc định Tuần 2)
+    const startDate = new Date('2026-09-07T00:00:00'); 
+    function getCurrentWeekNum() {
+      const now = new Date();
+      const diffMs = now - startDate;
+      const diffWeeks = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 7)) + 1;
+      return diffWeeks > 0 ? diffWeeks : 2;
+    }
+
+    const currentWeek = getCurrentWeekNum();
+    let currentData = null;
+    let selectedDayMobile = 't2';
+
+    // Gen danh sách Dropdown 20 tuần
+    const weekSelect = document.getElementById('week-select');
+    for (let i = 1; i <= 20; i++) {
+      const option = document.createElement('option');
+      option.value = i;
+      option.textContent = `Tuần ${i < 10 ? '0' + i : i}${i === currentWeek ? ' (Hiện tại)' : ''}`;
+      if (i === currentWeek) option.selected = true;
+      weekSelect.appendChild(option);
+    }
+
+    // TẢI DỮ LIỆU JSON TỪ /asset/<tuần>.json
+    async function loadSchedule(week) {
+      const weekStr = week < 10 ? '0' + week : week;
+      document.getElementById('week-title-display').textContent = `TUẦN ${weekStr}`;
+      
+      const printBtn = document.getElementById('print-btn');
+      const pcView = document.getElementById('pc-view');
+      const mobileView = document.getElementById('mobile-view');
+      const noDataMsg = document.getElementById('no-data-msg');
+
+      try {
+        const response = await fetch(`./asset/${week}.json`);
+        if (!response.ok) throw new Error("No data file");
+        
+        currentData = await response.json();
+        
+        // Render cả 2 luồng
+        renderPCTable(currentData);
+        renderMobileTimeline(currentData, selectedDayMobile);
+
+        document.getElementById('week-date-range').textContent = `Áp dụng: ${currentData.dateRange || 'Đang cập nhật'}`;
+        
+        // Check màn hình để show view đúng
+        if (window.innerWidth >= 768) {
+          pcView.style.display = 'block';
+          mobileView.style.display = 'none';
+        } else {
+          pcView.style.display = 'none';
+          mobileView.style.display = 'block';
+        }
+
+        noDataMsg.style.display = 'none';
+        printBtn.disabled = false;
+
+      } catch (err) {
+        pcView.style.display = 'none';
+        mobileView.style.display = 'none';
+        noDataMsg.style.display = 'flex';
+        printBtn.disabled = true;
+        document.getElementById('week-date-range').textContent = 'Chưa có thông tin áp dụng';
+      }
+    }
+
+    // LUỒNG 1: RENDER PC TABLE
+    function renderPCTable(data) {
+      const tbody = document.getElementById('tkb-tbody');
+      tbody.innerHTML = '';
+
+      const renderSection = (title, icon, periods) => {
+        let html = `
+          <tr class="bg-teal-50/80 border-y border-teal-100">
+            <td colspan="7" class="py-1.5 px-4 text-left font-bold text-teal-900 text-[11px] tracking-wider uppercase">
+              <span class="material-symbols-outlined text-teal-700 text-sm align-middle mr-1">${icon}</span>
+              ${title}
+            </td>
+          </tr>
+        `;
+
+        periods.forEach((p, idx) => {
+          html += `<tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="py-1.5 px-1 font-bold text-xs text-slate-500 bg-slate-50/50">Tiết ${idx + 1}</td>`;
+          
+          ['t2', 't3', 't4', 't5', 't6', 't7'].forEach(day => {
+            const cell = p[day];
+            if (cell && cell.sub) {
+              const style = getSubjectStyle(cell.sub);
+              html += `
+                <td class="p-1">
+                  <div class="subject-card p-2 rounded-xl ${style.bg} border ${style.border} flex flex-col items-center">
+                    <span class="material-symbols-outlined ${style.iconColor} text-base mb-0.5">${style.icon}</span>
+                    <span class="font-bold ${style.text} text-xs">${cell.sub}</span>
+                    <span class="teacher-name text-[10px] font-semibold ${style.teacherText}">${cell.teacher || ''}</span>
+                  </div>
+                </td>
+              `;
+            } else {
+              html += `<td class="p-1 text-slate-300 font-light text-xs">-</td>`;
+            }
+          });
+
+          html += `</tr>`;
+        });
+
+        return html;
+      };
+
+      let content = '';
+      if (data.sang) content += renderSection('Buổi Sáng', 'wb_sunny', data.sang);
+      if (data.chieu) content += renderSection('Buổi Chiều', 'wb_twilight', data.chieu);
+
+      tbody.innerHTML = content;
+    }
+
+    // LUỒNG 2: RENDER MOBILE TIMELINE CARD
+    function renderMobileTimeline(data, dayKey) {
+      const timeline = document.getElementById('mobile-timeline');
+      timeline.innerHTML = '';
+
+      const renderMobileSection = (title, periods) => {
+        let html = `<div class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-2 mb-1">${title}</div>`;
+        let hasAnySubject = false;
+
+        periods.forEach((p, idx) => {
+          const cell = p[dayKey];
+          if (cell && cell.sub) {
+            hasAnySubject = true;
+            const style = getSubjectStyle(cell.sub);
+            html += `
+              <div class="subject-card p-3 rounded-2xl ${style.bg} border ${style.border} flex items-center justify-between shadow-sm">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-xl bg-white/80 flex items-center justify-center shadow-xs">
+                    <span class="material-symbols-outlined ${style.iconColor} text-xl">${style.icon}</span>
+                  </div>
+                  <div>
+                    <div class="font-bold ${style.text} text-sm">${cell.sub}</div>
+                    <div class="text-xs font-semibold ${style.teacherText}">GV: ${cell.teacher || 'Chưa cập nhật'}</div>
+                  </div>
+                </div>
+                <div class="text-xs font-bold text-slate-500 bg-white/60 px-2.5 py-1 rounded-xl">
+                  Tiết ${idx + 1}
+                </div>
+              </div>
+            `;
+          }
+        });
+
+        if (!hasAnySubject) {
+          html += `<div class="text-xs text-slate-400 italic py-2">Nghỉ học / Không có tiết</div>`;
+        }
+
+        return html;
+      };
+
+      let mobileContent = '';
+      if (data.sang) mobileContent += renderMobileSection('Buổi Sáng', data.sang);
+      if (data.chieu) mobileContent += renderMobileSection('Buổi Chiều', data.chieu);
+
+      timeline.innerHTML = mobileContent;
+    }
+
+    // ĐỒNG HỒ VÀ BÁO TIẾT HIỆN TẠI TỰ ĐỘNG
+    const periodTimes = [
+      { p: 'Sáng - Tiết 1', start: '07:00', end: '07:45' },
+      { p: 'Sáng - Tiết 2', start: '07:50', end: '08:35' },
+      { p: 'Sáng - Tiết 3', start: '08:45', end: '09:30' },
+      { p: 'Sáng - Tiết 4', start: '09:35', end: '10:20' },
+      { p: 'Sáng - Tiết 5', start: '10:25', end: '11:10' },
+      { p: 'Nghỉ trưa ☀️', start: '11:10', end: '13:30' },
+      { p: 'Chiều - Tiết 1', start: '13:30', end: '14:15' },
+      { p: 'Chiều - Tiết 2', start: '14:20', end: '15:05' },
+      { p: 'Chiều - Tiết 3', start: '15:15', end: '16:00' },
+      { p: 'Chiều - Tiết 4', start: '16:05', end: '16:50' },
+      { p: 'Chiều - Tiết 5', start: '16:55', end: '17:40' }
+    ];
+
+    function updateLiveClock() {
+      const now = new Date();
+      const timeStr = now.toTimeString().split(' ')[0];
+      const days = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+      const dayName = days[now.getDay()];
+      
+      document.getElementById('live-clock-display').textContent = `${dayName}, ${timeStr}`;
+
+      const currentMins = now.getHours() * 60 + now.getMinutes();
+      let statusText = 'Nghỉ 🌙';
+
+      for (let slot of periodTimes) {
+        const [sh, sm] = slot.start.split(':').map(Number);
+        const [eh, em] = slot.end.split(':').map(Number);
+        const sMins = sh * 60 + sm;
+        const eMins = eh * 60 + em;
+
+        if (currentMins >= sMins && currentMins <= eMins) {
+          statusText = slot.p;
+          break;
+        }
+      }
+
+      document.getElementById('live-period-display').textContent = statusText.includes('Nghỉ') ? statusText : `Đang học: ${statusText}`;
+      document.getElementById('mobile-live-period').textContent = statusText;
+    }
+
+    setInterval(updateLiveClock, 1000);
+    updateLiveClock();
+
+    // Event Switch Mobile Tabs
+    document.querySelectorAll('.day-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        document.querySelectorAll('.day-tab').forEach(t => {
+          t.classList.remove('bg-slate-900', 'text-white', 'shadow-sm');
+          t.classList.add('bg-slate-100', 'text-slate-600');
+        });
+        e.target.classList.remove('bg-slate-100', 'text-slate-600');
+        e.target.classList.add('bg-slate-900', 'text-white', 'shadow-sm');
+
+        selectedDayMobile = e.target.getAttribute('data-day');
+        if (currentData) renderMobileTimeline(currentData, selectedDayMobile);
+      });
+    });
+
+    // Event Select Week
+    weekSelect.addEventListener('change', (e) => loadSchedule(Number(e.target.value)));
+
+    // Highlight Switch
+    const highlightSwitch = document.getElementById('highlight-switch');
+    highlightSwitch.addEventListener('change', (e) => {
+      const cards = document.querySelectorAll('.subject-card');
+      cards.forEach(card => {
+        if (e.target.selected) {
+          card.classList.remove('bg-slate-100', 'border-slate-200');
+        } else {
+          card.classList.add('bg-slate-100', 'border-slate-200');
+        }
+      });
+    });
+
+    // Resize Handler để tự chuyển giao diện PC / Mobile
+    window.addEventListener('resize', () => {
+      if (currentData) {
+        const pcView = document.getElementById('pc-view');
+        const mobileView = document.getElementById('mobile-view');
+        if (window.innerWidth >= 768) {
+          pcView.style.display = 'block';
+          mobileView.style.display = 'none';
+        } else {
+          pcView.style.display = 'none';
+          mobileView.style.display = 'block';
+        }
+      }
+    });
+
+    // Auto set TAB Mobile theo Thứ thực tế hôm nay
+    const todayNum = new Date().getDay(); // 0: CN, 1: T2, 2: T3...
+    if (todayNum >= 1 && todayNum <= 6) {
+      selectedDayMobile = `t${todayNum + 1}`;
+      document.querySelectorAll('.day-tab').forEach(t => {
+        if (t.getAttribute('data-day') === selectedDayMobile) {
+          t.click();
+        }
+      });
+    }
+
+    // Load dữ liệu
+    loadSchedule(currentWeek);
+  </script>
+</body>
+</html>
