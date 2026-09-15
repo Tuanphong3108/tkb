@@ -1,4 +1,3 @@
-const CACHE_NAME = 'tkb-10a2-v2026.09.15-fix2';
 const CACHE_NAME = 'tkb-10a2-v2026.09.15-v3';
 const ASSETS_TO_CACHE = [
   './',
@@ -33,8 +32,6 @@ self.addEventListener('activate', (e) => {
 
 // Xử lý request tài nguyên
 self.addEventListener('fetch', (e) => {
-  // Với các file dữ liệu JSON (thời khóa biểu/môn học), ưu tiên Network First
-  if (e.request.url.includes('/asset/')) {
   // Với các file dữ liệu JSON và trang chính index.html, ưu tiên Network First
   if (e.request.url.includes('/asset/') || e.request.url.includes('index.html') || e.request.mode === 'navigate') {
     e.respondWith(
@@ -47,7 +44,6 @@ self.addEventListener('fetch', (e) => {
         .catch(() => caches.match(e.request)) // Mất mạng thì dùng bản cache gần nhất
     );
   } else {
-    // Với các file giao diện tĩnh, dùng Cache First
     // Với các file tĩnh khác, dùng Cache First
     e.respondWith(
       caches.match(e.request).then((res) => {
