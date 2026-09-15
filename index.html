@@ -83,6 +83,7 @@
       }
 
       #pc-view { display: block !important; }
+      #mobile-view, .no-print, #subject-dialog, #apps-dialog, #more-menu, #mobile-weather-dock, #pc-weather-widget { display: none !important; }
       #mobile-view, .no-print, #subject-dialog, #apps-dialog, #more-menu, #mobile-weather-dock, #mobile-weather-container, #mobile-weather-notice, #pc-weather-widget, #pc-weather-bubble { display: none !important; }
 
       .print-wrapper {
@@ -155,6 +156,12 @@
       <!-- Action Bar Desktop View -->
       <div class="no-print hidden md:flex items-center gap-3">
         
+        <!-- PC Weather Widget -->
+        <div id="pc-weather-widget" class="flex items-center gap-2 bg-slate-100 px-3 py-2 rounded-2xl border border-slate-200 text-xs font-bold text-slate-800">
+          <span class="text-slate-400 text-sm font-black">???</span>
+          <button onclick="requestWeatherPermission()" class="expressive-btn bg-teal-700 hover:bg-teal-800 text-white font-bold text-[11px] px-2.5 py-1 rounded-xl shadow-xs transition-colors cursor-pointer">
+            Cấp quyền
+          </button>
         <!-- PC Weather Widget & Chat Bubble -->
         <div class="relative">
           <div id="pc-weather-widget" class="flex items-center gap-2 bg-slate-100 px-3 py-2 rounded-2xl border border-slate-200 text-xs font-bold text-slate-800">
@@ -399,6 +406,9 @@
     </div>
   </div>
 
+  <!-- MOBILE WEATHER DOCK -->
+  <div id="mobile-weather-dock" class="no-print block md:hidden fixed bottom-3 left-3 right-3 z-40 bg-slate-900/95 text-white backdrop-blur-md p-3 rounded-2xl border border-slate-800 shadow-xl">
+    <div class="flex items-center justify-between gap-3">
   <!-- MOBILE WEATHER CONTAINER -->
   <div id="mobile-weather-container" class="no-print block md:hidden fixed bottom-3 left-3 right-3 z-40 bg-slate-900/95 text-white backdrop-blur-md rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
     
@@ -1109,6 +1119,7 @@
 
     async function fetchWeather(lat, lon) {
       try {
+        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=precipitation_probability,temperature_2m,weathercode&timezone=auto`;
         const res = await fetch(url);
         if (!res.ok) throw new Error('API Weather error');
