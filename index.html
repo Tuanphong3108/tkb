@@ -414,9 +414,6 @@
     </div>
   </div>
 
-  <!-- MOBILE WEATHER DOCK -->
-  <div id="mobile-weather-dock" class="no-print block md:hidden fixed bottom-3 left-3 right-3 z-40 bg-slate-900/95 text-white backdrop-blur-md p-3 rounded-2xl border border-slate-800 shadow-xl">
-    <div class="flex items-center justify-between gap-3">
   <!-- MOBILE WEATHER CONTAINER -->
   <div id="mobile-weather-container" class="no-print block md:hidden fixed bottom-3 left-3 right-3 z-40 bg-slate-900/95 text-white backdrop-blur-md rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
     
@@ -434,12 +431,37 @@
     <!-- Mobile Weather Dock -->
     <div id="mobile-weather-dock" class="p-3 flex items-center justify-between gap-3">
       <div id="mobile-weather-left" class="flex items-center gap-2 shrink-0">
-        <span class="text-slate-400 text-xs font-bold">???</span>
-        <button onclick="requestWeatherPermission()" class="expressive-btn bg-teal-600 hover:bg-teal-700 text-white font-bold text-[10px] px-2 py-0.5 rounded-lg shadow-xs transition-colors cursor-pointer">
-          Cấp quyền
-        </button>
+        <span class="text-xs text-slate-400 font-medium">Đang tải...</span>
       </div>
       <div id="mobile-weather-quote" class="text-right text-[11px] text-slate-300 italic font-medium leading-snug line-clamp-2 flex-1 pl-2 border-l border-slate-700/60"></div>
+    </div>
+  </div>
+
+  <!-- MOBILE LOCATION CHOICE DIALOG (SLIDE UP) -->
+  <div id="mobile-location-dialog" class="hidden no-print block md:hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end justify-center">
+    <div class="w-full bg-slate-900 text-white rounded-t-3xl p-5 border-t border-slate-700 shadow-2xl animate-in slide-in-from-bottom duration-300">
+      <div class="w-12 h-1 bg-slate-700 rounded-full mx-auto mb-4"></div>
+      <h3 class="text-sm font-bold text-slate-100 mb-1 flex items-center gap-2">
+        <span class="material-symbols-outlined text-teal-400 text-lg">location_on</span>
+        Vị trí thời tiết
+      </h3>
+      <p class="text-xs text-slate-300 mb-4 font-medium">Bạn muốn dùng vị trí nào để xem thời tiết?</p>
+      <div class="flex flex-col gap-2.5">
+        <button onclick="chooseWeatherLocation('school')" class="expressive-btn w-full bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs py-3 px-4 rounded-2xl flex items-center justify-between border border-teal-600/50 shadow-sm cursor-pointer">
+          <span class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-base">school</span>
+            Vị trí trường
+          </span>
+          <span class="material-symbols-outlined text-sm text-teal-200">chevron_right</span>
+        </button>
+        <button onclick="chooseWeatherLocation('user')" class="expressive-btn w-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-3 px-4 rounded-2xl flex items-center justify-between border border-slate-700 cursor-pointer">
+          <span class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-base text-teal-400">my_location</span>
+            Vị trí của bạn
+          </span>
+          <span class="material-symbols-outlined text-sm text-slate-400">chevron_right</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1005,25 +1027,18 @@
       }
     }
 
-    function renderNoWeatherPermissionUI() {
+    const SCHOOL_LAT = 20.4934984;
+    const SCHOOL_LON = 105.7703291;
+
+    function renderWeatherErrorUI() {
       const pcWidget = document.getElementById('pc-weather-widget');
       if (pcWidget) {
-        pcWidget.innerHTML = `
-          <span class="text-slate-400 text-sm font-black">???</span>
-          <button onclick="requestWeatherPermission()" class="expressive-btn bg-teal-700 hover:bg-teal-800 text-white font-bold text-[11px] px-2.5 py-1 rounded-xl shadow-xs transition-colors cursor-pointer">
-            Cấp quyền
-          </button>
-        `;
+        pcWidget.innerHTML = `<span class="text-slate-400 text-xs font-bold">???</span>`;
       }
 
       const mobileLeft = document.getElementById('mobile-weather-left');
       if (mobileLeft) {
-        mobileLeft.innerHTML = `
-          <span class="text-slate-400 text-xs font-bold">???</span>
-          <button onclick="requestWeatherPermission()" class="expressive-btn bg-teal-600 hover:bg-teal-700 text-white font-bold text-[10px] px-2 py-0.5 rounded-lg shadow-xs transition-colors cursor-pointer">
-            Cấp quyền
-          </button>
-        `;
+        mobileLeft.innerHTML = `<span class="text-slate-400 text-xs font-bold">???</span>`;
       }
 
       const mobileQuote = document.getElementById('mobile-weather-quote');
@@ -1032,12 +1047,61 @@
       }
     }
 
+    function showLocationChoicePrompt() {
+      const pcBubble = document.getElementById('pc-weather-bubble');
+      const pcPrompt = document.getElementById('pc-bubble-location-prompt');
+      const pcNotice = document.getElementById('pc-bubble-notice-content');
+      if (pcBubble && pcPrompt && pcNotice) {
+        pcNotice.classList.add('hidden');
+        pcPrompt.classList.remove('hidden');
+        pcBubble.classList.remove('hidden');
+      }
+
+      const mobileDialog = document.getElementById('mobile-location-dialog');
+      if (mobileDialog) {
+        mobileDialog.classList.remove('hidden');
+      }
+    }
+
+    function hideLocationChoicePrompt() {
+      const pcBubble = document.getElementById('pc-weather-bubble');
+      const pcPrompt = document.getElementById('pc-bubble-location-prompt');
+      const pcNotice = document.getElementById('pc-bubble-notice-content');
+
+      if (pcPrompt) pcPrompt.classList.add('hidden');
+      if (pcBubble && pcNotice && pcNotice.classList.contains('hidden')) {
+        pcBubble.classList.add('hidden');
+      }
+
+      const mobileDialog = document.getElementById('mobile-location-dialog');
+      if (mobileDialog) {
+        mobileDialog.classList.add('hidden');
+      }
+    }
+
+    function chooseWeatherLocation(choice) {
+      localStorage.setItem('weather_location_choice', choice);
+      hideLocationChoicePrompt();
+
+      if (choice === 'school') {
+        fetchWeather(SCHOOL_LAT, SCHOOL_LON);
+      } else {
+        fetchWeatherUserWithFallback();
+      }
+    }
+
     function dismissWeatherNotice() {
       const mobileNotice = document.getElementById('mobile-weather-notice');
       if (mobileNotice) mobileNotice.classList.add('hidden');
 
+      const pcNotice = document.getElementById('pc-bubble-notice-content');
+      if (pcNotice) pcNotice.classList.add('hidden');
+
+      const pcPrompt = document.getElementById('pc-bubble-location-prompt');
       const pcBubble = document.getElementById('pc-weather-bubble');
-      if (pcBubble) pcBubble.classList.add('hidden');
+      if (pcBubble && (!pcPrompt || pcPrompt.classList.contains('hidden'))) {
+        pcBubble.classList.add('hidden');
+      }
     }
 
     function displayWeatherNotice(msg) {
@@ -1047,9 +1111,14 @@
       }
 
       const pcBubble = document.getElementById('pc-weather-bubble');
+      const pcNotice = document.getElementById('pc-bubble-notice-content');
+      const pcPrompt = document.getElementById('pc-bubble-location-prompt');
       const pcBubbleText = document.getElementById('pc-bubble-text');
-      if (pcBubble && pcBubbleText) {
+
+      if (pcBubble && pcNotice && pcBubbleText) {
+        if (pcPrompt) pcPrompt.classList.add('hidden');
         pcBubbleText.textContent = msg;
+        pcNotice.classList.remove('hidden');
         pcBubble.classList.remove('hidden');
       }
 
@@ -1064,7 +1133,8 @@
     function checkWeatherNotice(data) {
       const now = new Date();
       const currentHour = now.getHours();
-      const isEveningWindow = currentHour >= 18 && currentHour <= 20;
+      // Khung giờ 18h00 - 23h59
+      const isEveningWindow = currentHour >= 18 && currentHour <= 23;
 
       const cw = data.current_weather;
       const hourly = data.hourly;
@@ -1128,7 +1198,6 @@
 
     async function fetchWeather(lat, lon) {
       try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=precipitation_probability,temperature_2m,weathercode&timezone=auto`;
         const res = await fetch(url);
         if (!res.ok) throw new Error('API Weather error');
@@ -1154,41 +1223,54 @@
         displayWeatherNotice(noticeMsg);
       } catch (err) {
         console.warn('Không lấy được thông tin thời tiết từ Open-Meteo:', err);
-        renderNoWeatherPermissionUI();
+        renderWeatherErrorUI();
       }
     }
 
-    function requestWeatherPermission() {
+    function fetchWeatherUserWithFallback() {
       if (!('geolocation' in navigator)) {
-        alert('Trình duyệt của bạn không hỗ trợ định vị.');
-        renderNoWeatherPermissionUI();
+        console.warn('Trình duyệt không hỗ trợ định vị, dùng vị trí trường');
+        fetchWeather(SCHOOL_LAT, SCHOOL_LON);
         return;
       }
 
+      let hasFetched = false;
+      const timer = setTimeout(() => {
+        if (!hasFetched) {
+          hasFetched = true;
+          console.warn('Quá 5s không lấy được vị trí người dùng, chuyển sang vị trí trường');
+          fetchWeather(SCHOOL_LAT, SCHOOL_LON);
+        }
+      }, 5000);
+
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          fetchWeather(pos.coords.latitude, pos.coords.longitude);
+          if (!hasFetched) {
+            hasFetched = true;
+            clearTimeout(timer);
+            fetchWeather(pos.coords.latitude, pos.coords.longitude);
+          }
         },
         (err) => {
-          console.warn('Geolocation denied or error:', err);
-          renderNoWeatherPermissionUI();
+          if (!hasFetched) {
+            hasFetched = true;
+            clearTimeout(timer);
+            console.warn('Lỗi xin quyền vị trí, chuyển sang vị trí trường:', err);
+            fetchWeather(SCHOOL_LAT, SCHOOL_LON);
+          }
         },
-        { timeout: 10000, maximumAge: 60000 }
+        { timeout: 5000, maximumAge: 60000 }
       );
     }
 
     function initWeather() {
-      renderNoWeatherPermissionUI();
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            fetchWeather(pos.coords.latitude, pos.coords.longitude);
-          },
-          (err) => {
-            renderNoWeatherPermissionUI();
-          },
-          { timeout: 5000, maximumAge: 300000 }
-        );
+      const savedChoice = localStorage.getItem('weather_location_choice');
+      if (savedChoice === 'school') {
+        fetchWeather(SCHOOL_LAT, SCHOOL_LON);
+      } else if (savedChoice === 'user') {
+        fetchWeatherUserWithFallback();
+      } else {
+        showLocationChoicePrompt();
       }
     }
 
