@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tkb-v2026.09.15-build204502';
+const CACHE_NAME = 'tkb-v2026.09.15-build204809';
 
 // Cài đặt SW và ép kích hoạt ngay bản mới
 self.addEventListener('install', (e) => {
