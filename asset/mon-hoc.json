@@ -4,76 +4,157 @@
     "name": "Toán học",
     "category": "Môn học bắt buộc cốt lõi",
     "description": "Trang bị tư duy logic, khả năng tính toán, mô hình hóa toán học và giải quyết vấn đề thực tiễn thông qua các mạch kiến thức Đại số, Hình học và Xác suất thống kê ở cấp trung học phổ thông.",
-    "keywords": ["Đại số", "Giải tích", "Hình học không gian", "Xác suất thống kê", "Tư duy logic"]
+    "keywords": [
+      "Đại số",
+      "Giải tích",
+      "Hình học không gian",
+      "Xác suất thống kê",
+      "Tư duy logic"
+    ]
   },
   {
     "code": "VĂN",
     "name": "Ngữ văn",
     "category": "Môn học bắt buộc cốt lõi",
     "description": "Phát triển năng lực ngôn ngữ bao gồm đọc, viết, nói, nghe và năng lực thẩm mỹ. Học sinh tiếp cận các văn bản văn học, nghị luận và thông tin để bồi dưỡng tâm hồn và tư duy phản biện.",
-    "keywords": ["Đọc hiểu", "Nghị luận xã hội", "Văn học Việt Nam", "Làm văn", "Kỹ năng giao tiếp"]
+    "keywords": [
+      "Đọc hiểu",
+      "Nghị luận xã hội",
+      "Văn học Việt Nam",
+      "Làm văn",
+      "Kỹ năng giao tiếp"
+    ]
   },
   {
     "code": "ANH",
     "name": "Tiếng Anh",
     "category": "Môn học bắt buộc cốt lõi",
     "description": "Phát triển năng lực giao tiếp bằng ngoại ngữ qua 4 kỹ năng nghe, nói, đọc, viết theo khung năng lực ngoại ngữ, chuẩn bị hành trang hội nhập quốc tế cho học sinh bậc trung học phổ thông.",
-    "keywords": ["Từ vựng", "Ngữ pháp", "Giao tiếp quốc tế", "Nghe nói đọc viết"]
+    "keywords": [
+      "Từ vựng",
+      "Ngữ pháp",
+      "Giao tiếp quốc tế",
+      "Nghe nói đọc viết"
+    ]
   },
   {
     "code": "SỬ",
     "name": "Lịch sử",
     "category": "Khoa học xã hội",
     "description": "Môn học lựa chọn định hướng khoa học xã hội, giúp học sinh hiểu sâu sắc các tiến trình lịch sử dân tộc và thế giới, phát triển tư duy lịch sử và vận dụng bài học quá khứ vào thực tiễn.",
-    "keywords": ["Lịch sử Việt Nam", "Lịch sử thế giới", "Tư duy phản biện", "Di sản văn hóa"]
+    "keywords": [
+      "Lịch sử Việt Nam",
+      "Lịch sử thế giới",
+      "Tư duy phản biện",
+      "Di sản văn hóa"
+    ]
   },
   {
     "code": "ĐỊA",
     "name": "Địa lý",
     "category": "Khoa học xã hội",
     "description": "Nghiên cứu các quy luật địa lý tự nhiên, địa lý kinh tế xã hội thế giới và Việt Nam, rèn luyện kỹ năng khai thác bản đồ, biểu đồ và phân tích không gian địa lý.",
-    "keywords": ["Địa lý tự nhiên", "Địa lý kinh tế", "Bản đồ", "Phân tích số liệu"]
+    "keywords": [
+      "Địa lý tự nhiên",
+      "Địa lý kinh tế",
+      "Bản đồ",
+      "Phân tích số liệu"
+    ]
   },
   {
     "code": "GDKT&PL",
     "name": "Giáo dục Kinh tế và Pháp luật",
     "category": "Khoa học xã hội",
     "description": "Cung cấp kiến thức về kinh tế thị trường, tài chính cá nhân, hệ thống pháp luật Việt Nam và quyền nghĩa vụ công dân, giúp học sinh tham gia đời sống xã hội hiệu quả.",
-    "keywords": ["Kinh tế thị trường", "Tài chính cá nhân", "Pháp luật", "Quyền công dân"]
+    "keywords": [
+      "Kinh tế thị trường",
+      "Tài chính cá nhân",
+      "Pháp luật",
+      "Quyền công dân"
+    ]
   },
   {
     "code": "SINH",
     "name": "Sinh học",
     "category": "Khoa học tự nhiên",
     "description": "Nghiên cứu sinh học tế bào, di truyền, tiến hóa và sinh thái học, giúp học sinh hiểu biết về thế giới sống và các ứng dụng sinh học trong đời sống, công nghệ.",
-    "keywords": ["Tế bào", "Di truyền học", "Tiến hóa", "Sinh thái học"]
+    "keywords": [
+      "Tế bào",
+      "Di truyền học",
+      "Tiến hóa",
+      "Sinh thái học"
+    ]
   },
   {
     "code": "TIN",
     "name": "Tin học",
     "category": "Công nghệ và định hướng nghề nghiệp",
     "description": "Trang bị năng lực số, tư duy giải quyết vấn đề bằng máy tính, lập trình cơ bản và khai thác phần mềm chuyên dụng phục vụ học tập và đời sống.",
-    "keywords": ["Lập trình", "Năng lực số", "Cơ sở dữ liệu", "Thuật toán"]
-  },
-  {
-    "code": "HĐTN",
-    "name": "Hoạt động trải nghiệm, Hướng nghiệp",
-    "category": "Hoạt động giáo dục bắt buộc",
-    "description": "Giúp học sinh phát triển phẩm chất, năng lực thích ứng với cuộc sống, rèn luyện kỹ năng tổ chức hoạt động và định hướng rõ ràng về ngành nghề tương lai. Gồm tiết Truy bài/HN đầu tuần và các tiết trải nghiệm theo chủ đề (HĐTN 2, HĐTN 3...).",
-    "keywords": ["Kỹ năng sống", "Khám phá bản thân", "Hướng nghiệp", "Hoạt động xã hội"]
+    "keywords": [
+      "Lập trình",
+      "Năng lực số",
+      "Cơ sở dữ liệu",
+      "Thuật toán"
+    ]
   },
   {
     "code": "GDTC",
     "name": "Giáo dục thể chất",
     "category": "Môn học bắt buộc",
     "description": "Rèn luyện sức khỏe, phát triển các tố chất thể lực và trang bị kỹ năng vận động cơ bản thông qua các môn thể thao tự chọn, xây dựng lối sống lành mạnh.",
-    "keywords": ["Thể lực", "Vận động", "Thể thao", "Sức bền"]
+    "keywords": [
+      "Thể lực",
+      "Vận động",
+      "Thể thao",
+      "Sức bền"
+    ]
   },
   {
     "code": "GD QUỐC PHÒNG",
     "name": "Giáo dục Quốc phòng và An ninh",
     "category": "Môn học bắt buộc",
     "description": "Bồi dưỡng lòng yêu nước, ý thức tổ chức kỷ luật và trang bị những kiến thức cơ bản về quốc phòng toàn dân, kỹ năng quân sự phổ thông.",
-    "keywords": ["Lòng yêu nước", "Quốc phòng toàn dân", "Kỹ năng quân sự", "Kỷ luật"]
+    "keywords": [
+      "Lòng yêu nước",
+      "Quốc phòng toàn dân",
+      "Kỹ năng quân sự",
+      "Kỷ luật"
+    ]
+  },
+  {
+    "code": "HĐTN,HN",
+    "name": "Sinh hoạt dưới cờ",
+    "category": "Hoạt động giáo dục bắt buộc",
+    "description": "Hoạt động chào cờ đầu tuần, tổng kết thi đua, phổ biến kế hoạch và giáo dục truyền thống, thường diễn ra vào tiết 1 sáng thứ Hai.",
+    "keywords": [
+      "Chào cờ",
+      "Sinh hoạt tập thể",
+      "Thi đua",
+      "Đầu tuần"
+    ]
+  },
+  {
+    "code": "HĐTN 2",
+    "name": "Hoạt động trải nghiệm, hướng nghiệp",
+    "category": "Hoạt động giáo dục bắt buộc",
+    "description": "Giúp học sinh phát triển phẩm chất, năng lực thích ứng với cuộc sống, rèn luyện kỹ năng tổ chức hoạt động và định hướng rõ ràng về ngành nghề tương lai.",
+    "keywords": [
+      "Kỹ năng sống",
+      "Khám phá bản thân",
+      "Hướng nghiệp",
+      "Hoạt động xã hội"
+    ]
+  },
+  {
+    "code": "HĐTN 3",
+    "name": "Sinh hoạt lớp",
+    "category": "Hoạt động giáo dục bắt buộc",
+    "description": "Tiết sinh hoạt cuối tuần do Giáo viên chủ nhiệm (GVCN) tổ chức, tổng kết nền nếp, học tập trong tuần và triển khai kế hoạch tuần tiếp theo.",
+    "keywords": [
+      "GVCN",
+      "Tổng kết tuần",
+      "Nền nếp",
+      "Sinh hoạt lớp"
+    ]
   }
 ]
