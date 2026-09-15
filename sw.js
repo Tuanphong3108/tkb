@@ -1,54 +1,43 @@
-const CACHE_NAME = 'tkb-10a2-v2026.09.15-v3';
-const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon.png'
-];
+const CACHE_NAME = 'tkb-cache-v1';
 
-// Cài đặt và lưu cache các file tĩnh ban đầu
+// Cài đặt SW và ép kích hoạt ngay bản mới
 self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
-  );
   self.skipWaiting();
 });
 
-// Kích hoạt và dọn dẹp các cache phiên bản cũ
+// Khi SW mới kích hoạt -> Xóa sạch tất cả cache cũ
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) return caches.delete(key);
-        })
+        keys.map((key) => caches.delete(key))
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Xử lý request tài nguyên
+// Xử lý request: Ưu tiên lấy từ Mạng (Network First) -> Cập nhật Cache -> Fallback sang Cache nếu mất mạng
 self.addEventListener('fetch', (e) => {
-  // Với các file dữ liệu JSON và trang chính index.html, ưu tiên Network First
-  if (e.request.url.includes('/asset/') || e.request.url.includes('index.html') || e.request.mode === 'navigate') {
-    e.respondWith(
-      fetch(e.request)
-        .then((response) => {
-          const resClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, resClone));
-          return response;
-        })
-        .catch(() => caches.match(e.request)) // Mất mạng thì dùng bản cache gần nhất
-    );
-  } else {
-    // Với các file tĩnh khác, dùng Cache First
-    e.respondWith(
-      caches.match(e.request).then((res) => {
-        return res || fetch(e.request);
+  // Bỏ qua các request không phải GET
+  if (e.request.method !== 'GET') return;
+
+  e.respondWith(
+    fetch(e.request)
+      .then((networkResponse) => {
+        // Có mạng mạnh -> Lấy bản mới từ Server
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          
+          // Xóa cache cũ và lưu bản mới nhất vào
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(e.request, responseToCache);
+          });
+        }
+        return networkResponse;
       })
-    );
-  }
+      .catch(() => {
+        // Mất mạng / Wifi yếu không tải được -> Lấy bản mới nhất đã lưu trong Cache
+        return caches.match(e.request);
+      })
+  );
 });
