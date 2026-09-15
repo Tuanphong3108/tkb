@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tkb-10a2-v2026.09.14';
+const CACHE_NAME = 'tkb-10a2-v2026.09.15';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
