@@ -383,6 +383,19 @@
     </div>
   </div>
 
+  <!-- MOBILE WEATHER DOCK -->
+  <div id="mobile-weather-dock" class="no-print block md:hidden fixed bottom-3 left-3 right-3 z-40 bg-slate-900/95 text-white backdrop-blur-md p-3 rounded-2xl border border-slate-800 shadow-xl">
+    <div class="flex items-center justify-between gap-3">
+      <div id="mobile-weather-left" class="flex items-center gap-2 shrink-0">
+        <span class="text-slate-400 text-xs font-bold">???</span>
+        <button onclick="requestWeatherPermission()" class="expressive-btn bg-teal-600 hover:bg-teal-700 text-white font-bold text-[10px] px-2 py-0.5 rounded-lg shadow-xs transition-colors cursor-pointer">
+          Cấp quyền
+        </button>
+      </div>
+      <div id="mobile-weather-quote" class="text-right text-[11px] text-slate-300 italic font-medium leading-snug line-clamp-2 flex-1 pl-2 border-l border-slate-700/60"></div>
+    </div>
+  </div>
+
   <script>
     // Register Service Worker
     if ('serviceWorker' in navigator) {
@@ -793,6 +806,246 @@
 
     // Initial load
     loadSchedule(selectedWeek);
+
+    // ==========================================
+    // WEATHER INTEGRATION (OPEN-METEO API & MINECRAFT QUOTES)
+    // ==========================================
+    const weatherQuotes = {
+        clear: [
+            "Trời quang đãng, đi mine kim cương thôi!",
+            "Nắng đẹp thế này, đi tìm biome mới thôi.",
+            "Cày ruộng thôi, lúa chín tới nơi rồi!",
+            "Lên đường đi săn Enderman nào.",
+            "Đừng nhìn thẳng vào lũ da đen.",
+            "Hãy sử dụng đúng công cụ cho đúng việc!"
+        ],
+        cloudy: [
+            "Trời âm u quá, ở nhà craft thêm đuốc đi.",
+            "Mây mù che lối, coi chừng lạc đường khi đi mine.",
+            "Trang trí base chút không bro? Trời sắp xấu rồi.",
+            "Cần nhiên liệu cho đuốc? Hãy thử nung gỗ lấy than củi."
+        ],
+        rain: [
+            "Mưa rồi... Ở nhà craft đồ cho lành.",
+            "Thời điểm tốt để nấu quặng và phân loại rương.",
+            "Câu cá trong mưa? Nghe cũng chill đấy chứ.",
+            "Quái vật Endermen ghét giờ tắm!"
+        ],
+        storm: [
+            "SẤM SÉT! Cẩn thận Charged Creeper gõ cửa nhé.",
+            "Đội một quả bí ngô trên đầu sẽ giúp bạn tránh bị Enderman tấn công.",
+            "Lợn bị sét đánh sẽ trở thành Lợn Zombie!"
+        ],
+        hot: [
+            "Nóng vãi đạn! Chắc đang lạc vào Nether rồi.",
+            "Uống ngay chai nước đi bro, thanh Hunger đang tụt kìa.",
+            "Nắng này mà đi sa mạc thì chỉ có nước 'tăng xông'.",
+            "Đừng quên mang theo xô nước, hữu ích cả khi nóng lẫn khi ngã!"
+        ],
+        cold: [
+            "Lạnh teo bugi! Coi chừng bị đóng băng như Stray nhé.",
+            "Mặc thêm giáp vào cho ấm, biome này lạnh quá.",
+            "Đỉnh núi tuyết này không dành cho người yếu tim đâu.",
+            "Craft một cái lò nung để sưởi ấm tâm hồn đi nào."
+        ],
+        default: [
+            "Mèo rừng cho lũ Creeper biết ai mới là kẻ thống trị!",
+            "Bạn có biết có một Wiki Minecraft không?",
+            "Lợn zombie sẽ không tấn công bạn nếu bạn mặc giáp vàng.",
+            "Người cưỡi nhện là hình ảnh hiếm gặp của một con nhện được một bộ xương cưỡi!",
+            "Nếu bạn đặt độ khó trò chơi thành Hòa bình, máu của bạn sẽ tự động hồi phục!",
+            "Thu hoạch da bò và sử dụng nó để làm giáp và sách.",
+            "Bạn có mặt ở MINECON không?",
+            "Một số động vật sẽ đi theo bạn nếu bạn cầm lúa mì trên tay.",
+            "Rùa con sẽ rụng vảy khi lớn lên, hãy dùng chúng để chế tạo mai rùa.",
+            "Đá cuội có khả năng chống lại quả cầu lửa của Ghast.",
+            "Ngôn ngữ của Enderman thực chất là tiếng Anh viết ngược.",
+            "Đá obsidian được tạo ra khi nước chạm vào khối dung nham.",
+            "Người sắt sẽ chiến đấu cho bạn!",
+            "Nhạc cụ được chơi bởi một khối nốt nhạc phụ thuộc vào vật liệu bên dưới nó.",
+            "Nhạc của C418!",
+            "Một số người nổi tiếng chơi Minecraft!",
+            "MINECON 2015 được tổ chức tại London, Anh!",
+            "Bột xương có thể được dùng làm phân bón và giúp cây cối phát triển ngay lập tức!",
+            "Di chuyển đến các địa điểm nhanh hơn với xe đẩy và đường ray!",
+            "Quái vật Creeper được sinh ra từ một lỗi lập trình.",
+            "Zombie và Skeleton có thể sống sót qua ban ngày nếu chúng ở trong nước.",
+            "Xây dựng một cổng dịch chuyển sẽ cho phép bạn du hành đến thế giới Nether.",
+            "Sói và Người Sắt sẽ không tấn công Creeper.",
+            "Trồng một vài cây non và chúng sẽ lớn lên thành cây.",
+            "Không ai nhớ MINECON 2014 được tổ chức ở đâu.",
+            "Tên ban đầu của Minecraft là Cave Game.",
+            "Mojang có nhiều giải thưởng hơn cả nhân viên!",
+            "Đánh trả những quả cầu lửa vào Ghast!",
+            "Phiên bản đầu tiên của Minecraft được tạo ra chỉ trong 6 ngày!",
+            "Đặt hai rương cạnh nhau sẽ tạo thành một rương lớn.",
+            "Luôn cho rằng tin đồn là sai, thay vì cho rằng chúng là đúng!",
+            "Di chuyển một khối trong Nether tương đương với di chuyển tám khối ở thế giới ngoài.",
+            "Đào thẳng xuống hoặc thẳng lên không phải là một ý hay.",
+            "MINECON 2011 được tổ chức tại Las Vegas, Nevada, Hoa Kỳ!",
+            "Cho chó sói ăn xương để thuần hóa nó.",
+            "Một xô dung nham có thể nung chảy được 100 khối trong lò nung.",
+            "Lợn zombie sẽ không tấn công bạn nếu bạn mặc giáp vàng - trừ khi bạn tấn công chúng hoặc mở rương trong pháo đài.",
+            "Ngủ trên giường vào ban đêm sẽ tua nhanh trò chơi đến bình minh.",
+            "Tấn công một con sói sẽ khiến bất kỳ con sói nào ở gần đó trở nên hung dữ.",
+            "Nếu bạn có một cái xô rỗng, bạn có thể đổ đầy nước, dung nham hoặc sữa bò vào đó!",
+            "Ăn thức ăn nấu chín giúp giảm đói tốt hơn ăn thức ăn sống.",
+            "Quái vật Creeper sẽ phát nổ khi chúng đến gần bạn!",
+            "Bạn có thể nung chảy 20 vật phẩm trong lò nung bằng cách sử dụng một khối tảo bẹ khô làm nhiên liệu.",
+            "Cho chó sói ăn xương để thuần hóa nó. Sau đó, bạn có thể khiến nó ngồi hoặc đi theo bạn."
+        ]
+    };
+
+    const PIXEL_BASE_URL = 'https://tuanphong3108.github.io/weather/';
+    
+    const PIXEL_ICONS = {
+        '0': { day: 'clear_day.png', night: 'clear_night.png', type: 'clear' },
+        '1': { day: 'mostly_clear_day.png', night: 'mostly_clear_night.png', type: 'clear' },
+        '2': { day: 'sunny_with_cloudy.png', night: 'partly_cloudy_night.png', type: 'clear' },
+        '3': { day: 'mostly_cloudy_day.png', night: 'mostly_cloudy_night.png', type: 'cloudy' },
+        '45': { day: 'haze_fog_dust_smoke.png', night: 'haze_fog_dust_smoke.png', type: 'cloudy' },
+        '48': { day: 'haze_fog_dust_smoke.png', night: 'haze_fog_dust_smoke.png', type: 'cloudy' },
+        '51': { day: 'drizzle.png', night: 'drizzle.png', type: 'rain' },
+        '53': { day: 'drizzle.png', night: 'drizzle.png', type: 'rain' },
+        '55': { day: 'drizzle.png', night: 'drizzle.png', type: 'rain' },
+        '61': { day: 'showers_rain.png', night: 'showers_rain.png', type: 'rain' },
+        '63': { day: 'cloudy_with_rain.png', night: 'cloudy_with_rain.png', type: 'rain' },
+        '65': { day: 'heavy_rain.png', night: 'heavy_rain.png', type: 'rain' },
+        '71': { day: 'showers_snow.png', night: 'showers_snow.png', type: 'cold' },
+        '73': { day: 'cloudy_with_snow.png', night: 'cloudy_with_snow.png', type: 'cold' },
+        '75': { day: 'heavy_snow.png', night: 'heavy_snow.png', type: 'cold' },
+        '80': { day: 'scattered_showers_day.png', night: 'scattered_showers_night.png', type: 'rain' },
+        '81': { day: 'showers_rain.png', night: 'showers_rain.png', type: 'rain' },
+        '82': { day: 'heavy_rain.png', night: 'heavy_rain.png', type: 'rain' },
+        '95': { day: 'isolated_scattered_thunderstorms_day.png', night: 'isolated_scattered_thunderstorms_night.png', type: 'storm' },
+        '96': { day: 'strong_thunderstorms.png', night: 'strong_thunderstorms.png', type: 'storm' },
+        '99': { day: 'strong_thunderstorms.png', night: 'strong_thunderstorms.png', type: 'storm' }
+    };
+
+    function getRandomWeatherQuote(weatherType) {
+      let pool = [...weatherQuotes.default];
+      if (weatherType && weatherQuotes[weatherType]) {
+        pool = pool.concat(weatherQuotes[weatherType]);
+      }
+      const idx = Math.floor(Math.random() * pool.length);
+      return pool[idx];
+    }
+
+    function updateWeatherUI(temp, iconFileName, weatherType) {
+      const iconUrl = PIXEL_BASE_URL + iconFileName;
+      const roundedTemp = Math.round(temp);
+
+      const pcWidget = document.getElementById('pc-weather-widget');
+      if (pcWidget) {
+        pcWidget.innerHTML = `
+          <img src="${iconUrl}" class="w-6 h-6 object-contain" alt="Weather" />
+          <span class="text-xs font-bold text-slate-800">${roundedTemp}°C</span>
+        `;
+      }
+
+      const mobileLeft = document.getElementById('mobile-weather-left');
+      if (mobileLeft) {
+        mobileLeft.innerHTML = `
+          <img src="${iconUrl}" class="w-7 h-7 object-contain" alt="Weather" />
+          <span class="text-sm font-bold text-white">${roundedTemp}°C</span>
+        `;
+      }
+
+      const mobileQuote = document.getElementById('mobile-weather-quote');
+      if (mobileQuote) {
+        mobileQuote.textContent = `"${getRandomWeatherQuote(weatherType)}"`;
+      }
+    }
+
+    function renderNoWeatherPermissionUI() {
+      const pcWidget = document.getElementById('pc-weather-widget');
+      if (pcWidget) {
+        pcWidget.innerHTML = `
+          <span class="text-slate-400 text-sm font-black">???</span>
+          <button onclick="requestWeatherPermission()" class="expressive-btn bg-teal-700 hover:bg-teal-800 text-white font-bold text-[11px] px-2.5 py-1 rounded-xl shadow-xs transition-colors cursor-pointer">
+            Cấp quyền
+          </button>
+        `;
+      }
+
+      const mobileLeft = document.getElementById('mobile-weather-left');
+      if (mobileLeft) {
+        mobileLeft.innerHTML = `
+          <span class="text-slate-400 text-xs font-bold">???</span>
+          <button onclick="requestWeatherPermission()" class="expressive-btn bg-teal-600 hover:bg-teal-700 text-white font-bold text-[10px] px-2 py-0.5 rounded-lg shadow-xs transition-colors cursor-pointer">
+            Cấp quyền
+          </button>
+        `;
+      }
+
+      const mobileQuote = document.getElementById('mobile-weather-quote');
+      if (mobileQuote) {
+        mobileQuote.textContent = `"${getRandomWeatherQuote(null)}"`;
+      }
+    }
+
+    async function fetchWeather(lat, lon) {
+      try {
+        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+        if (!res.ok) throw new Error('API Weather error');
+        const data = await res.json();
+        const cw = data.current_weather;
+        if (!cw) throw new Error('No current_weather');
+
+        const code = String(cw.weathercode);
+        const isDay = cw.is_day !== 0;
+        const temp = cw.temperature;
+
+        let iconInfo = PIXEL_ICONS[code] || { day: 'clear_day.png', night: 'clear_night.png', type: 'clear' };
+        let iconFileName = isDay ? iconInfo.day : iconInfo.night;
+        let type = iconInfo.type;
+
+        if (temp >= 35) {
+          type = 'hot';
+        }
+
+        updateWeatherUI(temp, iconFileName, type);
+      } catch (err) {
+        console.warn('Không lấy được thông tin thời tiết từ Open-Meteo:', err);
+        renderNoWeatherPermissionUI();
+      }
+    }
+
+    function requestWeatherPermission() {
+      if (!('geolocation' in navigator)) {
+        alert('Trình duyệt của bạn không hỗ trợ định vị.');
+        renderNoWeatherPermissionUI();
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          fetchWeather(pos.coords.latitude, pos.coords.longitude);
+        },
+        (err) => {
+          console.warn('Geolocation denied or error:', err);
+          renderNoWeatherPermissionUI();
+        },
+        { timeout: 10000, maximumAge: 60000 }
+      );
+    }
+
+    function initWeather() {
+      renderNoWeatherPermissionUI();
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            fetchWeather(pos.coords.latitude, pos.coords.longitude);
+          },
+          (err) => {
+            renderNoWeatherPermissionUI();
+          },
+          { timeout: 5000, maximumAge: 300000 }
+        );
+      }
+    }
+
+    initWeather();
   </script>
 </body>
 </html>
