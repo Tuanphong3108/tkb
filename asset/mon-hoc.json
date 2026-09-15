@@ -1,13 +1,13 @@
 [
   {
-    "code": "TOAN",
+    "code": "TOÁN",
     "name": "Toán học",
     "category": "Môn học bắt buộc cốt lõi",
     "description": "Trang bị tư duy logic, khả năng tính toán, mô hình hóa toán học và giải quyết vấn đề thực tiễn thông qua các mạch kiến thức Đại số, Hình học và Xác suất thống kê ở cấp trung học phổ thông.",
     "keywords": ["Đại số", "Giải tích", "Hình học không gian", "Xác suất thống kê", "Tư duy logic"]
   },
   {
-    "code": "VAN",
+    "code": "VĂN",
     "name": "Ngữ văn",
     "category": "Môn học bắt buộc cốt lõi",
     "description": "Phát triển năng lực ngôn ngữ bao gồm đọc, viết, nói, nghe và năng lực thẩm mỹ. Học sinh tiếp cận các văn bản văn học, nghị luận và thông tin để bồi dưỡng tâm hồn và tư duy phản biện.",
@@ -21,14 +21,14 @@
     "keywords": ["Từ vựng", "Ngữ pháp", "Giao tiếp quốc tế", "Nghe nói đọc viết"]
   },
   {
-    "code": "SU",
+    "code": "SỬ",
     "name": "Lịch sử",
     "category": "Khoa học xã hội",
     "description": "Môn học lựa chọn định hướng khoa học xã hội, giúp học sinh hiểu sâu sắc các tiến trình lịch sử dân tộc và thế giới, phát triển tư duy lịch sử và vận dụng bài học quá khứ vào thực tiễn.",
     "keywords": ["Lịch sử Việt Nam", "Lịch sử thế giới", "Tư duy phản biện", "Di sản văn hóa"]
   },
   {
-    "code": "DIA",
+    "code": "ĐỊA",
     "name": "Địa lý",
     "category": "Khoa học xã hội",
     "description": "Nghiên cứu các quy luật địa lý tự nhiên, địa lý kinh tế xã hội thế giới và Việt Nam, rèn luyện kỹ năng khai thác bản đồ, biểu đồ và phân tích không gian địa lý.",
@@ -56,10 +56,10 @@
     "keywords": ["Lập trình", "Năng lực số", "Cơ sở dữ liệu", "Thuật toán"]
   },
   {
-    "code": "HDTN_2",
+    "code": "HĐTN",
     "name": "Hoạt động trải nghiệm, Hướng nghiệp",
     "category": "Hoạt động giáo dục bắt buộc",
-    "description": "Giúp học sinh phát triển phẩm chất, năng lực thích ứng với cuộc sống, rèn luyện kỹ năng tổ chức hoạt động và định hướng rõ ràng về ngành nghề tương lai.",
+    "description": "Giúp học sinh phát triển phẩm chất, năng lực thích ứng với cuộc sống, rèn luyện kỹ năng tổ chức hoạt động và định hướng rõ ràng về ngành nghề tương lai. Gồm tiết Truy bài/HN đầu tuần và các tiết trải nghiệm theo chủ đề (HĐTN 2, HĐTN 3...).",
     "keywords": ["Kỹ năng sống", "Khám phá bản thân", "Hướng nghiệp", "Hoạt động xã hội"]
   },
   {
@@ -70,7 +70,7 @@
     "keywords": ["Thể lực", "Vận động", "Thể thao", "Sức bền"]
   },
   {
-    "code": "GD_QUOC_PHONG",
+    "code": "GD QUỐC PHÒNG",
     "name": "Giáo dục Quốc phòng và An ninh",
     "category": "Môn học bắt buộc",
     "description": "Bồi dưỡng lòng yêu nước, ý thức tổ chức kỷ luật và trang bị những kiến thức cơ bản về quốc phòng toàn dân, kỹ năng quân sự phổ thông.",
