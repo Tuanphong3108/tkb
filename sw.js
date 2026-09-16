@@ -56,6 +56,11 @@ self.addEventListener('fetch', (e) => {
 
   const requestUrl = new URL(e.request.url);
 
+  // Bỏ qua các request bên ngoài (như API thời tiết Open-Meteo, Google Fonts, CDN...) để trình duyệt tự tải trực tiếp
+  if (requestUrl.origin !== self.location.origin) {
+    return;
+  }
+
   // Yêu cầu tải chính file offline.html
   if (requestUrl.pathname.endsWith(OFFLINE_URL)) {
     e.respondWith(
