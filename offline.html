@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ngoại tuyến - Thời Khóa Biểu 10A2</title>
+
+  <!-- Prevent caching of this file -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <!-- PWA Manifest & Icons -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon.png">
+  <meta name="theme-color" content="#65558f">
+  
+  <!-- Google Sans Flex & Material Symbols Outlined (fallback gracefully if offline) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..1000&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <!-- Tailwind CSS CDN (with robust embedded fallback) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      /* M3 Expressive Light Color Palette */
+      --md-sys-color-background: #fdf7ff;
+      --md-sys-color-on-background: #1d1b20;
+      --md-sys-color-surface: #f7f2fa;
+      --md-sys-color-surface-container: #ece6f0;
+
+      --md-sys-color-primary: #65558f;
+      --md-sys-color-on-primary: #ffffff;
+      --md-sys-color-primary-container: #eaddff;
+      --md-sys-color-on-primary-container: #21005d;
+
+      --md-sys-color-secondary: #625b71;
+      --md-sys-color-on-secondary: #ffffff;
+      --md-sys-color-secondary-container: #e8def8;
+      --md-sys-color-on-secondary-container: #1d192b;
+
+      --md-sys-color-tertiary: #7d5260;
+      --md-sys-color-on-tertiary: #ffffff;
+      --md-sys-color-tertiary-container: #ffd8e4;
+
+      --md-sys-color-error: #ba1a1a;
+      --md-sys-color-error-container: #ffdad6;
+      --md-sys-color-on-error-container: #410002;
+
+      --md-sys-color-outline: #79747e;
+      --md-sys-color-outline-variant: #cac4d0;
+
+      /* M3 Spring Physics Easing */
+      --md-motion-spring-expressive: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      --md-motion-spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Auto Dark Mode from System */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --md-sys-color-background: #0f0d13;
+        --md-sys-color-on-background: #e9e0e8;
+        --md-sys-color-surface: #17141d;
+        --md-sys-color-surface-container: #262130;
+
+        --md-sys-color-primary: #d0bcff;
+        --md-sys-color-on-primary: #3700b3;
+        --md-sys-color-primary-container: #4f378b;
+        --md-sys-color-on-primary-container: #eaddff;
+
+        --md-sys-color-secondary: #ccc2dc;
+        --md-sys-color-on-secondary: #332d41;
+        --md-sys-color-secondary-container: #4a4458;
+        --md-sys-color-on-secondary-container: #e8def8;
+
+        --md-sys-color-tertiary: #f2b8b5;
+        --md-sys-color-tertiary-container: #8c1d18;
+
+        --md-sys-color-error: #ffb4ab;
+        --md-sys-color-error-container: #93000a;
+        --md-sys-color-on-error-container: #ffdad6;
+
+        --md-sys-color-outline: #948f99;
+        --md-sys-color-outline-variant: #49454f;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Google Sans Flex', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--md-sys-color-background);
+      color: var(--md-sys-color-on-background);
+      transition: background-color 0.4s ease, color 0.4s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      overflow-x: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .expressive-title {
+      font-variation-settings: 'wght' 850, 'opsz' 48, 'GRAD' 100;
+    }
+    .expressive-subtitle {
+      font-variation-settings: 'wght' 650, 'opsz' 24;
+    }
+
+    /* Spring Action Buttons */
+    .m3-spring-btn {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform 0.35s var(--md-motion-spring-expressive), 
+                  box-shadow 0.25s ease, 
+                  background-color 0.25s ease;
+    }
+    .m3-spring-btn:hover {
+      transform: scale(1.04) translateY(-2px);
+    }
+    .m3-spring-btn:active {
+      transform: scale(0.94) translateY(1px);
+    }
+
+    /* Morphing Shape Animation */
+    @keyframes m3-morph-pulse {
+      0%, 100% {
+        transform: scale(1) rotate(0deg);
+        border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+      }
+      50% {
+        transform: scale(1.12) rotate(180deg);
+        border-radius: 63% 37% 37% 63% / 56% 58% 42% 44%;
+      }
+    }
+    .animate-m3-morph {
+      animation: m3-morph-pulse 12s infinite ease-in-out;
+    }
+
+    /* Radar Ping Animation */
+    @keyframes ping-slow {
+      0% {
+        transform: scale(0.9);
+        opacity: 0.8;
+      }
+      70%, 100% {
+        transform: scale(2.2);
+        opacity: 0;
+      }
+    }
+    .ping-circle {
+      animation: ping-slow 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    /* Spin Animation */
+    @keyframes spin-anim {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .spin-icon {
+      animation: spin-anim 1s linear infinite;
+    }
+
+    /* Embedded Essential Layout Fallback (works 100% even if Tailwind CDN is unreachable offline) */
+    .header-wrap {
+      width: 100%;
+      max-width: 1280px;
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+    .main-wrap {
+      width: 100%;
+      max-width: 896px;
+      padding: 24px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 10;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      background-color: var(--md-sys-color-surface-container);
+      color: var(--md-sys-color-outline);
+      border: 1px solid rgba(121, 116, 126, 0.2);
+    }
+    .status-badge.online-ready {
+      background-color: #d1fae5;
+      color: #065f46;
+      border-color: #6ee7b7;
+    }
+    @media (prefers-color-scheme: dark) {
+      .status-badge.online-ready {
+        background-color: #064e3b;
+        color: #a7f3d0;
+        border-color: #059669;
+      }
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #f59e0b;
+      position: relative;
+    }
+    .status-badge.online-ready .status-dot {
+      background-color: #10b981;
+    }
+    .actions-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      max-width: 540px;
+    }
+    @media (min-width: 640px) {
+      .actions-grid {
+        flex-direction: row;
+      }
+    }
+    .footer-wrap {
+      padding: 24px;
+      font-size: 12px;
+      color: var(--md-sys-color-outline);
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body class="w-screen min-h-screen m-0 p-0 flex flex-col justify-between items-center relative select-none">
+
+  <!-- Header -->
+  <header class="header-wrap">
+    <div class="flex items-center gap-3.5" style="display: flex; align-items: center; gap: 14px;">
+      <img 
+        src="https://lh3.googleusercontent.com/a/ACg8ocK1ghp_0vaVGK6czFhTwIBo0asg1GAhSQ4xwdm9kL9kAmu8BneC=s0-c" 
+        alt="Phong VN" 
+        class="w-11 h-11 rounded-2xl object-cover ring-2 ring-[var(--md-sys-color-primary)]/40 shadow-sm"
+        style="width: 44px; height: 44px; border-radius: 16px; object-fit: cover;"
+        onerror="this.style.display='none'; document.getElementById('avatar-fallback').style.display='flex';"
+      />
+      <div id="avatar-fallback" style="display: none; width: 44px; height: 44px; border-radius: 16px; background-color: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); font-weight: 700; align-items: center; justify-content: center; font-size: 14px;">
+        PVN
+      </div>
+      <div class="flex flex-col" style="display: flex; flex-direction: column;">
+        <span class="expressive-title font-bold tracking-tight text-lg text-[var(--md-sys-color-on-background)] leading-none mb-1" style="font-size: 18px; font-weight: 800; line-height: 1.2;">Phong VN</span>
+        <span class="text-[11px] font-semibold tracking-wider text-[var(--md-sys-color-primary)] opacity-90" style="font-size: 11px; font-weight: 600; letter-spacing: 0.05em; color: var(--md-sys-color-primary);">Build web just for fun</span>
+      </div>
+    </div>
+
+    <!-- Live indicator pill -->
+    <div class="status-badge" id="statusBadge">
+      <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+        <div class="status-dot" id="statusDot"></div>
+        <div class="ping-circle" id="statusPing" style="position: absolute; width: 8px; height: 8px; border-radius: 50%; background-color: #f59e0b;"></div>
+      </div>
+      <span id="statusText">Ngoại tuyến (Đang chờ mạng...)</span>
+    </div>
+  </header>
+
+  <!-- Main Hero Content -->
+  <main class="main-wrap">
+    
+    <!-- Expressive Hero Graphic -->
+    <div class="relative flex items-center justify-center my-6" style="position: relative; display: flex; align-items: center; justify-content: center; margin: 24px 0;">
+      <!-- Morphing Blob Background -->
+      <div class="animate-m3-morph" style="position: absolute; z-index: -1; width: 260px; height: 260px; background: radial-gradient(circle, var(--md-sys-color-primary-container) 0%, transparent 70%); opacity: 0.6; filter: blur(12px);"></div>
+      
+      <!-- Central Offline Vector Icon Graphic -->
+      <div style="position: relative; width: 140px; height: 140px; border-radius: 36px; background-color: var(--md-sys-color-surface-container); border: 1px solid rgba(121, 116, 126, 0.2); display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.08);">
+        <!-- SVG Wifi Off Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="68" height="68" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--md-sys-color-primary); transition: transform 0.3s ease;" id="heroIcon">
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+          <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+          <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+          <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+          <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+          <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+          <line x1="12" y1="20" x2="12.01" y2="20"></line>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Title & Description -->
+    <div style="max-width: 580px; margin: 12px 0 36px 0;">
+      <h1 class="expressive-title" style="font-size: 32px; font-weight: 850; letter-spacing: -0.02em; color: var(--md-sys-color-on-background); margin-bottom: 12px; line-height: 1.2;">
+        Bạn đang ngoại tuyến
+      </h1>
+      <p style="font-size: 16px; line-height: 1.6; color: var(--md-sys-color-outline); font-weight: 400;">
+        Thiết bị hiện không có kết nối Internet. Trang web sẽ <strong style="color: var(--md-sys-color-primary); font-weight: 600;">tự động quay lại Thời Khóa Biểu</strong> ngay khi có mạng trở lại.
+      </p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="actions-grid">
+      <!-- Action 1: Thử lại ngay -->
+      <button id="retryBtn" class="m3-spring-btn" style="flex: 1.2; padding: 16px 28px; border-radius: 20px; background-color: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); font-size: 16px; font-weight: 700; box-shadow: 0 4px 16px -2px rgba(101, 85, 143, 0.4);">
+        <!-- SVG Sync Icon -->
+        <svg id="retryIcon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+        </svg>
+        <span id="retryLabel">Thử lại ngay</span>
+      </button>
+
+      <!-- Action 2: Về trang chủ -->
+      <a href="./index.html" class="m3-spring-btn" style="flex: 1; padding: 16px 24px; border-radius: 20px; background-color: var(--md-sys-color-surface-container); border: 1px solid rgba(121, 116, 126, 0.3); color: var(--md-sys-color-on-background); font-size: 16px; font-weight: 600;">
+        <!-- SVG Home Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Về trang chủ</span>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-wrap">
+    © Phong VN. Tự động chuyển trang khi phát hiện tín hiệu Internet.
+  </footer>
+
+  <script>
+    let isReconnecting = false;
+    const statusBadge = document.getElementById('statusBadge');
+    const statusDot = document.getElementById('statusDot');
+    const statusPing = document.getElementById('statusPing');
+    const statusText = document.getElementById('statusText');
+    const retryBtn = document.getElementById('retryBtn');
+    const retryIcon = document.getElementById('retryIcon');
+    const retryLabel = document.getElementById('retryLabel');
+
+    // Chuyển hướng về index.html khi có mạng
+    function navigateBackToHome() {
+      if (isReconnecting) return;
+      isReconnecting = true;
+
+      // Cập nhật UI trạng thái đã kết nối
+      statusBadge.classList.add('online-ready');
+      statusText.textContent = 'Đã có mạng! Đang chuyển về Thời khóa biểu...';
+      statusPing.style.backgroundColor = '#10b981';
+      retryLabel.textContent = 'Đang chuyển hướng...';
+      retryIcon.classList.add('spin-icon');
+
+      // Chuyển về index.html
+      setTimeout(() => {
+        window.location.replace('./index.html');
+      }, 400);
+    }
+
+    // Kiểm tra kết nối mạng thực tế
+    async function checkConnectivity() {
+      if (isReconnecting) return;
+
+      retryIcon.classList.add('spin-icon');
+      statusText.textContent = 'Đang kiểm tra tín hiệu...';
+
+      if (!navigator.onLine) {
+        setTimeout(() => {
+          retryIcon.classList.remove('spin-icon');
+          statusText.textContent = 'Ngoại tuyến (Đang chờ mạng...)';
+        }, 500);
+        return;
+      }
+
+      try {
+        // Thử ping nhẹ với cache: no-store
+        const res = await fetch('./index.html?ping=' + Date.now(), {
+          method: 'HEAD',
+          cache: 'no-store'
+        });
+
+        if (res.ok || res.type === 'opaque') {
+          navigateBackToHome();
+        } else {
+          throw new Error('Chưa thể kết nối');
+        }
+      } catch (err) {
+        retryIcon.classList.remove('spin-icon');
+        statusText.textContent = 'Ngoại tuyến (Đang chờ mạng...)';
+      }
+    }
+
+    // Lắng nghe sự kiện Online từ trình duyệt
+    window.addEventListener('online', () => {
+      checkConnectivity();
+    });
+
+    // Lắng nghe nút thử lại
+    retryBtn.addEventListener('click', () => {
+      checkConnectivity();
+    });
+
+    // Heartbeat: Tự động thăm dò kết nối mỗi 2.5 giây
+    const pollInterval = setInterval(() => {
+      if (navigator.onLine) {
+        checkConnectivity();
+      }
+    }, 2500);
+  </script>
+</body>
+</html>

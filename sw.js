@@ -1,52 +1,89 @@
-const CACHE_NAME = 'tkb-cache-dynamic';
+const CACHE_NAME = 'tkb-offline-cache-v1';
+const OFFLINE_URL = 'offline.html';
 
-// Cài đặt và ép SW mới kích hoạt ngay lập tức
+// 1. Cài đặt SW: CHỈ cache duy nhất file offline.html
 self.addEventListener('install', (e) => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      // Tải và lưu trữ offline.html với cache: 'reload' để luôn lấy bản mới nhất từ server
+      return cache.addAll([
+        new Request(OFFLINE_URL, { cache: 'reload' }),
+        new Request('./' + OFFLINE_URL, { cache: 'reload' })
+      ]);
+    })
+  );
   self.skipWaiting();
 });
 
-// Khi SW kích hoạt -> Dọn dẹp toàn bộ cache cũ trong bộ nhớ
+// 2. Kích hoạt SW: Dọn dẹp toàn bộ cache cũ, tuyệt đối không giữ bất cứ cache tài nguyên nào khác
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) => {
-      return Promise.all(keys.map((key) => caches.delete(key)));
+      return Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      );
     }).then(() => self.clients.claim())
   );
 });
 
-// Xử lý Request: Kiểm tra mạng (giới hạn 8s) -> Xóa cache & Lấy bản mới -> Fallback nếu Offline / Mạng quá lag
+// 3. Xử lý Request: KHÔNG CACHE BẤT CỨ THỨ GÌ HẾT
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
 
-  e.respondWith(
-    (async () => {
-      // Tạo controller để hủy fetch nếu quá 8 giây
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000); // Giới hạn tối đa 8s
+  const requestUrl = new URL(e.request.url);
 
-      try {
-        const networkResponse = await fetch(e.request, { signal: controller.signal });
-        clearTimeout(timeoutId); // Tải xong trước 8s -> Hủy đếm ngược timeout
-
-        if (networkResponse && networkResponse.status === 200) {
-          const responseToCache = networkResponse.clone();
-          
-          // Mạng đáp ứng tốt (dưới 8s) -> Quét sạch cache cũ & lưu bản mới
-          const cacheKeys = await caches.keys();
-          await Promise.all(cacheKeys.map((key) => caches.delete(key)));
-
-          const cache = await caches.open(CACHE_NAME);
-          cache.put(e.request, responseToCache);
+  // Yêu cầu tải chính file offline.html
+  if (requestUrl.pathname.endsWith(OFFLINE_URL)) {
+    e.respondWith(
+      (async () => {
+        try {
+          // Thử tải mới nếu đang online
+          const networkResponse = await fetch(e.request);
+          return networkResponse;
+        } catch (err) {
+          // Khi offline, lấy từ cache
+          const cached = (await caches.match(OFFLINE_URL)) || (await caches.match('./' + OFFLINE_URL));
+          if (cached) return cached;
+          return new Response('Offline page unavailable', { status: 503 });
         }
-        return networkResponse;
-      } catch (err) {
-        // Mạng sập HOẶC ngâm quá 8 giây -> Nhảy xuống đây lấy ngay bản Cache đã lưu!
-        const cachedResponse = await caches.match(e.request);
-        if (cachedResponse) {
-          return cachedResponse;
+      })()
+    );
+    return;
+  }
+
+  // Yêu cầu điều hướng trang web (Navigation: truy cập URL, F5, chuyển trang HTML)
+  if (e.request.mode === 'navigate' || e.request.headers.get('accept')?.includes('text/html')) {
+    e.respondWith(
+      (async () => {
+        try {
+          // Luôn lấy từ mạng, tuyệt đối KHÔNG lưu cache
+          const networkResponse = await fetch(e.request);
+          return networkResponse;
+        } catch (err) {
+          // Khi mất mạng: Chuyển hướng thẳng tới file offline.html
+          const offlineTarget = new URL(OFFLINE_URL, self.registration.scope).href;
+          try {
+            return Response.redirect(offlineTarget, 302);
+          } catch (redirectErr) {
+            // Fallback nếu trình duyệt không cho phép Response.redirect trong ngữ cảnh này
+            const cached = (await caches.match(OFFLINE_URL)) || (await caches.match('./' + OFFLINE_URL));
+            if (cached) return cached;
+            return new Response('Mất kết nối mạng và không có bản offline', {
+              status: 503,
+              headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+            });
+          }
         }
-        return new Response('Offline and resource not cached', { status: 503 });
-      }
-    })()
-  );
+      })()
+    );
+    return;
+  }
+
+  // Mọi tài nguyên khác (CSS, JS, JSON, ảnh, font...):
+  // Đi thẳng ra mạng (Network Only), TUYỆT ĐỐI KHÔNG LƯU VÀO CACHE STORAGE
+  e.respondWith(fetch(e.request));
 });

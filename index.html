@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thời Khóa Biểu 10A2 - Material Design 3</title>
   
+  <!-- Disable caching for dynamic freshness -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
   <!-- PWA Manifest & Icons -->
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icon.png">
@@ -466,6 +471,14 @@
   </div>
 
 <script>
+    // Tự động chuyển hướng tới offline.html khi mất mạng
+    if (typeof navigator.onLine !== 'undefined' && !navigator.onLine) {
+      window.location.replace('./offline.html');
+    }
+    window.addEventListener('offline', () => {
+      window.location.href = './offline.html';
+    });
+
     // Register Service Worker & Auto-Update
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
