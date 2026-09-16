@@ -15,24 +15,44 @@ self.addEventListener('install', (e) => {
   self.skipWaiting();
 });
 
-// 2. Kích hoạt SW: Dọn dẹp toàn bộ cache cũ, tuyệt đối không giữ bất cứ cache tài nguyên nào khác
+// Hàm dọn dẹp triệt để: Quét sạch mọi cache lạ, và trong cache chính chỉ giữ duy nhất offline.html
+async function purgeAllExceptOffline() {
+  try {
+    const cacheNames = await caches.keys();
+    for (const name of cacheNames) {
+      if (name !== CACHE_NAME) {
+        // Xóa sạch toàn bộ các cache khác
+        await caches.delete(name);
+      } else {
+        // Trong chính cache CACHE_NAME, quét và xóa bất cứ file nào không phải offline.html
+        const cache = await caches.open(name);
+        const requests = await cache.keys();
+        for (const req of requests) {
+          const url = new URL(req.url);
+          if (!url.pathname.endsWith(OFFLINE_URL)) {
+            await cache.delete(req);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error('Lỗi khi tự động dọn dẹp cache:', err);
+  }
+}
+
+// 2. Kích hoạt SW: Dọn dẹp toàn bộ cache cũ và các dữ liệu tự động cache (chỉ giữ offline.html)
 self.addEventListener('activate', (e) => {
   e.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    purgeAllExceptOffline().then(() => self.clients.claim())
   );
 });
 
 // 3. Xử lý Request: KHÔNG CACHE BẤT CỨ THỨ GÌ HẾT
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+
+  // Luôn tự động quét sạch mọi cache lạ trong nền (nếu có bất cứ thứ gì bị tự động cache)
+  e.waitUntil(purgeAllExceptOffline());
 
   const requestUrl = new URL(e.request.url);
 

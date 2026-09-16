@@ -479,6 +479,26 @@
       window.location.href = './offline.html';
     });
 
+    // Tự động quét và xóa sạch toàn bộ cache lạ (chỉ giữ duy nhất offline.html)
+    if ('caches' in window) {
+      caches.keys().then((keys) => {
+        keys.forEach(async (key) => {
+          if (key !== 'tkb-offline-cache-v1') {
+            await caches.delete(key);
+          } else {
+            const cache = await caches.open(key);
+            const requests = await cache.keys();
+            requests.forEach(async (req) => {
+              const url = new URL(req.url);
+              if (!url.pathname.endsWith('offline.html')) {
+                await cache.delete(req);
+              }
+            });
+          }
+        });
+      }).catch(() => {});
+    }
+
     // Register Service Worker & Auto-Update
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
