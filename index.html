@@ -1310,13 +1310,27 @@
       );
     }
 
+    function togglePcWeatherBubble() {
+      const pcBubble = document.getElementById('pc-weather-bubble');
+      if (!pcBubble) return;
+      if (pcBubble.classList.contains('hidden')) {
+        showLocationChoicePrompt();
+      } else {
+        hideLocationChoicePrompt();
+      }
+    }
+
     function initWeather() {
       const savedChoice = localStorage.getItem('weather_location_choice');
       if (savedChoice === 'school') {
         fetchWeather(SCHOOL_LAT, SCHOOL_LON);
       } else if (savedChoice === 'user') {
+        // Tải vị trí trường trước để hiển thị ngay, rồi cập nhật theo vị trí người dùng
+        fetchWeather(SCHOOL_LAT, SCHOOL_LON);
         fetchWeatherUserWithFallback();
       } else {
+        // Mặc định luôn tải thời tiết vị trí trường ngay lập tức, không để bị treo "Đang tải..."
+        fetchWeather(SCHOOL_LAT, SCHOOL_LON);
         showLocationChoicePrompt();
       }
     }
