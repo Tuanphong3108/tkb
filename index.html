@@ -1074,6 +1074,71 @@
       }
     }
 
+    // ---- CACHE THỜI TIẾT (LocalStorage, hết hạn sau 10 phút) ----
+    const WEATHER_CACHE_KEY = 'weather_cache';
+    const WEATHER_CACHE_TTL = 10 * 60;          // 10 phút, tính bằng giây
+
+    // Số giây tính từ 1/1/1970 (Unix timestamp)
+    function nowInSeconds() {
+      return Math.floor(Date.now() / 1000);
+    }
+
+    function clearWeatherCache() {
+      try {
+        localStorage.removeItem(WEATHER_CACHE_KEY);
+      } catch (e) {
+        console.warn('Không xoá được cache thời tiết:', e);
+      }
+    }
+
+    function saveWeatherCache(temp, iconFileName, weatherType, noticeMsg) {
+      try {
+        localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({
+          savedAt: nowInSeconds(),
+          temp: temp,
+          icon: iconFileName,
+          type: weatherType || null,
+          notice: noticeMsg || null
+        }));
+      } catch (e) {
+        console.warn('Không lưu được cache thời tiết:', e);
+      }
+    }
+
+    // Trả về cache còn hạn, tự xoá khỏi LocalStorage nếu đã quá 10 phút hoặc hỏng
+    function readWeatherCache() {
+      let raw = null;
+      try {
+        raw = localStorage.getItem(WEATHER_CACHE_KEY);
+      } catch (e) {
+        return null;
+      }
+      if (!raw) return null;
+
+      try {
+        const cache = JSON.parse(raw);
+        if (!cache || typeof cache.savedAt !== 'number' || typeof cache.temp !== 'number' || !cache.icon) {
+          clearWeatherCache();
+          return null;
+        }
+        const age = nowInSeconds() - cache.savedAt;   // số giây đã trôi qua kể từ lúc lưu
+        if (age < 0 || age >= WEATHER_CACHE_TTL) {
+          clearWeatherCache();
+          return null;
+        }
+        return cache;
+      } catch (e) {
+        clearWeatherCache();
+        return null;
+      }
+    }
+
+    function applyWeatherCache(cache) {
+      updateWeatherUI(cache.temp, cache.icon, cache.type);
+      // Giữ nguyên hành vi cảnh báo: hiện lại đúng cảnh báo của lần kiểm tra gần nhất
+      displayWeatherNotice(cache.notice);
+    }
+
     const SCHOOL_LAT = 20.4934984;
     const SCHOOL_LON = 105.7703291;
 
@@ -1129,6 +1194,9 @@
     function chooseWeatherLocation(choice) {
       localStorage.setItem('weather_location_choice', choice);
       hideLocationChoicePrompt();
+
+      // Đổi vị trí thì cache cũ không còn đúng nữa
+      clearWeatherCache();
 
       if (choice === 'school') {
         fetchWeather(SCHOOL_LAT, SCHOOL_LON);
@@ -1268,6 +1336,9 @@
 
         const noticeMsg = checkWeatherNotice(data);
         displayWeatherNotice(noticeMsg);
+
+        // Lưu lại thời điểm kiểm tra + icon + nhiệt độ (+ cảnh báo kèm theo)
+        saveWeatherCache(temp, iconFileName, type, noticeMsg);
       } catch (err) {
         console.warn('Không lấy được thông tin thời tiết từ Open-Meteo:', err);
         renderWeatherErrorUI();
@@ -1320,8 +1391,42 @@
       }
     }
 
+    // Gọi lại API theo đúng vị trí người dùng đã chọn
+    function refreshWeatherByChoice() {
+      const savedChoice = localStorage.getItem('weather_location_choice');
+      if (savedChoice === 'user') {
+        fetchWeatherUserWithFallback();
+      } else {
+        fetchWeather(SCHOOL_LAT, SCHOOL_LON);
+      }
+    }
+
+    // Tự động lặp lại mỗi 1 phút: so thời gian hiện tại với savedAt trong cache,
+    // quá 10 phút (đã bị readWeatherCache() xoá) thì kiểm tra lại thời tiết luôn
+    setInterval(() => {
+      if (!readWeatherCache()) {
+        refreshWeatherByChoice();
+      }
+    }, 60 * 1000);
+
+    // Quay lại tab sau khi để lâu (trình duyệt hay tạm dừng timer nền) thì kiểm tra ngay
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && !readWeatherCache()) {
+        refreshWeatherByChoice();
+      }
+    });
+
     function initWeather() {
       const savedChoice = localStorage.getItem('weather_location_choice');
+      const cache = readWeatherCache();
+
+      if (cache) {
+        // Còn trong 10 phút: dùng lại dữ liệu đã lưu, không gọi API
+        if (!savedChoice) showLocationChoicePrompt();
+        applyWeatherCache(cache);
+        return;
+      }
+
       if (savedChoice === 'school') {
         fetchWeather(SCHOOL_LAT, SCHOOL_LON);
       } else if (savedChoice === 'user') {
