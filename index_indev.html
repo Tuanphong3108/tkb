@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thời Khóa Biểu 10A2 - Material Design 3</title>
+  
+  <!-- Disable caching for dynamic freshness -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <!-- PWA Manifest & Icons -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <meta name="theme-color" content="#0f172a">
+
+  <!-- Google Sans Flex Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Material Symbols Outline -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <!-- Apple iOS PWA Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TKB 10A2">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+
+  <!-- Tắt tự động nhận diện số điện thoại trên Safari -->
+  <meta name="format-detection" content="telephone=no">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Material Web Components (M3) -->
+  <script type="module" src="https://esm.run/@material/web/all.js"></script>
+
+  <style>
+    body {
+      font-family: 'Google Sans Flex', sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      transition: font-variation-settings 0.2s ease, transform 0.2s ease;
+    }
+    .subject-card:hover .material-symbols-outlined {
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      transform: scale(1.08);
+    }
+
+    .expressive-btn {
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease,
+                  opacity 0.25s ease, filter 0.25s ease;
+    }
+    .expressive-btn:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+    .expressive-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(1);
+    }
+
+    /* ---- Animation dùng chung: bong bóng chat & dialog (zoom in/out, không nảy) ---- */
+    @keyframes zoomFadeIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes zoomFadeOut {
+      from { opacity: 1; transform: scale(1); }
+      to   { opacity: 0; transform: scale(0.92); }
+    }
+    .zoom-fade-in  { animation: zoomFadeIn 0.18s cubic-bezier(0.2, 0, 0, 1) both; }
+    .zoom-fade-out { animation: zoomFadeOut 0.15s cubic-bezier(0.4, 0, 1, 1) both; }
+
+    /* ---- Trượt lên/xuống: dialog vị trí thời tiết trên Mobile (không nảy) ---- */
+    @keyframes slideUpIn {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    @keyframes slideDownOut {
+      from { transform: translateY(0); }
+      to   { transform: translateY(100%); }
+    }
+    .slide-up-in   { animation: slideUpIn 0.28s cubic-bezier(0.2, 0, 0, 1) both; }
+    .slide-down-out{ animation: slideDownOut 0.22s cubic-bezier(0.4, 0, 1, 1) both; }
+
+    /* ---- Dock cảnh báo thời tiết: tự trượt lên từ dock, thu lại khi đóng ---- */
+    .grid-notice {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.3s cubic-bezier(0.2, 0, 0, 1);
+      overflow: hidden;
+    }
+    .grid-notice.grid-notice-open {
+      grid-template-rows: 1fr;
+    }
+    .grid-notice-inner {
+      min-height: 0;
+    }
+
+    /* ---- More Option (mobile): zoom ra từ nút 3 chấm ---- */
+    #more-menu {
+      transform-origin: top right;
+    }
+
+    /* ---- Lớp phủ loading khi chuyển tuần ---- */
+    #week-loading-overlay {
+      opacity: 0;
+      transition: opacity 0.18s ease;
+    }
+    #week-loading-overlay.opacity-100 {
+      opacity: 1;
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    @page {
+      size: A4 landscape;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background-color: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        overflow: hidden !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      #pc-view { display: block !important; }
+      #mobile-view, .no-print, #subject-dialog, #apps-dialog, #more-menu, #mobile-weather-dock, #mobile-weather-container, #mobile-weather-notice, #mobile-location-dialog, #pc-weather-widget, #pc-weather-bubble, #pc-week-bubble, #week-dialog, #week-loading-overlay { display: none !important; }
+
+      .print-wrapper {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+
+      header {
+        margin-bottom: 6px !important;
+        padding: 8px 12px !important;
+        border-radius: 12px !important;
+        border: 1px solid #000 !important;
+      }
+
+      table { min-width: 100% !important; table-layout: fixed !important; }
+      th, td { padding: 1.5px !important; border-color: #000000 !important; }
+
+      .subject-card {
+        padding: 2px 1px !important;
+        border-radius: 6px !important;
+        border: 1px solid #666666 !important;
+        background-color: #ffffff !important;
+        box-shadow: none !important;
+      }
+
+      .subject-card span.material-symbols-outlined {
+        display: block !important;
+        font-size: 13px !important;
+        margin-bottom: 0px !important;
+        color: #000000 !important;
+      }
+
+      .subject-card .font-bold {
+        font-size: 10px !important;
+        line-height: 1.1 !important;
+        color: #000000 !important;
+      }
+
+      .subject-card .teacher-name {
+        font-size: 8.5px !important;
+        line-height: 1 !important;
+        color: #000000 !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen w-full flex flex-col justify-between p-3 md:p-6 pb-24 md:pb-6 bg-slate-50 text-slate-800">
+
+  <div class="print-wrapper relative w-full max-w-7xl mx-auto flex flex-col flex-1">
+
+    <!-- Header Section -->
+    <header class="relative z-30 w-full flex items-center justify-between gap-4 mb-4 bg-white p-4 md:p-5 rounded-3xl shadow-sm border border-slate-200/80">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-base md:text-lg shadow-inner">
+          10A2
+        </div>
+        <div>
+          <h1 class="text-lg md:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+            TKB <span id="week-title-display">TUẦN 02</span>
+            <span class="text-[10px] md:text-xs font-semibold px-2 py-0.5 bg-teal-50 text-teal-700 border border-teal-200 rounded-full">2026-2027</span>
+          </h1>
+          <p class="text-[11px] md:text-xs text-slate-500 font-medium mt-0.5" id="week-date-range">Đang tải ngày áp dụng...</p>
+        </div>
+      </div>
+
+      <!-- Action Bar Desktop View -->
+      <div class="no-print hidden md:flex items-center gap-3">
+        
+        <!-- PC Weather Widget & Chat Bubble -->
+        <div class="relative">
+          <div id="pc-weather-widget" onclick="togglePcWeatherBubble()" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200/80 transition-colors px-3 py-2 rounded-2xl border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer select-none">
+            <md-circular-progress indeterminate style="--md-circular-progress-size: 18px;"></md-circular-progress>
+          </div>
+
+          <!-- PC Chat Bubble Notice / Location Prompt -->
+          <div id="pc-weather-bubble" class="hidden absolute top-full left-0 mt-2 z-50 bg-slate-900 text-white text-xs p-3.5 rounded-2xl shadow-2xl border border-slate-700 w-72 animate-in fade-in zoom-in-95 no-print">
+            <div class="absolute -top-1.5 left-6 w-3 h-3 bg-slate-900 transform rotate-45 border-t border-l border-slate-700"></div>
+            
+            <!-- Location Choice Prompt (No Close Button) -->
+            <div id="pc-bubble-location-prompt" class="hidden">
+              <div class="text-[11px] font-bold text-slate-200 mb-2 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-sm text-teal-400">location_on</span>
+                Bạn muốn dùng vị trí nào để xem thời tiết?
+              </div>
+              <div class="flex items-center gap-2 mt-2.5">
+                <button onclick="chooseWeatherLocation('school')" class="expressive-btn flex-1 bg-teal-700 hover:bg-teal-800 text-white font-bold text-[11px] py-1.5 px-2 rounded-xl text-center border border-teal-600/50 cursor-pointer">
+                  Vị trí trường
+                </button>
+                <button onclick="chooseWeatherLocation('user')" class="expressive-btn flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[11px] py-1.5 px-2 rounded-xl text-center border border-slate-700 cursor-pointer">
+                  Vị trí của bạn
+                </button>
+              </div>
+            </div>
+
+            <!-- Weather Notice Content (With Close Button) -->
+            <div id="pc-bubble-notice-content" class="hidden flex items-start justify-between gap-2 relative z-10">
+              <div class="flex items-start gap-1.5 leading-snug text-amber-300 font-medium text-[11px]">
+                <span class="material-symbols-outlined text-base shrink-0 mt-0.5">info</span>
+                <span id="pc-bubble-text"></span>
+              </div>
+              <button onclick="dismissWeatherNotice()" class="text-slate-400 hover:text-white p-0.5 shrink-0 cursor-pointer">
+                <span class="material-symbols-outlined text-sm">close</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Live Status Widget -->
+        <div class="flex items-center gap-2.5 bg-slate-900 text-white px-3.5 py-2 rounded-2xl shadow-sm border border-slate-800">
+          <div class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+          </div>
+          <div class="flex flex-col text-left">
+            <span class="text-[11px] font-bold text-emerald-400 leading-tight" id="live-period-display">Đang tính tiết...</span>
+            <span class="text-[10px] text-slate-300 font-medium leading-tight" id="live-clock-display">00:00:00</span>
+          </div>
+        </div>
+
+        <!-- Nút My Apps PC -->
+        <button onclick="openAppsDialog()" class="expressive-btn relative overflow-hidden flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3.5 py-2.5 rounded-2xl border border-slate-200 cursor-pointer shadow-xs">
+          <md-ripple></md-ripple>
+          <span class="material-symbols-outlined text-base text-teal-600">apps</span>
+          <span class="text-xs">My apps</span>
+        </button>
+
+        <!-- Dropdown Chọn Tuần: mở dialog Material Web thay vì dropdown mặc định của Chrome -->
+        <div class="relative">
+          <select id="week-select-pc" class="hidden" tabindex="-1" aria-hidden="true">
+            <!-- Dynamic JS: chỉ giữ dữ liệu, không hiển thị -->
+          </select>
+          <button type="button" id="week-select-pc-btn" onclick="openWeekDialog()" class="expressive-btn flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200/80 transition-colors text-xs font-bold text-slate-800 py-2.5 pl-3 pr-2.5 rounded-2xl border border-slate-200 cursor-pointer">
+            <span id="week-select-pc-label">Tuần</span>
+            <span class="material-symbols-outlined text-sm text-slate-500">unfold_more</span>
+          </button>
+
+          <!-- PC Chat Bubble: Thông báo đã có TKB tuần sau (bong bóng riêng, khác với bong bóng thời tiết) -->
+          <div id="pc-week-bubble" class="hidden absolute top-full right-0 mt-2 z-40 bg-slate-900 text-white text-xs p-3.5 rounded-2xl shadow-2xl border border-slate-700 w-64 animate-in fade-in zoom-in-95 no-print">
+            <div class="absolute -top-1.5 right-6 w-3 h-3 bg-slate-900 transform rotate-45 border-t border-l border-slate-700"></div>
+            <div class="flex items-start justify-between gap-2 relative z-10">
+              <div class="flex items-start gap-1.5 leading-snug text-teal-300 font-medium text-[11px]">
+                <span class="material-symbols-outlined text-base shrink-0 mt-0.5">event_available</span>
+                <span id="pc-week-bubble-text"></span>
+              </div>
+              <button onclick="dismissNextWeekNotice()" class="text-slate-400 hover:text-white p-0.5 shrink-0 cursor-pointer">
+                <span class="material-symbols-outlined text-sm">close</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Nút In PC -->
+        <button id="print-btn" onclick="window.print()" class="expressive-btn relative overflow-hidden flex items-center gap-1.5 bg-teal-700 hover:bg-teal-800 text-white font-medium px-4 py-2.5 rounded-2xl shadow-sm cursor-pointer">
+          <md-ripple></md-ripple>
+          <span class="material-symbols-outlined text-base">print</span>
+          <span class="text-xs font-semibold">In A4</span>
+        </button>
+      </div>
+
+      <!-- Action Mobile (Nút More) -->
+      <div class="no-print flex md:hidden items-center gap-2">
+        <button id="more-menu-btn" class="expressive-btn w-10 h-10 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700">
+          <span class="material-symbols-outlined">more_vert</span>
+        </button>
+      </div>
+
+      <!-- Mobile More Menu Popup -->
+      <div id="more-menu" class="hidden no-print absolute right-4 top-16 bg-white border border-slate-200 shadow-xl rounded-2xl p-3 z-50 w-52 flex-col gap-2">
+        <div class="text-[11px] font-bold text-slate-400 px-1">TÙY CHỌN</div>
+        <button onclick="openAppsDialog()" class="w-full flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2 px-3 rounded-xl border border-slate-200">
+          <span class="material-symbols-outlined text-sm text-teal-600">apps</span> My apps
+        </button>
+        <div>
+          <label class="text-xs font-bold text-slate-600 block mb-1">Chọn tuần:</label>
+          <select id="week-select-mobile" class="w-full bg-slate-100 text-slate-800 text-xs font-bold py-2 px-2.5 rounded-xl border border-slate-200">
+            <!-- Dynamic JS -->
+          </select>
+        </div>
+        <button id="print-btn-mobile" onclick="window.print()" class="expressive-btn w-full flex items-center gap-2 bg-teal-700 text-white text-xs font-bold py-2 px-3 rounded-xl mt-1">
+          <span class="material-symbols-outlined text-sm">print</span> In Thời Khóa Biểu
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="relative z-10 w-full flex-1 bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col justify-center min-h-[420px]">
+      
+      <!-- LUỒNG PC VIEW -->
+      <div id="pc-view" class="hidden md:block overflow-x-auto w-full">
+        <table class="w-full text-center border-collapse">
+          <thead>
+            <tr class="bg-slate-900 text-white border-b border-slate-800">
+              <th class="py-2.5 px-2 font-semibold text-xs w-20 uppercase tracking-wider text-slate-300">Buổi / Tiết</th>
+              <th class="py-2.5 px-2 font-semibold text-sm w-1/6">Thứ 2</th>
+              <th class="py-2.5 px-2 font-semibold text-sm w-1/6">Thứ 3</th>
+              <th class="py-2.5 px-2 font-semibold text-sm w-1/6">Thứ 4</th>
+              <th class="py-2.5 px-2 font-semibold text-sm w-1/6">Thứ 5</th>
+              <th class="py-2.5 px-2 font-semibold text-sm w-1/6">Thứ 6</th>
+              <th class="py-2.5 px-2 font-semibold text-sm w-1/6 text-slate-300">Thứ 7</th>
+            </tr>
+          </thead>
+          <tbody id="tkb-tbody" class="divide-y divide-slate-100 text-sm">
+            <!-- Dynamic Table Content -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- LUỒNG MOBILE VIEW -->
+      <div id="mobile-view" class="block md:hidden w-full p-3">
+        <div class="flex items-center justify-between bg-slate-900 text-white px-3 py-2 rounded-2xl mb-3 text-xs">
+          <span class="text-emerald-400 font-bold" id="mobile-live-period">Đang tính tiết...</span>
+          <span class="text-slate-300 font-medium" id="mobile-live-clock">00:00:00</span>
+        </div>
+
+        <!-- Tabs Chuyển Thứ Mobile -->
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-3 border-b border-slate-100" id="mobile-tabs">
+          <button data-day="t2" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 2</button>
+          <button data-day="t3" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 3</button>
+          <button data-day="t4" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 4</button>
+          <button data-day="t5" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 5</button>
+          <button data-day="t6" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 6</button>
+          <button data-day="t7" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 7</button>
+        </div>
+
+        <!-- Timeline Mobile -->
+        <div id="mobile-timeline" class="mt-4 flex flex-col gap-3"></div>
+      </div>
+
+      <!-- No Data Placeholder -->
+      <div id="no-data-msg" class="hidden flex-col items-center justify-center p-8 text-center my-auto">
+        <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-3 text-slate-400">
+          <span class="material-symbols-outlined text-3xl">folder_off</span>
+        </div>
+        <p class="text-sm md:text-base font-bold text-slate-700 max-w-md">
+          Chưa có dữ liệu ở đây, vui lòng kiểm tra lại sau hoặc liên hệ với quản trị viên trang web hoặc nhà trường
+        </p>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 w-full mt-3 flex flex-row items-center justify-between text-[10px] md:text-[11px] text-slate-500 px-1">
+      <div class="flex items-center gap-1.5 font-bold text-slate-800">
+        <img src="https://lh3.googleusercontent.com/a/ACg8ocK1ghp_0vaVGK6czFhTwIBo0asg1GAhSQ4xwdm9kL9kAmu8BneC=s0-c" alt="Avatar" class="w-4 h-4 rounded-full object-cover border border-slate-400" />
+        <span>Made by Phong VN - tuanphong3108.github.io</span>
+      </div>
+      <div class="font-semibold text-slate-700">© 2026 Phong VN</div>
+    </footer>
+
+  </div>
+
+  <!-- DIALOG CHI TIẾT MON HOC -->
+  <div id="subject-dialog" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-0 md:p-4">
+    <div id="subject-dialog-panel" class="w-full h-full md:h-auto md:max-w-md bg-white md:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
+      
+      <!-- Dialog Header -->
+      <div class="p-4 md:p-5 bg-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div id="dialog-icon-wrapper" class="w-10 h-10 rounded-2xl bg-teal-500/20 text-teal-300 flex items-center justify-center">
+            <span id="dialog-icon" class="material-symbols-outlined text-2xl">school</span>
+          </div>
+          <div>
+            <h2 id="dialog-title" class="font-bold text-lg md:text-xl leading-tight">Tên Tiết Học</h2>
+            <p id="dialog-time" class="text-xs font-semibold text-emerald-400 mt-0.5">Hôm nay, 07:15 - 08:00</p>
+          </div>
+        </div>
+        <button id="dialog-close-btn" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-slate-700">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Dialog Body -->
+      <div class="p-5 flex-1 overflow-y-auto space-y-4">
+        
+        <div class="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
+          <div class="w-8 h-8 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center">
+            <span class="material-symbols-outlined text-lg">person</span>
+          </div>
+          <div>
+            <div class="text-[10px] font-bold text-slate-400 uppercase">Giáo viên giảng dạy</div>
+            <div id="dialog-teacher" class="text-xs font-bold text-slate-800">Cô Nguyễn Thị...</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span id="dialog-category" class="px-3 py-1 bg-teal-50 text-teal-700 text-[11px] font-bold rounded-xl border border-teal-200/60"></span>
+        </div>
+
+        <div>
+          <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">description</span> Mô tả môn học
+          </div>
+          <div id="dialog-description" class="text-xs text-slate-600 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60 leading-relaxed min-h-[80px]">
+            Đang tải dữ liệu...
+          </div>
+        </div>
+
+        <div>
+          <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">tag</span> Từ khóa
+          </div>
+          <div id="dialog-keywords" class="flex flex-wrap gap-1.5"></div>
+        </div>
+
+      </div>
+
+      <!-- Dialog Footer -->
+      <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+        <button id="dialog-btn-close-bottom" class="expressive-btn bg-slate-900 text-white font-bold text-xs py-2.5 px-6 rounded-2xl shadow-sm">
+          Đóng
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DIALOG MY APPS EMBED -->
+  <div id="apps-dialog" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-0 md:p-6">
+    <div id="apps-dialog-panel" class="w-full h-full md:max-w-4xl md:h-[85vh] bg-white md:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
+      
+      <!-- Apps Dialog Header -->
+      <div class="p-4 md:p-5 bg-slate-900 text-white flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-teal-500/20 text-teal-300 flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl">apps</span>
+          </div>
+          <div>
+            <h2 class="font-bold text-lg md:text-xl leading-tight">My Apps</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Danh sách ứng dụng của tôi</p>
+          </div>
+        </div>
+        <button id="apps-close-btn" onclick="closeAppsDialog()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-slate-700">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Apps Dialog Body / Embed Iframe -->
+      <div class="flex-1 w-full h-full bg-slate-50 overflow-hidden relative">
+        <iframe src="https://tuanphong3108.github.io/apps.html?is_embed=true" class="w-full h-full border-none" title="My Apps"></iframe>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MWC DIALOG: CHỌN TUẦN (PC) -->
+  <md-dialog id="week-dialog">
+    <div slot="headline">Chọn tuần</div>
+    <div slot="content">
+      <div id="week-dialog-list" class="grid grid-cols-4 gap-2 max-h-[50vh] overflow-y-auto pr-1"></div>
+    </div>
+    <div slot="actions">
+      <md-text-button onclick="document.getElementById('week-dialog').close()">Đóng</md-text-button>
+    </div>
+  </md-dialog>
+
+  <!-- LỚP PHỦ LOADING KHI CHUYỂN TUẦN (PC + Mobile) -->
+  <div id="week-loading-overlay" class="hidden no-print fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center">
+    <md-circular-progress indeterminate style="--md-circular-progress-size: 48px;"></md-circular-progress>
+  </div>
+
+  <!-- MOBILE WEATHER CONTAINER -->
+  <div id="mobile-weather-container" class="no-print block md:hidden fixed bottom-3 left-3 right-3 z-40 bg-slate-900/95 text-white backdrop-blur-md rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
+    
+    <!-- Mobile Notice Upper Dock: trượt lên từ dock thời tiết bằng grid-template-rows -->
+    <div id="mobile-weather-notice" class="grid-notice">
+      <div class="grid-notice-inner bg-amber-500/10 border-b border-slate-800 p-2.5 px-3 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-1.5 text-xs text-amber-300 font-medium leading-tight flex-1">
+          <span class="material-symbols-outlined text-base shrink-0">info</span>
+          <span id="mobile-notice-text"></span>
+        </div>
+        <button onclick="dismissWeatherNotice()" class="expressive-btn bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold px-2.5 py-1 rounded-xl text-[10px] shrink-0 cursor-pointer">
+          OK
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Weather Dock -->
+    <div id="mobile-weather-dock" onclick="showLocationChoicePrompt()" class="p-3 flex items-center justify-between gap-3 cursor-pointer">
+      <div id="mobile-weather-left" class="flex items-center gap-2 shrink-0">
+        <md-circular-progress indeterminate style="--md-circular-progress-size: 18px;"></md-circular-progress>
+      </div>
+      <div id="mobile-weather-quote" class="text-right text-[11px] text-slate-300 italic font-medium leading-snug line-clamp-2 flex-1 pl-2 border-l border-slate-700/60"></div>
+    </div>
+  </div>
+
+  <!-- MOBILE LOCATION CHOICE DIALOG (SLIDE UP) -->
+  <div id="mobile-location-dialog" class="hidden no-print block md:hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end justify-center">
+    <div id="mobile-location-panel" class="w-full bg-slate-900 text-white rounded-t-3xl p-5 border-t border-slate-700 shadow-2xl">
+      <div class="w-12 h-1 bg-slate-700 rounded-full mx-auto mb-4"></div>
+      <h3 class="text-sm font-bold text-slate-100 mb-1 flex items-center gap-2">
+        <span class="material-symbols-outlined text-teal-400 text-lg">location_on</span>
+        Vị trí thời tiết
+      </h3>
+      <p class="text-xs text-slate-300 mb-4 font-medium">Bạn muốn dùng vị trí nào để xem thời tiết?</p>
+      <div class="flex flex-col gap-2.5">
+        <button onclick="chooseWeatherLocation('school')" class="expressive-btn w-full bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs py-3 px-4 rounded-2xl flex items-center justify-between border border-teal-600/50 shadow-sm cursor-pointer">
+          <span class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-base">school</span>
+            Vị trí trường
+          </span>
+          <span class="material-symbols-outlined text-sm text-teal-200">chevron_right</span>
+        </button>
+        <button onclick="chooseWeatherLocation('user')" class="expressive-btn w-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-3 px-4 rounded-2xl flex items-center justify-between border border-slate-700 cursor-pointer">
+          <span class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-base text-teal-400">my_location</span>
+            Vị trí của bạn
+          </span>
+          <span class="material-symbols-outlined text-sm text-slate-400">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+<script>
+    // Tự động chuyển hướng tới offline.html khi mất mạng
+    if (typeof navigator.onLine !== 'undefined' && !navigator.onLine) {
+      window.location.replace('./offline.html');
+    }
+    window.addEventListener('offline', () => {
+      window.location.href = './offline.html';
+    });
+
+    // Tự động quét và xóa sạch toàn bộ cache lạ (chỉ giữ duy nhất offline.html)
+    if ('caches' in window) {
+      caches.keys().then((keys) => {
+        keys.forEach(async (key) => {
+          if (key !== 'tkb-offline-cache-v1') {
+            await caches.delete(key);
+          } else {
+            const cache = await caches.open(key);
+            const requests = await cache.keys();
+            requests.forEach(async (req) => {
+              const url = new URL(req.url);
+              if (!url.pathname.endsWith('offline.html')) {
+                await cache.delete(req);
+              }
+            });
+          }
+        });
+      }).catch(() => {});
+    }
+
+    // Register Service Worker & Auto-Update
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then((reg) => {
+          // Ép check bản mới trên server
+          reg.update();
+
+          reg.onupdatefound = () => {
+            const installingWorker = reg.installing;
+            if (installingWorker) {
+              installingWorker.onstatechange = () => {
+                // Đã cài bản mới xong -> Reload trang ngay
+                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  window.location.reload();
+                }
+              };
+            }
+          };
+        }).catch(err => console.error('SW reg error:', err));
+      });
+    }
+  
+    const subjectConfig = {
+      'TOÁN': { bg: 'bg-sky-50/80', border: 'border-sky-200/60', icon: 'functions', text: 'text-sky-950', teacherText: 'text-sky-800', iconColor: 'text-sky-600' },
+      'VĂN': { bg: 'bg-rose-50/80', border: 'border-rose-200/60', icon: 'menu_book', text: 'text-rose-950', teacherText: 'text-rose-800', iconColor: 'text-rose-600' },
+      'ANH': { bg: 'bg-indigo-50/80', border: 'border-indigo-200/60', icon: 'translate', text: 'text-indigo-950', teacherText: 'text-indigo-800', iconColor: 'text-indigo-600' },
+      'SINH': { bg: 'bg-teal-50/80', border: 'border-teal-200/60', icon: 'biotech', text: 'text-teal-950', teacherText: 'text-teal-800', iconColor: 'text-teal-600' },
+      'TIN': { bg: 'bg-cyan-50/80', border: 'border-cyan-200/60', icon: 'terminal', text: 'text-cyan-950', teacherText: 'text-cyan-800', iconColor: 'text-cyan-600' },
+      'ĐỊA': { bg: 'bg-emerald-50/80', border: 'border-emerald-200/60', icon: 'public', text: 'text-emerald-950', teacherText: 'text-emerald-800', iconColor: 'text-emerald-600' },
+      'SỬ': { bg: 'bg-orange-50/80', border: 'border-orange-200/60', icon: 'history_edu', text: 'text-orange-950', teacherText: 'text-orange-800', iconColor: 'text-orange-600' },
+      'GDKT&PL': { bg: 'bg-purple-50/80', border: 'border-purple-200/60', icon: 'balance', text: 'text-purple-950', teacherText: 'text-purple-800', iconColor: 'text-purple-600' },
+      'GDTC': { bg: 'bg-lime-50/80', border: 'border-lime-200/60', icon: 'sports_soccer', text: 'text-lime-950', teacherText: 'text-lime-800', iconColor: 'text-lime-600' },
+      'GD Quốc Phòng': { bg: 'bg-stone-100/90', border: 'border-stone-300/60', icon: 'shield', text: 'text-stone-900', teacherText: 'text-stone-700', iconColor: 'text-stone-600' },
+      'HĐTN': { bg: 'bg-amber-50/80', border: 'border-amber-200/60', icon: 'groups', text: 'text-amber-950', teacherText: 'text-amber-800', iconColor: 'text-amber-600' },
+      'DEFAULT': { bg: 'bg-slate-100/80', border: 'border-slate-200', icon: 'school', text: 'text-slate-900', teacherText: 'text-slate-700', iconColor: 'text-slate-600' }
+    };
+
+    function getSubjectStyle(name) {
+      if (!name) return subjectConfig['DEFAULT'];
+      for (let key in subjectConfig) {
+        if (name.toUpperCase().includes(key)) return subjectConfig[key];
+      }
+      return subjectConfig['DEFAULT'];
+    }
+
+    let monHocData = [];
+    async function loadMonHocData() {
+      try {
+        const res = await fetch('./asset/mon-hoc.json');
+        if (res.ok) monHocData = await res.json();
+      } catch (err) {
+        console.warn('Chưa nạp được file mon-hoc.json:', err);
+      }
+    }
+    loadMonHocData();
+
+    const week1Start = new Date('2026-09-07T00:00:00');
+    function getCurrentWeekNum() {
+      const now = new Date();
+      const diffDays = Math.floor((now - week1Start) / (1000 * 60 * 60 * 24));
+      const calculatedWeek = Math.floor(diffDays / 7) + 1;
+      return calculatedWeek > 0 ? calculatedWeek : 1;
+    }
+
+    let selectedWeek = getCurrentWeekNum();
+    let currentData = null;
+    
+    // Auto detect today for Mobile Tab
+    function getTodayKey() {
+      const d = new Date().getDay(); // 0: Sun, 1: Mon, ..., 6: Sat
+      if (d >= 1 && d <= 6) return `t${d + 1}`;
+      return 't2'; // Default Thứ 2 nếu là Chủ Nhật
+    }
+    let selectedDayMobile = getTodayKey();
+
+    const selectPC = document.getElementById('week-select-pc');
+    const selectMobile = document.getElementById('week-select-mobile');
+    for (let i = 1; i <= 36; i++) {
+      const txt = `Tuần ${i < 10 ? '0' + i : i}${i === selectedWeek ? ' (Hiện tại)' : ''}`;
+      selectPC.add(new Option(txt, i, i === selectedWeek, i === selectedWeek));
+      selectMobile.add(new Option(txt, i, i === selectedWeek, i === selectedWeek));
+    }
+
+    function updateActiveTabUI(dayKey) {
+      document.querySelectorAll('.day-tab').forEach(t => {
+        if (t.getAttribute('data-day') === dayKey) {
+          t.classList.remove('bg-slate-100', 'text-slate-600');
+          t.classList.add('bg-slate-900', 'text-white', 'shadow-sm');
+          t.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        } else {
+          t.classList.remove('bg-slate-900', 'text-white', 'shadow-sm');
+          t.classList.add('bg-slate-100', 'text-slate-600');
+        }
+      });
+    }
+
+    // Lớp phủ loading (MWC spinner) khi đang tải/chuyển tuần
+    function showWeekLoadingOverlay() {
+      const el = document.getElementById('week-loading-overlay');
+      if (!el) return;
+      el.classList.remove('hidden');
+      requestAnimationFrame(() => el.classList.add('opacity-100'));
+    }
+    function hideWeekLoadingOverlay() {
+      const el = document.getElementById('week-loading-overlay');
+      if (!el) return;
+      el.classList.remove('opacity-100');
+      setTimeout(() => el.classList.add('hidden'), 180);
+    }
+
+    async function loadSchedule(week) {
+      selectedWeek = week;
+      const weekStr = week < 10 ? '0' + week : week;
+      document.getElementById('week-title-display').textContent = `TUẦN ${weekStr}`;
+
+      const printBtn = document.getElementById('print-btn');
+      const printBtnMobile = document.getElementById('print-btn-mobile');
+      const pcView = document.getElementById('pc-view');
+      const mobileView = document.getElementById('mobile-view');
+      const noDataMsg = document.getElementById('no-data-msg');
+
+      // Xám + khóa nút In ngay khi bắt đầu tải, và hiện lớp phủ loading cho đến khi xong
+      printBtn.disabled = true;
+      if (printBtnMobile) printBtnMobile.disabled = true;
+      showWeekLoadingOverlay();
+
+      try {
+        const response = await fetch(`./asset/${week}.json`);
+        if (!response.ok) throw new Error("No data");
+        
+        currentData = await response.json();
+        renderPCTable(currentData);
+        
+        updateActiveTabUI(selectedDayMobile);
+        renderMobileTimeline(currentData, selectedDayMobile);
+
+        document.getElementById('week-date-range').textContent = `Áp dụng: ${currentData.dateRange || 'Đang cập nhật'}`;
+        
+        if (window.innerWidth >= 768) {
+          pcView.style.display = 'block';
+          mobileView.style.display = 'none';
+        } else {
+          pcView.style.display = 'none';
+          mobileView.style.display = 'block';
+        }
+
+        noDataMsg.style.display = 'none';
+        printBtn.disabled = false;
+        if (printBtnMobile) printBtnMobile.disabled = false;
+
+      } catch (err) {
+        pcView.style.display = 'none';
+        mobileView.style.display = 'none';
+        noDataMsg.style.display = 'flex';
+        printBtn.disabled = true;
+        if (printBtnMobile) printBtnMobile.disabled = true;
+        document.getElementById('week-date-range').textContent = 'Chưa có thông tin áp dụng';
+      } finally {
+        hideWeekLoadingOverlay();
+      }
+    }
+
+    function renderPCTable(data) {
+      const tbody = document.getElementById('tkb-tbody');
+      tbody.innerHTML = '';
+
+      const renderSection = (title, icon, periods, isChieu) => {
+        let html = `
+          <tr class="bg-teal-50/80 border-y border-teal-100">
+            <td colspan="7" class="py-1.5 px-4 text-left font-bold text-teal-900 text-[11px] tracking-wider uppercase">
+              <span class="material-symbols-outlined text-teal-700 text-sm align-middle mr-1">${icon}</span>
+              ${title}
+            </td>
+          </tr>
+        `;
+
+        periods.forEach((p, idx) => {
+          html += `<tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="py-1.5 px-1 font-bold text-xs text-slate-500 bg-slate-50/50">Tiết ${idx + 1}</td>`;
+          
+          ['t2', 't3', 't4', 't5', 't6', 't7'].forEach(day => {
+            const cell = p[day];
+            if (cell && cell.sub) {
+              const style = getSubjectStyle(cell.sub);
+              html += `
+                <td class="p-1">
+                  <div onclick="openSubjectDialog('${cell.sub}', '${cell.teacher || ''}', '${day}', ${idx + 1}, ${isChieu})" 
+                       class="subject-card cursor-pointer p-2 rounded-xl ${style.bg} border ${style.border} flex flex-col items-center hover:shadow-md transition-all">
+                    <span class="material-symbols-outlined ${style.iconColor} text-base mb-0.5">${style.icon}</span>
+                    <span class="font-bold ${style.text} text-xs">${cell.sub}</span>
+                    <span class="teacher-name text-[10px] font-semibold ${style.teacherText}">${cell.teacher || ''}</span>
+                  </div>
+                </td>
+              `;
+            } else {
+              html += `<td class="p-1 text-slate-300 font-light text-xs">-</td>`;
+            }
+          });
+
+          html += `</tr>`;
+        });
+
+        return html;
+      };
+
+      let content = '';
+      if (data.sang) content += renderSection('Buổi Sáng', 'wb_sunny', data.sang, false);
+      if (data.chieu) content += renderSection('Buổi Chiều', 'wb_twilight', data.chieu, true);
+      tbody.innerHTML = content;
+    }
+
+    function renderMobileTimeline(data, dayKey) {
+      const timeline = document.getElementById('mobile-timeline');
+      timeline.innerHTML = '';
+
+      const renderMobileSection = (title, periods, isChieu) => {
+        let html = `<div class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-2 mb-1">${title}</div>`;
+        let hasAnySubject = false;
+
+        periods.forEach((p, idx) => {
+          const cell = p[dayKey];
+          if (cell && cell.sub) {
+            hasAnySubject = true;
+            const style = getSubjectStyle(cell.sub);
+            html += `
+              <div onclick="openSubjectDialog('${cell.sub}', '${cell.teacher || ''}', '${dayKey}', ${idx + 1}, ${isChieu})" 
+                   class="subject-card active:scale-95 transition-transform p-3 rounded-2xl ${style.bg} border ${style.border} flex items-center justify-between shadow-sm cursor-pointer">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-xl bg-white/80 flex items-center justify-center shadow-xs">
+                    <span class="material-symbols-outlined ${style.iconColor} text-xl">${style.icon}</span>
+                  </div>
+                  <div>
+                    <div class="font-bold ${style.text} text-sm">${cell.sub}</div>
+                    <div class="text-xs font-semibold ${style.teacherText}">GV: ${cell.teacher || 'Chưa cập nhật'}</div>
+                  </div>
+                </div>
+                <div class="text-xs font-bold text-slate-500 bg-white/60 px-2.5 py-1 rounded-xl">
+                  Tiết ${idx + 1}
+                </div>
+              </div>
+            `;
+          }
+        });
+
+        if (!hasAnySubject) {
+          html += `<div class="text-xs text-slate-400 italic py-2">Nghỉ học / Không có tiết</div>`;
+        }
+        return html;
+      };
+
+      let mobileContent = '';
+      if (data.sang) mobileContent += renderMobileSection('Buổi Sáng', data.sang, false);
+      if (data.chieu) mobileContent += renderMobileSection('Buổi Chiều', data.chieu, true);
+
+      timeline.innerHTML = mobileContent;
+    }
+
+    const periodTimesSang = [
+      { start: '07:15', end: '08:00' },
+      { start: '08:10', end: '08:55' },
+      { start: '09:05', end: '09:50' },
+      { start: '09:55', end: '10:40' },
+      { start: '10:45', end: '11:30' }
+    ];
+
+    const periodTimesChieu = [
+      { start: '14:15', end: '15:00' },
+      { start: '15:10', end: '15:55' },
+      { start: '16:00', end: '16:45' }
+    ];
+
+    function updateLiveClock() {
+      const now = new Date();
+      const timeStr = now.toTimeString().split(' ')[0];
+      const days = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+      const dayName = days[now.getDay()];
+      
+      document.getElementById('live-clock-display').textContent = `${dayName}, ${timeStr}`;
+      document.getElementById('mobile-live-clock').textContent = timeStr;
+
+      const currentMins = now.getHours() * 60 + now.getMinutes();
+      let statusText = 'Nghỉ 🌙';
+
+      const checkList = [
+        { p: 'Truy bài 📖', start: '07:00', end: '07:15' },
+        ...periodTimesSang.map((t, i) => ({ p: `Sáng - Tiết ${i+1}`, ...t })),
+        ...periodTimesChieu.map((t, i) => ({ p: `Chiều - Tiết ${i+1}`, ...t }))
+      ];
+
+      for (let slot of checkList) {
+        const [sh, sm] = slot.start.split(':').map(Number);
+        const [eh, em] = slot.end.split(':').map(Number);
+        if (currentMins >= sh * 60 + sm && currentMins <= eh * 60 + em) {
+          statusText = slot.p;
+          break;
+        }
+      }
+
+      document.getElementById('live-period-display').textContent = statusText.includes('Nghỉ') || statusText.includes('Truy bài') ? statusText : `Đang học: ${statusText}`;
+      document.getElementById('mobile-live-period').textContent = statusText;
+    }
+
+    setInterval(updateLiveClock, 1000);
+    updateLiveClock();
+
+    const dayMap = { 't2': 0, 't3': 1, 't4': 2, 't5': 3, 't6': 4, 't7': 5 };
+    const dayNamesShort = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+
+    // ---- Helper dùng chung: mở/đóng dialog dạng overlay + panel với zoom-in / zoom-out ----
+    function openDialogPanel(overlayId, panelId) {
+      const overlay = document.getElementById(overlayId);
+      const panel = panelId ? document.getElementById(panelId) : null;
+      if (!overlay) return;
+      overlay.classList.remove('hidden');
+      if (panel) {
+        panel.classList.remove('zoom-fade-out');
+        void panel.offsetWidth; // ép reflow để animation chạy lại mỗi lần mở
+        panel.classList.add('zoom-fade-in');
+      }
+    }
+
+    function closeDialogPanel(overlayId, panelId, afterClose) {
+      const overlay = document.getElementById(overlayId);
+      const panel = panelId ? document.getElementById(panelId) : null;
+      if (!overlay || overlay.classList.contains('hidden')) return;
+
+      if (panel) {
+        panel.classList.remove('zoom-fade-in');
+        panel.classList.add('zoom-fade-out');
+        setTimeout(() => {
+          overlay.classList.add('hidden');
+          panel.classList.remove('zoom-fade-out');
+          if (afterClose) afterClose();
+        }, 150);
+      } else {
+        overlay.classList.add('hidden');
+        if (afterClose) afterClose();
+      }
+    }
+
+    async function openSubjectDialog(subjectName, teacher, dayCode, periodNum, isChieu) {
+      const dialog = document.getElementById('subject-dialog');
+      const style = getSubjectStyle(subjectName);
+
+      document.getElementById('dialog-icon').textContent = style.icon;
+      document.getElementById('dialog-title').textContent = subjectName;
+      document.getElementById('dialog-teacher').textContent = teacher || 'Chưa cập nhật giáo viên';
+
+      const dayOffset = dayMap[dayCode];
+      const targetDate = new Date(week1Start);
+      targetDate.setDate(targetDate.getDate() + (selectedWeek - 1) * 7 + dayOffset);
+
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      
+      const targetZero = new Date(targetDate);
+      targetZero.setHours(0,0,0,0);
+
+      const diffDays = Math.round((targetZero - today) / (1000 * 60 * 60 * 24));
+      
+      let dayPrefix = '';
+      if (diffDays === 0) dayPrefix = 'Hôm nay';
+      else if (diffDays === 1) dayPrefix = 'Ngày mai';
+      else dayPrefix = `${dayNamesShort[dayOffset]} ${targetDate.getDate()}/${targetDate.getMonth() + 1}`;
+
+      const timeSlot = isChieu ? periodTimesChieu[periodNum - 1] : periodTimesSang[periodNum - 1];
+      document.getElementById('dialog-time').textContent = `${dayPrefix}, ${timeSlot.start} - ${timeSlot.end}`;
+
+      const matchSubject = monHocData.find(m => 
+        subjectName.toUpperCase().includes(m.code) || 
+        m.name.toUpperCase().includes(subjectName.toUpperCase()) ||
+        subjectName.toUpperCase().includes(m.name.toUpperCase())
+      );
+
+      const categoryBox = document.getElementById('dialog-category');
+      const descBox = document.getElementById('dialog-description');
+      const keywordsBox = document.getElementById('dialog-keywords');
+
+      if (matchSubject) {
+        categoryBox.style.display = 'inline-block';
+        categoryBox.textContent = matchSubject.category || 'Môn học';
+        descBox.textContent = matchSubject.description || 'Chưa có thông tin mô tả.';
+        
+        keywordsBox.innerHTML = (matchSubject.keywords || [])
+          .map(kw => `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-xl font-medium">#${kw}</span>`)
+          .join('');
+      } else {
+        categoryBox.style.display = 'none';
+        descBox.textContent = `Chưa có thông tin ghi chú chi tiết cho môn ${subjectName}.`;
+        keywordsBox.innerHTML = `<span class="text-xs text-slate-400 italic">Không có từ khóa</span>`;
+      }
+
+      window.history.pushState({ dialogOpen: true }, '');
+      openDialogPanel('subject-dialog', 'subject-dialog-panel');
+    }
+
+    function closeSubjectDialog() {
+      closeDialogPanel('subject-dialog', 'subject-dialog-panel', () => {
+        if (window.history.state && window.history.state.dialogOpen) {
+          window.history.back();
+        }
+      });
+    }
+
+    // Apps Dialog logic
+    function openAppsDialog() {
+      window.history.pushState({ appsDialogOpen: true }, '');
+      openDialogPanel('apps-dialog', 'apps-dialog-panel');
+
+      // Đóng mobile menu nếu đang mở (có animation zoom-out)
+      closeMoreMenu();
+    }
+
+    function closeAppsDialog() {
+      closeDialogPanel('apps-dialog', 'apps-dialog-panel', () => {
+        if (window.history.state && window.history.state.appsDialogOpen) {
+          window.history.back();
+        }
+      });
+    }
+
+    document.getElementById('dialog-close-btn').addEventListener('click', closeSubjectDialog);
+    document.getElementById('dialog-btn-close-bottom').addEventListener('click', closeSubjectDialog);
+
+    window.addEventListener('popstate', () => {
+      closeDialogPanel('subject-dialog', 'subject-dialog-panel');
+      closeDialogPanel('apps-dialog', 'apps-dialog-panel');
+    });
+
+    const moreBtn = document.getElementById('more-menu-btn');
+    const moreMenu = document.getElementById('more-menu');
+
+    // More Option: zoom-in từ nút 3 chấm khi mở, zoom-out rồi mới ẩn khi đóng
+    function openMoreMenu() {
+      moreMenu.classList.remove('hidden');
+      moreMenu.classList.add('flex');
+      moreMenu.classList.remove('zoom-fade-out');
+      void moreMenu.offsetWidth;
+      moreMenu.classList.add('zoom-fade-in');
+    }
+
+    function closeMoreMenu() {
+      if (moreMenu.classList.contains('hidden')) return;
+      moreMenu.classList.remove('zoom-fade-in');
+      moreMenu.classList.add('zoom-fade-out');
+      setTimeout(() => {
+        moreMenu.classList.add('hidden');
+        moreMenu.classList.remove('flex', 'zoom-fade-out');
+      }, 150);
+    }
+
+    moreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (moreMenu.classList.contains('hidden')) {
+        openMoreMenu();
+      } else {
+        closeMoreMenu();
+      }
+    });
+
+    moreMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    document.addEventListener('click', () => {
+      closeMoreMenu();
+    });
+
+    // Tab switcher events
+    document.querySelectorAll('.day-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        selectedDayMobile = e.target.getAttribute('data-day');
+        updateActiveTabUI(selectedDayMobile);
+        if (currentData) renderMobileTimeline(currentData, selectedDayMobile);
+      });
+    });
+
+    // Cập nhật chữ hiển thị trên nút "Chọn tuần" ở PC
+    function updateWeekPcLabel(val) {
+      const label = document.getElementById('week-select-pc-label');
+      if (label) label.textContent = `Tuần ${val < 10 ? '0' + val : val}`;
+    }
+
+    // Áp dụng tuần được chọn (dùng chung cho cả select mobile lẫn dialog MWC ở PC)
+    function applyWeekSelection(val) {
+      selectPC.value = val;
+      selectMobile.value = val;
+      updateWeekPcLabel(val);
+      loadSchedule(val);
+    }
+
+    const handleWeekChange = (e) => {
+      applyWeekSelection(Number(e.target.value));
+    };
+    // PC không còn dùng dropdown mặc định của Chrome nữa (mở dialog MWC), chỉ Mobile giữ dropdown gốc
+    selectMobile.addEventListener('change', handleWeekChange);
+
+    // Dựng danh sách tuần cho dialog MWC (dùng lại chính option đã có của select PC)
+    function renderWeekDialogList() {
+      const container = document.getElementById('week-dialog-list');
+      if (!container || !selectPC) return;
+      container.innerHTML = '';
+      Array.from(selectPC.options).forEach(opt => {
+        const i = Number(opt.value);
+        const isSelected = i === selectedWeek;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `expressive-btn text-xs font-bold py-2 rounded-xl border cursor-pointer ${
+          isSelected
+            ? 'bg-teal-700 text-white border-teal-700'
+            : 'bg-slate-100 text-slate-800 border-slate-200 hover:bg-slate-200'
+        }`;
+        btn.textContent = opt.text;
+        btn.onclick = () => {
+          applyWeekSelection(i);
+          const dialog = document.getElementById('week-dialog');
+          if (dialog) dialog.close();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    // Mở dialog Material Web để chọn tuần (thay cho dropdown mặc định của Chrome trên PC)
+    function openWeekDialog() {
+      const dialog = document.getElementById('week-dialog');
+      if (!dialog) return;
+      renderWeekDialogList();
+      dialog.show();
+    }
+
+    // Initial load
+    updateWeekPcLabel(selectedWeek);
+    loadSchedule(selectedWeek);
+
+    // ==========================================
+    // WEATHER INTEGRATION (OPEN-METEO API & MINECRAFT QUOTES)
+    // ==========================================
+    const weatherQuotes = {
+        clear: [
+            "Trời quang đãng, đi mine kim cương thôi!",
+            "Nắng đẹp thế này, đi tìm biome mới thôi.",
+            "Cày ruộng thôi, lúa chín tới nơi rồi!",
+            "Lên đường đi săn Enderman nào.",
+            "Đừng nhìn thẳng vào lũ da đen.",
+            "Hãy sử dụng đúng công cụ cho đúng việc!"
+        ],
+        cloudy: [
+            "Trời âm u quá, ở nhà craft thêm đuốc đi.",
+            "Mây mù che lối, coi chừng lạc đường khi đi mine.",
+            "Trang trí base chút không bro? Trời sắp xấu rồi.",
+            "Cần nhiên liệu cho đuốc? Hãy thử nung gỗ lấy than củi."
+        ],
+        rain: [
+            "Mưa rồi... Ở nhà craft đồ cho lành.",
+            "Thời điểm tốt để nấu quặng và phân loại rương.",
+            "Câu cá trong mưa? Nghe cũng chill đấy chứ.",
+            "Quái vật Endermen ghét giờ tắm!"
+        ],
+        storm: [
+            "SẤM SÉT! Cẩn thận Charged Creeper gõ cửa nhé.",
+            "Đội một quả bí ngô trên đầu sẽ giúp bạn tránh bị Enderman tấn công.",
+            "Lợn bị sét đánh sẽ trở thành Lợn Zombie!"
+        ],
+        hot: [
+            "Nóng vãi đạn! Chắc đang lạc vào Nether rồi.",
+            "Uống ngay chai nước đi bro, thanh Hunger đang tụt kìa.",
+            "Nắng này mà đi sa mạc thì chỉ có nước 'tăng xông'.",
+            "Đừng quên mang theo xô nước, hữu ích cả khi nóng lẫn khi ngã!"
+        ],
+        cold: [
+            "Lạnh teo bugi! Coi chừng bị đóng băng như Stray nhé.",
+            "Mặc thêm giáp vào cho ấm, biome này lạnh quá.",
+            "Đỉnh núi tuyết này không dành cho người yếu tim đâu.",
+            "Craft một cái lò nung để sưởi ấm tâm hồn đi nào."
+        ],
+        default: [
+            "Mèo rừng cho lũ Creeper biết ai mới là kẻ thống trị!",
+            "Bạn có biết có một Wiki Minecraft không?",
+            "Lợn zombie sẽ không tấn công bạn nếu bạn mặc giáp vàng.",
+            "Người cưỡi nhện là hình ảnh hiếm gặp của một con nhện được một bộ xương cưỡi!",
+            "Nếu bạn đặt độ khó trò chơi thành Hòa bình, máu của bạn sẽ tự động hồi phục!",
+            "Thu hoạch da bò và sử dụng nó để làm giáp và sách.",
+            "Bạn có mặt ở MINECON không?",
+            "Một số động vật sẽ đi theo bạn nếu bạn cầm lúa mì trên tay.",
+            "Rùa con sẽ rụng vảy khi lớn lên, hãy dùng chúng để chế tạo mai rùa.",
+            "Đá cuội có khả năng chống lại quả cầu lửa của Ghast.",
+            "Ngôn ngữ của Enderman thực chất là tiếng Anh viết ngược.",
+            "Đá obsidian được tạo ra khi nước chạm vào khối dung nham.",
+            "Người sắt sẽ chiến đấu cho bạn!",
+            "Nhạc cụ được chơi bởi một khối nốt nhạc phụ thuộc vào vật liệu bên dưới nó.",
+            "Nhạc của C418!",
+            "Một số người nổi tiếng chơi Minecraft!",
+            "MINECON 2015 được tổ chức tại London, Anh!",
+            "Bột xương có thể được dùng làm phân bón và giúp cây cối phát triển ngay lập tức!",
+            "Di chuyển đến các địa điểm nhanh hơn với xe đẩy và đường ray!",
+            "Quái vật Creeper được sinh ra từ một lỗi lập trình.",
+            "Zombie và Skeleton có thể sống sót qua ban ngày nếu chúng ở trong nước.",
+            "Xây dựng một cổng dịch chuyển sẽ cho phép bạn du hành đến thế giới Nether.",
+            "Sói và Người Sắt sẽ không tấn công Creeper.",
+            "Trồng một vài cây non và chúng sẽ lớn lên thành cây.",
+            "Không ai nhớ MINECON 2014 được tổ chức ở đâu.",
+            "Tên ban đầu của Minecraft là Cave Game.",
+            "Mojang có nhiều giải thưởng hơn cả nhân viên!",
+            "Đánh trả những quả cầu lửa vào Ghast!",
+            "Phiên bản đầu tiên của Minecraft được tạo ra chỉ trong 6 ngày!",
+            "Đặt hai rương cạnh nhau sẽ tạo thành một rương lớn.",
+            "Luôn cho rằng tin đồn là sai, thay vì cho rằng chúng là đúng!",
+            "Di chuyển một khối trong Nether tương đương với di chuyển tám khối ở thế giới ngoài.",
+            "Đào thẳng xuống hoặc thẳng lên không phải là một ý hay.",
+            "MINECON 2011 được tổ chức tại Las Vegas, Nevada, Hoa Kỳ!",
+            "Cho chó sói ăn xương để thuần hóa nó.",
+            "Một xô dung nham có thể nung chảy được 100 khối trong lò nung.",
+            "Lợn zombie sẽ không tấn công bạn nếu bạn mặc giáp vàng - trừ khi bạn tấn công chúng hoặc mở rương trong pháo đài.",
+            "Ngủ trên giường vào ban đêm sẽ tua nhanh trò chơi đến bình minh.",
+            "Tấn công một con sói sẽ khiến bất kỳ con sói nào ở gần đó trở nên hung dữ.",
+            "Nếu bạn có một cái xô rỗng, bạn có thể đổ đầy nước, dung nham hoặc sữa bò vào đó!",
+            "Ăn thức ăn nấu chín giúp giảm đói tốt hơn ăn thức ăn sống.",
+            "Quái vật Creeper sẽ phát nổ khi chúng đến gần bạn!",
+            "Bạn có thể nung chảy 20 vật phẩm trong lò nung bằng cách sử dụng một khối tảo bẹ khô làm nhiên liệu.",
+            "Cho chó sói ăn xương để thuần hóa nó. Sau đó, bạn có thể khiến nó ngồi hoặc đi theo bạn."
+        ]
+    };
+
+    const PIXEL_BASE_URL = 'https://tuanphong3108.github.io/weather/';
+    
+    const PIXEL_ICONS = {
+        '0': { day: 'clear_day.png', night: 'clear_night.png', type: 'clear' },
+        '1': { day: 'mostly_clear_day.png', night: 'mostly_clear_night.png', type: 'clear' },
+        '2': { day: 'sunny_with_cloudy.png', night: 'partly_cloudy_night.png', type: 'clear' },
+        '3': { day: 'mostly_cloudy_day.png', night: 'mostly_cloudy_night.png', type: 'cloudy' },
+        '45': { day: 'haze_fog_dust_smoke.png', night: 'haze_fog_dust_smoke.png', type: 'cloudy' },
+        '48': { day: 'haze_fog_dust_smoke.png', night: 'haze_fog_dust_smoke.png', type: 'cloudy' },
+        '51': { day: 'drizzle.png', night: 'drizzle.png', type: 'rain' },
+        '53': { day: 'drizzle.png', night: 'drizzle.png', type: 'rain' },
+        '55': { day: 'drizzle.png', night: 'drizzle.png', type: 'rain' },
+        '61': { day: 'showers_rain.png', night: 'showers_rain.png', type: 'rain' },
+        '63': { day: 'cloudy_with_rain.png', night: 'cloudy_with_rain.png', type: 'rain' },
+        '65': { day: 'heavy_rain.png', night: 'heavy_rain.png', type: 'rain' },
+        '71': { day: 'showers_snow.png', night: 'showers_snow.png', type: 'cold' },
+        '73': { day: 'cloudy_with_snow.png', night: 'cloudy_with_snow.png', type: 'cold' },
+        '75': { day: 'heavy_snow.png', night: 'heavy_snow.png', type: 'cold' },
+        '80': { day: 'scattered_showers_day.png', night: 'scattered_showers_night.png', type: 'rain' },
+        '81': { day: 'showers_rain.png', night: 'showers_rain.png', type: 'rain' },
+        '82': { day: 'heavy_rain.png', night: 'heavy_rain.png', type: 'rain' },
+        '95': { day: 'isolated_scattered_thunderstorms_day.png', night: 'isolated_scattered_thunderstorms_night.png', type: 'storm' },
+        '96': { day: 'strong_thunderstorms.png', night: 'strong_thunderstorms.png', type: 'storm' },
+        '99': { day: 'strong_thunderstorms.png', night: 'strong_thunderstorms.png', type: 'storm' }
+    };
+
+    function getRandomWeatherQuote(weatherType) {
+      let pool = [...weatherQuotes.default];
+      if (weatherType && weatherQuotes[weatherType]) {
+        pool = pool.concat(weatherQuotes[weatherType]);
+      }
+      const idx = Math.floor(Math.random() * pool.length);
+      return pool[idx];
+    }
+
+    function updateWeatherUI(temp, iconFileName, weatherType) {
+      const iconUrl = PIXEL_BASE_URL + iconFileName;
+      const roundedTemp = Math.round(temp);
+
+      const pcWidget = document.getElementById('pc-weather-widget');
+      if (pcWidget) {
+        pcWidget.innerHTML = `
+          <img src="${iconUrl}" class="w-6 h-6 object-contain" alt="Weather" />
+          <span class="text-xs font-bold text-slate-800">${roundedTemp}°C</span>
+        `;
+      }
+
+      const mobileLeft = document.getElementById('mobile-weather-left');
+      if (mobileLeft) {
+        mobileLeft.innerHTML = `
+          <img src="${iconUrl}" class="w-7 h-7 object-contain" alt="Weather" />
+          <span class="text-sm font-bold text-white">${roundedTemp}°C</span>
+        `;
+      }
+
+      const mobileQuote = document.getElementById('mobile-weather-quote');
+      if (mobileQuote && !nextWeekNoticeShown) {
+        mobileQuote.textContent = `"${getRandomWeatherQuote(weatherType)}"`;
+      }
+    }
+
+    // ---- CACHE THỜI TIẾT (LocalStorage, hết hạn sau 10 phút) ----
+    const WEATHER_CACHE_KEY = 'weather_cache';
+    const WEATHER_CACHE_TTL = 10 * 60;          // 10 phút, tính bằng giây
+
+    // Số giây tính từ 1/1/1970 (Unix timestamp)
+    function nowInSeconds() {
+      return Math.floor(Date.now() / 1000);
+    }
+
+    function clearWeatherCache() {
+      try {
+        localStorage.removeItem(WEATHER_CACHE_KEY);
+      } catch (e) {
+        console.warn('Không xoá được cache thời tiết:', e);
+      }
+    }
+
+    function saveWeatherCache(temp, iconFileName, weatherType, noticeMsg) {
+      try {
+        localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({
+          savedAt: nowInSeconds(),
+          temp: temp,
+          icon: iconFileName,
+          type: weatherType || null,
+          notice: noticeMsg || null
+        }));
+      } catch (e) {
+        console.warn('Không lưu được cache thời tiết:', e);
+      }
+    }
+
+    // Trả về cache còn hạn, tự xoá khỏi LocalStorage nếu đã quá 10 phút hoặc hỏng
+    function readWeatherCache() {
+      let raw = null;
+      try {
+        raw = localStorage.getItem(WEATHER_CACHE_KEY);
+      } catch (e) {
+        return null;
+      }
+      if (!raw) return null;
+
+      try {
+        const cache = JSON.parse(raw);
+        if (!cache || typeof cache.savedAt !== 'number' || typeof cache.temp !== 'number' || !cache.icon) {
+          clearWeatherCache();
+          return null;
+        }
+        const age = nowInSeconds() - cache.savedAt;   // số giây đã trôi qua kể từ lúc lưu
+        if (age < 0 || age >= WEATHER_CACHE_TTL) {
+          clearWeatherCache();
+          return null;
+        }
+        return cache;
+      } catch (e) {
+        clearWeatherCache();
+        return null;
+      }
+    }
+
+    function applyWeatherCache(cache) {
+      updateWeatherUI(cache.temp, cache.icon, cache.type);
+      // Giữ nguyên hành vi cảnh báo: hiện lại đúng cảnh báo của lần kiểm tra gần nhất
+      displayWeatherNotice(cache.notice);
+    }
+
+    const SCHOOL_LAT = 20.4934984;
+    const SCHOOL_LON = 105.7703291;
+
+    function renderWeatherErrorUI() {
+      const pcWidget = document.getElementById('pc-weather-widget');
+      if (pcWidget) {
+        pcWidget.innerHTML = `<span class="text-slate-400 text-xs font-bold">???</span>`;
+      }
+
+      const mobileLeft = document.getElementById('mobile-weather-left');
+      if (mobileLeft) {
+        mobileLeft.innerHTML = `<span class="text-slate-400 text-xs font-bold">???</span>`;
+      }
+
+      const mobileQuote = document.getElementById('mobile-weather-quote');
+      if (mobileQuote && !nextWeekNoticeShown) {
+        mobileQuote.textContent = `"${getRandomWeatherQuote(null)}"`;
+      }
+    }
+
+    // ---- Helper dùng chung: bong bóng chat (zoom-in khi mở, zoom-out rồi mới ẩn khi đóng) ----
+    function openBubble(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('zoom-fade-out');
+      el.classList.remove('hidden');
+      void el.offsetWidth;
+      el.classList.add('zoom-fade-in');
+    }
+
+    function closeBubble(id) {
+      const el = document.getElementById(id);
+      if (!el || el.classList.contains('hidden')) return;
+      el.classList.remove('zoom-fade-in');
+      el.classList.add('zoom-fade-out');
+      setTimeout(() => {
+        el.classList.add('hidden');
+        el.classList.remove('zoom-fade-out');
+      }, 150);
+    }
+
+    function showLocationChoicePrompt() {
+      const pcPrompt = document.getElementById('pc-bubble-location-prompt');
+      const pcNotice = document.getElementById('pc-bubble-notice-content');
+      if (pcPrompt && pcNotice) {
+        pcNotice.classList.add('hidden');
+        pcPrompt.classList.remove('hidden');
+      }
+      openBubble('pc-weather-bubble');
+
+      const mobileDialog = document.getElementById('mobile-location-dialog');
+      const mobilePanel = document.getElementById('mobile-location-panel');
+      if (mobileDialog) {
+        mobileDialog.classList.remove('hidden');
+        if (mobilePanel) {
+          mobilePanel.classList.remove('slide-down-out');
+          void mobilePanel.offsetWidth;
+          mobilePanel.classList.add('slide-up-in');
+        }
+      }
+    }
+
+    function hideLocationChoicePrompt() {
+      const pcPrompt = document.getElementById('pc-bubble-location-prompt');
+      const pcNotice = document.getElementById('pc-bubble-notice-content');
+
+      if (pcPrompt) pcPrompt.classList.add('hidden');
+      if (pcNotice && pcNotice.classList.contains('hidden')) {
+        closeBubble('pc-weather-bubble');
+      }
+
+      const mobileDialog = document.getElementById('mobile-location-dialog');
+      const mobilePanel = document.getElementById('mobile-location-panel');
+      if (mobileDialog && !mobileDialog.classList.contains('hidden')) {
+        if (mobilePanel) {
+          mobilePanel.classList.remove('slide-up-in');
+          mobilePanel.classList.add('slide-down-out');
+          setTimeout(() => {
+            mobileDialog.classList.add('hidden');
+            mobilePanel.classList.remove('slide-down-out');
+          }, 220);
+        } else {
+          mobileDialog.classList.add('hidden');
+        }
+      }
+    }
+
+    function chooseWeatherLocation(choice) {
+      localStorage.setItem('weather_location_choice', choice);
+      hideLocationChoicePrompt();
+
+      // Đổi vị trí thì cache cũ không còn đúng nữa
+      clearWeatherCache();
+
+      if (choice === 'school') {
+        fetchWeather(SCHOOL_LAT, SCHOOL_LON);
+      } else {
+        fetchWeatherUserWithFallback();
+      }
+    }
+
+    function dismissWeatherNotice() {
+      const mobileNotice = document.getElementById('mobile-weather-notice');
+      if (mobileNotice) mobileNotice.classList.remove('grid-notice-open');
+
+      const pcNotice = document.getElementById('pc-bubble-notice-content');
+      if (pcNotice) pcNotice.classList.add('hidden');
+
+      const pcPrompt = document.getElementById('pc-bubble-location-prompt');
+      if (!pcPrompt || pcPrompt.classList.contains('hidden')) {
+        closeBubble('pc-weather-bubble');
+      }
+    }
+
+    function displayWeatherNotice(msg) {
+      if (!msg) {
+        dismissWeatherNotice();
+        return;
+      }
+
+      const pcNotice = document.getElementById('pc-bubble-notice-content');
+      const pcPrompt = document.getElementById('pc-bubble-location-prompt');
+      const pcBubbleText = document.getElementById('pc-bubble-text');
+
+      if (pcNotice && pcBubbleText) {
+        if (pcPrompt) pcPrompt.classList.add('hidden');
+        pcBubbleText.textContent = msg;
+        pcNotice.classList.remove('hidden');
+        openBubble('pc-weather-bubble');
+      }
+
+      const mobileNotice = document.getElementById('mobile-weather-notice');
+      const mobileNoticeText = document.getElementById('mobile-notice-text');
+      if (mobileNotice && mobileNoticeText) {
+        mobileNoticeText.textContent = msg;
+        mobileNotice.classList.add('grid-notice-open');
+      }
+    }
+
+    function checkWeatherNotice(data) {
+      const now = new Date();
+      const currentHour = now.getHours();
+      // Khung giờ 18h00 - 23h59
+      const isEveningWindow = currentHour >= 18 && currentHour <= 23;
+
+      const cw = data.current_weather;
+      const hourly = data.hourly;
+
+      if (isEveningWindow && hourly && hourly.time) {
+        const tomorrow = new Date();
+        tomorrow.setDate(now.getDate() + 1);
+        const tomorrowYear = tomorrow.getFullYear();
+        const tomorrowMonth = String(tomorrow.getMonth() + 1).padStart(2, '0');
+        const tomorrowDay = String(tomorrow.getDate()).padStart(2, '0');
+        const tomorrowStr = `${tomorrowYear}-${tomorrowMonth}-${tomorrowDay}`;
+
+        let maxRainProb = 0;
+        let minTemp = 999;
+        let maxTemp = -999;
+        let isTomorrowRainingCode = false;
+
+        for (let i = 0; i < hourly.time.length; i++) {
+          const timeStr = hourly.time[i];
+          if (timeStr.startsWith(tomorrowStr)) {
+            const hour = parseInt(timeStr.substring(11, 13), 10);
+            if (hour >= 7 && hour <= 11) {
+              const prob = hourly.precipitation_probability ? (hourly.precipitation_probability[i] || 0) : 0;
+              const temp = hourly.temperature_2m ? hourly.temperature_2m[i] : 25;
+              const code = hourly.weathercode ? String(hourly.weathercode[i]) : '0';
+
+              if (prob > maxRainProb) maxRainProb = prob;
+              if (temp < minTemp) minTemp = temp;
+              if (temp > maxTemp) maxTemp = temp;
+
+              if (['51','53','55','61','63','65','80','81','82','95','96','99'].includes(code)) {
+                isTomorrowRainingCode = true;
+              }
+            }
+          }
+        }
+
+        if (maxRainProb >= 50 || isTomorrowRainingCode) {
+          return "Ngày mai có mưa, hãy mang theo ô đi.";
+        } else if (minTemp < 20) {
+          return "Ngày mai trời lạnh, hãy mặc áo khoác";
+        } else if (maxTemp > 37) {
+          return "Ngày mai thời tiết sẽ rất nóng, uống đủ nước, bôi chống nắng và né mặt trời ra nhé!";
+        }
+      } else if (cw) {
+        const currentCode = String(cw.weathercode);
+        const currentTemp = cw.temperature;
+        const isRaining = ['51','53','55','61','63','65','80','81','82','95','96','99'].includes(currentCode);
+
+        if (isRaining) {
+          return "Hãy mang theo ô đi";
+        } else if (currentTemp < 20) {
+          return "Thời tiết lạnh, hãy mặc áo khoác";
+        } else if (currentTemp > 37) {
+          return "Thời tiết rất nóng, hãy uống đủ nước và né mặt trời!";
+        }
+      }
+
+      return null;
+    }
+
+    async function fetchWeather(lat, lon) {
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=precipitation_probability,temperature_2m,weathercode&timezone=auto`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('API Weather error');
+        const data = await res.json();
+        const cw = data.current_weather;
+        if (!cw) throw new Error('No current_weather');
+
+        const code = String(cw.weathercode);
+        const isDay = cw.is_day !== 0;
+        const temp = cw.temperature;
+
+        let iconInfo = PIXEL_ICONS[code] || { day: 'clear_day.png', night: 'clear_night.png', type: 'clear' };
+        let iconFileName = isDay ? iconInfo.day : iconInfo.night;
+        let type = iconInfo.type;
+
+        if (temp >= 35) {
+          type = 'hot';
+        }
+
+        updateWeatherUI(temp, iconFileName, type);
+
+        const noticeMsg = checkWeatherNotice(data);
+        displayWeatherNotice(noticeMsg);
+
+        // Lưu lại thời điểm kiểm tra + icon + nhiệt độ (+ cảnh báo kèm theo)
+        saveWeatherCache(temp, iconFileName, type, noticeMsg);
+      } catch (err) {
+        console.warn('Không lấy được thông tin thời tiết từ Open-Meteo:', err);
+        renderWeatherErrorUI();
+      }
+    }
+
+    function fetchWeatherUserWithFallback() {
+      if (!('geolocation' in navigator)) {
+        console.warn('Trình duyệt không hỗ trợ định vị, dùng vị trí trường');
+        fetchWeather(SCHOOL_LAT, SCHOOL_LON);
+        return;
+      }
+
+      let hasFetched = false;
+      const timer = setTimeout(() => {
+        if (!hasFetched) {
+          hasFetched = true;
+          console.warn('Quá 5s không lấy được vị trí người dùng, chuyển sang vị trí trường');
+          fetchWeather(SCHOOL_LAT, SCHOOL_LON);
+        }
+      }, 5000);
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          if (!hasFetched) {
+            hasFetched = true;
+            clearTimeout(timer);
+            fetchWeather(pos.coords.latitude, pos.coords.longitude);
+          }
+        },
+        (err) => {
+          if (!hasFetched) {
+            hasFetched = true;
+            clearTimeout(timer);
+            console.warn('Lỗi xin quyền vị trí, chuyển sang vị trí trường:', err);
+            fetchWeather(SCHOOL_LAT, SCHOOL_LON);
+          }
+        },
+        { timeout: 5000, maximumAge: 60000 }
+      );
+    }
+
+    function togglePcWeatherBubble() {
+      const pcBubble = document.getElementById('pc-weather-bubble');
+      if (!pcBubble) return;
+      if (pcBubble.classList.contains('hidden')) {
+        showLocationChoicePrompt();
+      } else {
+        hideLocationChoicePrompt();
+      }
+    }
+
+    // Gọi lại API theo đúng vị trí người dùng đã chọn
+    function refreshWeatherByChoice() {
+      const savedChoice = localStorage.getItem('weather_location_choice');
+      if (savedChoice === 'user') {
+        fetchWeatherUserWithFallback();
+      } else {
+        fetchWeather(SCHOOL_LAT, SCHOOL_LON);
+      }
+    }
+
+    // Tự động lặp lại mỗi 1 phút: so thời gian hiện tại với savedAt trong cache,
+    // quá 10 phút (đã bị readWeatherCache() xoá) thì kiểm tra lại thời tiết luôn
+    setInterval(() => {
+      if (!readWeatherCache()) {
+        refreshWeatherByChoice();
+      }
+    }, 60 * 1000);
+
+    // Quay lại tab sau khi để lâu (trình duyệt hay tạm dừng timer nền) thì kiểm tra ngay
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && !readWeatherCache()) {
+        refreshWeatherByChoice();
+      }
+    });
+
+    function initWeather() {
+      const savedChoice = localStorage.getItem('weather_location_choice');
+      const cache = readWeatherCache();
+
+      if (cache) {
+        // Còn trong 10 phút: dùng lại dữ liệu đã lưu, không gọi API
+        if (!savedChoice) showLocationChoicePrompt();
+        applyWeatherCache(cache);
+        return;
+      }
+
+      if (savedChoice === 'school') {
+        fetchWeather(SCHOOL_LAT, SCHOOL_LON);
+      } else if (savedChoice === 'user') {
+        // Tải vị trí trường trước để hiển thị ngay, rồi cập nhật theo vị trí người dùng
+        fetchWeather(SCHOOL_LAT, SCHOOL_LON);
+        fetchWeatherUserWithFallback();
+      } else {
+        // Mặc định luôn tải thời tiết vị trí trường ngay lập tức, không để bị treo "Đang tải..."
+        fetchWeather(SCHOOL_LAT, SCHOOL_LON);
+        showLocationChoicePrompt();
+      }
+    }
+
+    initWeather();
+
+    // ==== KIỂM TRA THỜI KHÓA BIỂU TUẦN SAU (dựa theo tuần thực tế hiện tại, không phải tuần đang xem) ====
+    let nextWeekNoticeShown = false;
+
+    function showNextWeekNotice(msg) {
+      // Mobile: tạm ẩn quote thời tiết, thay bằng thông báo tuần (không đụng phần cảnh báo thời tiết)
+      const mobileQuote = document.getElementById('mobile-weather-quote');
+      if (mobileQuote) {
+        mobileQuote.textContent = msg;
+      }
+
+      // PC: bong bóng riêng ở khu vực dropdown chọn tuần, tách biệt với bong bóng thời tiết
+      const bubbleText = document.getElementById('pc-week-bubble-text');
+      if (bubbleText) {
+        bubbleText.textContent = msg;
+      }
+      openBubble('pc-week-bubble');
+    }
+
+    function dismissNextWeekNotice() {
+      closeBubble('pc-week-bubble');
+    }
+
+    async function checkNextWeekSchedule() {
+      if (nextWeekNoticeShown) return; // đã thấy rồi thì khỏi kiểm tra lại
+
+      const actualWeek = getCurrentWeekNum(); // tuần thực tế hiện tại theo TKB
+      const nextWeek = actualWeek + 1;
+      if (nextWeek > 36) return;
+
+      try {
+        const res = await fetch(`./asset/${nextWeek}.json`, { cache: 'no-store' });
+        if (res.ok) {
+          nextWeekNoticeShown = true;
+          const nextWeekStr = nextWeek < 10 ? '0' + nextWeek : nextWeek;
+          showNextWeekNotice(`Đã có thời khóa biểu tuần ${nextWeekStr}`);
+        }
+      } catch (err) {
+        // Im lặng bỏ qua, không ảnh hưởng các phần khác của trang
+      }
+    }
+
+    checkNextWeekSchedule();
+    setInterval(checkNextWeekSchedule, 30 * 60 * 1000); // tự kiểm tra lại mỗi 30 phút phòng khi file được thêm sau
+  </script>
+</body>
+</html>
