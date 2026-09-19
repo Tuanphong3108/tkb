@@ -104,6 +104,7 @@
     }
     .grid-notice-inner {
       min-height: 0;
+      overflow: hidden;
     }
 
     /* ---- More Option (mobile): zoom ra từ nút 3 chấm ---- */
@@ -1670,10 +1671,12 @@
       }
     }
 
-    initWeather();
-
     // ==== KIỂM TRA THỜI KHÓA BIỂU TUẦN SAU (dựa theo tuần thực tế hiện tại, không phải tuần đang xem) ====
+    // Khai báo TRƯỚC khi gọi initWeather(), vì initWeather() có thể gọi updateWeatherUI() ngay lập tức
+    // (khi dùng lại cache) và updateWeatherUI() có tham chiếu tới biến này.
     let nextWeekNoticeShown = false;
+
+    initWeather();
 
     function showNextWeekNotice(msg) {
       // Mobile: tạm ẩn quote thời tiết, thay bằng thông báo tuần (không đụng phần cảnh báo thời tiết)
