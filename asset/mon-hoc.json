@@ -28,7 +28,7 @@
   {
     "code": "ANH",
     "name": "Tiếng Anh",
-    "category": "Môn học bắt buộc cốt lõi",
+    "category": "Môn học bắt buộc",
     "description": "Phát triển năng lực giao tiếp bằng ngoại ngữ qua 4 kỹ năng nghe, nói, đọc, viết theo khung năng lực ngoại ngữ, chuẩn bị hành trang hội nhập quốc tế cho học sinh bậc trung học phổ thông.",
     "keywords": [
       "Từ vựng",
@@ -40,7 +40,7 @@
   {
     "code": "SỬ",
     "name": "Lịch sử",
-    "category": "Khoa học xã hội",
+    "category": "Môn học bắt buộc",
     "description": "Môn học lựa chọn định hướng khoa học xã hội, giúp học sinh hiểu sâu sắc các tiến trình lịch sử dân tộc và thế giới, phát triển tư duy lịch sử và vận dụng bài học quá khứ vào thực tiễn.",
     "keywords": [
       "Lịch sử Việt Nam",
@@ -148,7 +148,7 @@
   {
     "code": "HĐTN 2",
     "name": "Hoạt động trải nghiệm, hướng nghiệp",
-    "category": "Hoạt động giáo dục bắt buộc",
+    "category": "Môn học bắt buộc",
     "description": "Giúp học sinh phát triển phẩm chất, năng lực thích ứng với cuộc sống, rèn luyện kỹ năng tổ chức hoạt động và định hướng rõ ràng về ngành nghề tương lai.",
     "keywords": [
       "Kỹ năng sống",
