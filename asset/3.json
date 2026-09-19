@@ -2,7 +2,7 @@
   "dateRange": "21/09/2026 - 27/09/2026",
   "sang": [
     {
-      "t2": { "sub": "HĐTN,HN", "teacher": "TÙNG" },
+      "t2": { "sub": "HĐTN,HN", "teacher": "TÙNG", "alert": "Alert testing" },
       "t3": { "sub": "VĂN", "teacher": "LẬP" },
       "t4": { "sub": "TOÁN", "teacher": "PHƯƠNG.T" },
       "t5": { "sub": "GDKT&PL", "teacher": "T.HƯƠNG" },
