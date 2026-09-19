@@ -2,7 +2,7 @@
   {
     "code": "TOÁN",
     "name": "Toán học",
-    "category": "Môn học bắt buộc cốt lõi",
+    "category": "Môn học bắt buộc",
     "description": "Trang bị tư duy logic, khả năng tính toán, mô hình hóa toán học và giải quyết vấn đề thực tiễn thông qua các mạch kiến thức Đại số, Hình học và Xác suất thống kê ở cấp trung học phổ thông.",
     "keywords": [
       "Đại số",
@@ -15,7 +15,7 @@
   {
     "code": "VĂN",
     "name": "Ngữ văn",
-    "category": "Môn học bắt buộc cốt lõi",
+    "category": "Môn học bắt buộc",
     "description": "Phát triển năng lực ngôn ngữ bao gồm đọc, viết, nói, nghe và năng lực thẩm mỹ. Học sinh tiếp cận các văn bản văn học, nghị luận và thông tin để bồi dưỡng tâm hồn và tư duy phản biện.",
     "keywords": [
       "Đọc hiểu",
