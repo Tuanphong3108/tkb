@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thời Khóa Biểu 10A2 - Material Design 3</title>
-  
+
   <!-- Disable caching for dynamic freshness -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  
+
   <!-- PWA Manifest & Icons -->
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icon.png">
@@ -19,10 +20,12 @@
   <!-- Google Sans Flex Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
   <!-- Material Symbols Outline -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
   <!-- Apple iOS PWA Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -31,10 +34,10 @@
 
   <!-- Tắt tự động nhận diện số điện thoại trên Safari -->
   <meta name="format-detection" content="telephone=no">
-  
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
+
   <!-- Material Web Components (M3) -->
   <script type="module" src="https://esm.run/@material/web/all.js"></script>
 
@@ -45,11 +48,12 @@
       color: #1e293b;
       -webkit-tap-highlight-color: transparent;
     }
-    
+
     .material-symbols-outlined {
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
       transition: font-variation-settings 0.2s ease, transform 0.2s ease;
     }
+
     .subject-card:hover .material-symbols-outlined {
       font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
       transform: scale(1.08);
@@ -57,11 +61,13 @@
 
     .expressive-btn {
       transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease,
-                  opacity 0.25s ease, filter 0.25s ease;
+        opacity 0.25s ease, filter 0.25s ease;
     }
+
     .expressive-btn:active:not(:disabled) {
       transform: scale(0.95);
     }
+
     .expressive-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
@@ -70,27 +76,65 @@
 
     /* ---- Animation dùng chung: bong bóng chat & dialog (zoom in/out, không nảy) ---- */
     @keyframes zoomFadeIn {
-      from { opacity: 0; transform: scale(0.92); }
-      to   { opacity: 1; transform: scale(1); }
+      from {
+        opacity: 0;
+        transform: scale(0.92);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
+
     @keyframes zoomFadeOut {
-      from { opacity: 1; transform: scale(1); }
-      to   { opacity: 0; transform: scale(0.92); }
+      from {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      to {
+        opacity: 0;
+        transform: scale(0.92);
+      }
     }
-    .zoom-fade-in  { animation: zoomFadeIn 0.18s cubic-bezier(0.2, 0, 0, 1) both; }
-    .zoom-fade-out { animation: zoomFadeOut 0.15s cubic-bezier(0.4, 0, 1, 1) both; }
+
+    .zoom-fade-in {
+      animation: zoomFadeIn 0.18s cubic-bezier(0.2, 0, 0, 1) both;
+    }
+
+    .zoom-fade-out {
+      animation: zoomFadeOut 0.15s cubic-bezier(0.4, 0, 1, 1) both;
+    }
 
     /* ---- Trượt lên/xuống: dialog vị trí thời tiết trên Mobile (không nảy) ---- */
     @keyframes slideUpIn {
-      from { transform: translateY(100%); }
-      to   { transform: translateY(0); }
+      from {
+        transform: translateY(100%);
+      }
+
+      to {
+        transform: translateY(0);
+      }
     }
+
     @keyframes slideDownOut {
-      from { transform: translateY(0); }
-      to   { transform: translateY(100%); }
+      from {
+        transform: translateY(0);
+      }
+
+      to {
+        transform: translateY(100%);
+      }
     }
-    .slide-up-in   { animation: slideUpIn 0.28s cubic-bezier(0.2, 0, 0, 1) both; }
-    .slide-down-out{ animation: slideDownOut 0.22s cubic-bezier(0.4, 0, 1, 1) both; }
+
+    .slide-up-in {
+      animation: slideUpIn 0.28s cubic-bezier(0.2, 0, 0, 1) both;
+    }
+
+    .slide-down-out {
+      animation: slideDownOut 0.22s cubic-bezier(0.4, 0, 1, 1) both;
+    }
 
     /* ---- Dock cảnh báo thời tiết: tự trượt lên từ dock, thu lại khi đóng ----
        Dùng max-height đo bằng JS (scrollHeight thật) thay vì kỹ thuật CSS Grid,
@@ -111,6 +155,7 @@
       opacity: 0;
       transition: opacity 0.18s ease;
     }
+
     #week-loading-overlay.opacity-100 {
       opacity: 1;
     }
@@ -128,9 +173,15 @@
       }
     }
 
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
     @page {
       size: A4 landscape;
       margin: 8mm 10mm;
@@ -148,8 +199,26 @@
         print-color-adjust: exact !important;
       }
 
-      #pc-view { display: block !important; }
-      #mobile-view, .no-print, #subject-dialog, #apps-dialog, #more-menu, #mobile-weather-dock, #mobile-weather-container, #mobile-weather-notice, #mobile-location-dialog, #pc-weather-widget, #pc-weather-bubble, #pc-week-bubble, #week-dialog, #week-loading-overlay { display: none !important; }
+      #pc-view {
+        display: block !important;
+      }
+
+      #mobile-view,
+      .no-print,
+      #subject-dialog,
+      #apps-dialog,
+      #more-menu,
+      #mobile-weather-dock,
+      #mobile-weather-container,
+      #mobile-weather-notice,
+      #mobile-location-dialog,
+      #pc-weather-widget,
+      #pc-weather-bubble,
+      #pc-week-bubble,
+      #week-dialog,
+      #week-loading-overlay {
+        display: none !important;
+      }
 
       .print-wrapper {
         padding: 0 !important;
@@ -167,8 +236,16 @@
         border: 1px solid #000 !important;
       }
 
-      table { min-width: 100% !important; table-layout: fixed !important; }
-      th, td { padding: 1.5px !important; border-color: #000000 !important; }
+      table {
+        min-width: 100% !important;
+        table-layout: fixed !important;
+      }
+
+      th,
+      td {
+        padding: 1.5px !important;
+        border-color: #000000 !important;
+      }
 
       .subject-card {
         padding: 2px 1px !important;
@@ -199,38 +276,47 @@
     }
   </style>
 </head>
+
 <body class="min-h-screen w-full flex flex-col justify-between p-3 md:p-6 pb-24 md:pb-6 bg-slate-50 text-slate-800">
 
   <div class="print-wrapper relative w-full max-w-7xl mx-auto flex flex-col flex-1">
 
     <!-- Header Section -->
-    <header class="relative z-30 w-full flex items-center justify-between gap-4 mb-4 bg-white p-4 md:p-5 rounded-3xl shadow-sm border border-slate-200/80">
+    <header
+      class="relative z-30 w-full flex items-center justify-between gap-4 mb-4 bg-white p-4 md:p-5 rounded-3xl shadow-sm border border-slate-200/80">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-base md:text-lg shadow-inner">
+        <div
+          class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-base md:text-lg shadow-inner">
           10A2
         </div>
         <div>
           <h1 class="text-lg md:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
             TKB <span id="week-title-display">TUẦN 02</span>
-            <span class="text-[10px] md:text-xs font-semibold px-2 py-0.5 bg-teal-50 text-teal-700 border border-teal-200 rounded-full">2026-2027</span>
+            <span
+              class="text-[10px] md:text-xs font-semibold px-2 py-0.5 bg-teal-50 text-teal-700 border border-teal-200 rounded-full">2026-2027</span>
           </h1>
-          <p class="text-[11px] md:text-xs text-slate-500 font-medium mt-0.5" id="week-date-range">Đang tải ngày áp dụng...</p>
+          <p class="text-[11px] md:text-xs text-slate-500 font-medium mt-0.5" id="week-date-range">Đang tải ngày áp
+            dụng...</p>
         </div>
       </div>
 
       <!-- Action Bar Desktop View -->
       <div class="no-print hidden md:flex items-center gap-3">
-        
+
         <!-- PC Weather Widget & Chat Bubble -->
         <div class="relative">
-          <div id="pc-weather-widget" onclick="togglePcWeatherBubble()" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200/80 transition-colors px-3 py-2 rounded-2xl border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer select-none">
+          <div id="pc-weather-widget" onclick="togglePcWeatherBubble()"
+            class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200/80 transition-colors px-3 py-2 rounded-2xl border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer select-none">
             <md-circular-progress indeterminate style="--md-circular-progress-size: 18px;"></md-circular-progress>
           </div>
 
           <!-- PC Chat Bubble Notice / Location Prompt -->
-          <div id="pc-weather-bubble" class="hidden absolute top-full left-0 mt-2 z-50 bg-slate-900 text-white text-xs p-3.5 rounded-2xl shadow-2xl border border-slate-700 w-72 animate-in fade-in zoom-in-95 no-print">
-            <div class="absolute -top-1.5 left-6 w-3 h-3 bg-slate-900 transform rotate-45 border-t border-l border-slate-700"></div>
-            
+          <div id="pc-weather-bubble"
+            class="hidden absolute top-full left-0 mt-2 z-50 bg-slate-900 text-white text-xs p-3.5 rounded-2xl shadow-2xl border border-slate-700 w-72 animate-in fade-in zoom-in-95 no-print">
+            <div
+              class="absolute -top-1.5 left-6 w-3 h-3 bg-slate-900 transform rotate-45 border-t border-l border-slate-700">
+            </div>
+
             <!-- Location Choice Prompt (No Close Button) -->
             <div id="pc-bubble-location-prompt" class="hidden">
               <div class="text-[11px] font-bold text-slate-200 mb-2 flex items-center gap-1.5">
@@ -238,10 +324,12 @@
                 Bạn muốn dùng vị trí nào để xem thời tiết?
               </div>
               <div class="flex items-center gap-2 mt-2.5">
-                <button onclick="chooseWeatherLocation('school')" class="expressive-btn flex-1 bg-teal-700 hover:bg-teal-800 text-white font-bold text-[11px] py-1.5 px-2 rounded-xl text-center border border-teal-600/50 cursor-pointer">
+                <button onclick="chooseWeatherLocation('school')"
+                  class="expressive-btn flex-1 bg-teal-700 hover:bg-teal-800 text-white font-bold text-[11px] py-1.5 px-2 rounded-xl text-center border border-teal-600/50 cursor-pointer">
                   Vị trí trường
                 </button>
-                <button onclick="chooseWeatherLocation('user')" class="expressive-btn flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[11px] py-1.5 px-2 rounded-xl text-center border border-slate-700 cursor-pointer">
+                <button onclick="chooseWeatherLocation('user')"
+                  class="expressive-btn flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[11px] py-1.5 px-2 rounded-xl text-center border border-slate-700 cursor-pointer">
                   Vị trí của bạn
                 </button>
               </div>
@@ -253,27 +341,31 @@
                 <span class="material-symbols-outlined text-base shrink-0 mt-0.5">info</span>
                 <span id="pc-bubble-text"></span>
               </div>
-              <button onclick="dismissWeatherNotice()" class="text-slate-400 hover:text-white p-0.5 shrink-0 cursor-pointer">
+              <button onclick="dismissWeatherNotice()"
+                class="text-slate-400 hover:text-white p-0.5 shrink-0 cursor-pointer">
                 <span class="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
           </div>
         </div>
-        
+
         <!-- Live Status Widget -->
-        <div class="flex items-center gap-2.5 bg-slate-900 text-white px-3.5 py-2 rounded-2xl shadow-sm border border-slate-800">
+        <div
+          class="flex items-center gap-2.5 bg-slate-900 text-white px-3.5 py-2 rounded-2xl shadow-sm border border-slate-800">
           <div class="relative flex h-3 w-3">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
           </div>
           <div class="flex flex-col text-left">
-            <span class="text-[11px] font-bold text-emerald-400 leading-tight" id="live-period-display">Đang tính tiết...</span>
+            <span class="text-[11px] font-bold text-emerald-400 leading-tight" id="live-period-display">Đang tính
+              tiết...</span>
             <span class="text-[10px] text-slate-300 font-medium leading-tight" id="live-clock-display">00:00:00</span>
           </div>
         </div>
 
         <!-- Nút My Apps PC -->
-        <button onclick="openAppsDialog()" class="expressive-btn relative overflow-hidden flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3.5 py-2.5 rounded-2xl border border-slate-200 cursor-pointer shadow-xs">
+        <button onclick="openAppsDialog()"
+          class="expressive-btn relative overflow-hidden flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3.5 py-2.5 rounded-2xl border border-slate-200 cursor-pointer shadow-xs">
           <md-ripple></md-ripple>
           <span class="material-symbols-outlined text-base text-teal-600">apps</span>
           <span class="text-xs">My apps</span>
@@ -284,28 +376,34 @@
           <select id="week-select-pc" class="hidden" tabindex="-1" aria-hidden="true">
             <!-- Dynamic JS: chỉ giữ dữ liệu, không hiển thị -->
           </select>
-          <button type="button" id="week-select-pc-btn" onclick="openWeekDialog()" class="expressive-btn flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200/80 transition-colors text-xs font-bold text-slate-800 py-2.5 pl-3 pr-2.5 rounded-2xl border border-slate-200 cursor-pointer">
+          <button type="button" id="week-select-pc-btn" onclick="openWeekDialog()"
+            class="expressive-btn flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200/80 transition-colors text-xs font-bold text-slate-800 py-2.5 pl-3 pr-2.5 rounded-2xl border border-slate-200 cursor-pointer">
             <span id="week-select-pc-label">Tuần</span>
             <span class="material-symbols-outlined text-sm text-slate-500">unfold_more</span>
           </button>
 
           <!-- PC Chat Bubble: Thông báo đã có TKB tuần sau (bong bóng riêng, khác với bong bóng thời tiết) -->
-          <div id="pc-week-bubble" class="hidden absolute top-full right-0 mt-2 z-40 bg-slate-900 text-white text-xs p-3.5 rounded-2xl shadow-2xl border border-slate-700 w-64 animate-in fade-in zoom-in-95 no-print">
-            <div class="absolute -top-1.5 right-6 w-3 h-3 bg-slate-900 transform rotate-45 border-t border-l border-slate-700"></div>
+          <div id="pc-week-bubble"
+            class="hidden absolute top-full right-0 mt-2 z-40 bg-slate-900 text-white text-xs p-3.5 rounded-2xl shadow-2xl border border-slate-700 w-64 animate-in fade-in zoom-in-95 no-print">
+            <div
+              class="absolute -top-1.5 right-6 w-3 h-3 bg-slate-900 transform rotate-45 border-t border-l border-slate-700">
+            </div>
             <div class="flex items-start justify-between gap-2 relative z-10">
               <div class="flex items-start gap-1.5 leading-snug text-teal-300 font-medium text-[11px]">
                 <span class="material-symbols-outlined text-base shrink-0 mt-0.5">event_available</span>
                 <span id="pc-week-bubble-text"></span>
               </div>
-              <button onclick="dismissNextWeekNotice()" class="text-slate-400 hover:text-white p-0.5 shrink-0 cursor-pointer">
+              <button onclick="dismissNextWeekNotice()"
+                class="text-slate-400 hover:text-white p-0.5 shrink-0 cursor-pointer">
                 <span class="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
           </div>
         </div>
-        
+
         <!-- Nút In PC -->
-        <button id="print-btn" onclick="window.print()" class="expressive-btn relative overflow-hidden flex items-center gap-1.5 bg-teal-700 hover:bg-teal-800 text-white font-medium px-4 py-2.5 rounded-2xl shadow-sm cursor-pointer">
+        <button id="print-btn" onclick="window.print()"
+          class="expressive-btn relative overflow-hidden flex items-center gap-1.5 bg-teal-700 hover:bg-teal-800 text-white font-medium px-4 py-2.5 rounded-2xl shadow-sm cursor-pointer">
           <md-ripple></md-ripple>
           <span class="material-symbols-outlined text-base">print</span>
           <span class="text-xs font-semibold">In A4</span>
@@ -314,15 +412,18 @@
 
       <!-- Action Mobile (Nút More) -->
       <div class="no-print flex md:hidden items-center gap-2">
-        <button id="more-menu-btn" class="expressive-btn w-10 h-10 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700">
+        <button id="more-menu-btn"
+          class="expressive-btn w-10 h-10 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700">
           <span class="material-symbols-outlined">more_vert</span>
         </button>
       </div>
 
       <!-- Mobile More Menu Popup -->
-      <div id="more-menu" class="hidden no-print absolute right-4 top-16 bg-white border border-slate-200 shadow-xl rounded-2xl p-3 z-50 w-52 flex-col gap-2">
+      <div id="more-menu"
+        class="hidden no-print absolute right-4 top-16 bg-white border border-slate-200 shadow-xl rounded-2xl p-3 z-50 w-52 flex-col gap-2">
         <div class="text-[11px] font-bold text-slate-400 px-1">TÙY CHỌN</div>
-        <button onclick="openAppsDialog()" class="w-full flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2 px-3 rounded-xl border border-slate-200">
+        <button onclick="openAppsDialog()"
+          class="w-full flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2 px-3 rounded-xl border border-slate-200">
           <span class="material-symbols-outlined text-sm text-teal-600">apps</span> My apps
         </button>
         <div>
@@ -330,26 +431,30 @@
           <select id="week-select-mobile" class="hidden" tabindex="-1" aria-hidden="true">
             <!-- Dynamic JS: chỉ giữ dữ liệu, không hiển thị -->
           </select>
-          <button type="button" id="week-select-mobile-btn" onclick="openWeekDialog()" class="expressive-btn w-full flex items-center justify-between gap-1.5 bg-slate-100 text-slate-800 text-xs font-bold py-2 px-2.5 rounded-xl border border-slate-200 cursor-pointer">
+          <button type="button" id="week-select-mobile-btn" onclick="openWeekDialog()"
+            class="expressive-btn w-full flex items-center justify-between gap-1.5 bg-slate-100 text-slate-800 text-xs font-bold py-2 px-2.5 rounded-xl border border-slate-200 cursor-pointer">
             <span id="week-select-mobile-label">Tuần</span>
             <span class="material-symbols-outlined text-sm text-slate-500">unfold_more</span>
           </button>
         </div>
-        <button id="print-btn-mobile" onclick="window.print()" class="expressive-btn w-full flex items-center gap-2 bg-teal-700 text-white text-xs font-bold py-2 px-3 rounded-xl mt-1">
+        <button id="print-btn-mobile" onclick="window.print()"
+          class="expressive-btn w-full flex items-center gap-2 bg-teal-700 text-white text-xs font-bold py-2 px-3 rounded-xl mt-1">
           <span class="material-symbols-outlined text-sm">print</span> In Thời Khóa Biểu
         </button>
       </div>
     </header>
 
     <!-- Main Content Area -->
-    <main class="relative z-10 w-full flex-1 bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col justify-center min-h-[420px]">
-      
+    <main
+      class="relative z-10 w-full flex-1 bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col justify-center min-h-[420px]">
+
       <!-- LUỒNG PC VIEW -->
       <div id="pc-view" class="hidden md:block overflow-x-auto w-full">
         <table class="w-full text-center border-collapse">
           <thead>
             <tr class="bg-slate-900 text-white border-b border-slate-800">
-              <th class="py-2.5 px-2 font-semibold text-xs w-20 uppercase tracking-wider text-slate-300">Buổi / Tiết</th>
+              <th class="py-2.5 px-2 font-semibold text-xs w-20 uppercase tracking-wider text-slate-300">Buổi / Tiết
+              </th>
               <th class="py-2.5 px-2 font-semibold text-sm w-1/6">Thứ 2</th>
               <th class="py-2.5 px-2 font-semibold text-sm w-1/6">Thứ 3</th>
               <th class="py-2.5 px-2 font-semibold text-sm w-1/6">Thứ 4</th>
@@ -372,13 +477,26 @@
         </div>
 
         <!-- Tabs Chuyển Thứ Mobile -->
-        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-3 border-b border-slate-100" id="mobile-tabs">
-          <button data-day="t2" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 2</button>
-          <button data-day="t3" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 3</button>
-          <button data-day="t4" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 4</button>
-          <button data-day="t5" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 5</button>
-          <button data-day="t6" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 6</button>
-          <button data-day="t7" class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ 7</button>
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-3 border-b border-slate-100"
+          id="mobile-tabs">
+          <button data-day="t2"
+            class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ
+            2</button>
+          <button data-day="t3"
+            class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ
+            3</button>
+          <button data-day="t4"
+            class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ
+            4</button>
+          <button data-day="t5"
+            class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ
+            5</button>
+          <button data-day="t6"
+            class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ
+            6</button>
+          <button data-day="t7"
+            class="day-tab flex-1 min-w-[64px] py-2 px-3 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 transition-all">Thứ
+            7</button>
         </div>
 
         <!-- Timeline Mobile -->
@@ -398,9 +516,11 @@
     </main>
 
     <!-- Footer -->
-    <footer class="relative z-10 w-full mt-3 flex flex-row items-center justify-between text-[10px] md:text-[11px] text-slate-500 px-1">
+    <footer
+      class="relative z-10 w-full mt-3 flex flex-row items-center justify-between text-[10px] md:text-[11px] text-slate-500 px-1">
       <div class="flex items-center gap-1.5 font-bold text-slate-800">
-        <img src="https://lh3.googleusercontent.com/a/ACg8ocK1ghp_0vaVGK6czFhTwIBo0asg1GAhSQ4xwdm9kL9kAmu8BneC=s0-c" alt="Avatar" class="w-4 h-4 rounded-full object-cover border border-slate-400" />
+        <img src="https://lh3.googleusercontent.com/a/ACg8ocK1ghp_0vaVGK6czFhTwIBo0asg1GAhSQ4xwdm9kL9kAmu8BneC=s0-c"
+          alt="Avatar" class="w-4 h-4 rounded-full object-cover border border-slate-400" />
         <span>Made by Phong VN - tuanphong3108.github.io</span>
       </div>
       <div class="font-semibold text-slate-700">© 2026 Phong VN</div>
@@ -409,13 +529,16 @@
   </div>
 
   <!-- DIALOG CHI TIẾT MON HOC -->
-  <div id="subject-dialog" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-0 md:p-4">
-    <div id="subject-dialog-panel" class="w-full h-full md:h-auto md:max-w-md bg-white md:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
-      
+  <div id="subject-dialog"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-0 md:p-4">
+    <div id="subject-dialog-panel"
+      class="w-full h-full md:h-auto md:max-w-md bg-white md:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
+
       <!-- Dialog Header -->
       <div class="p-4 md:p-5 bg-slate-900 text-white flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div id="dialog-icon-wrapper" class="w-10 h-10 rounded-2xl bg-teal-500/20 text-teal-300 flex items-center justify-center">
+          <div id="dialog-icon-wrapper"
+            class="w-10 h-10 rounded-2xl bg-teal-500/20 text-teal-300 flex items-center justify-center">
             <span id="dialog-icon" class="material-symbols-outlined text-2xl">school</span>
           </div>
           <div>
@@ -423,14 +546,15 @@
             <p id="dialog-time" class="text-xs font-semibold text-emerald-400 mt-0.5">Hôm nay, 07:15 - 08:00</p>
           </div>
         </div>
-        <button id="dialog-close-btn" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-slate-700">
+        <button id="dialog-close-btn"
+          class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-slate-700">
           <span class="material-symbols-outlined text-lg">close</span>
         </button>
       </div>
 
       <!-- Dialog Body -->
       <div class="p-5 flex-1 overflow-y-auto space-y-4">
-        
+
         <div class="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
           <div class="w-8 h-8 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center">
             <span class="material-symbols-outlined text-lg">person</span>
@@ -442,14 +566,16 @@
         </div>
 
         <div class="flex items-center gap-2">
-          <span id="dialog-category" class="px-3 py-1 bg-teal-50 text-teal-700 text-[11px] font-bold rounded-xl border border-teal-200/60"></span>
+          <span id="dialog-category"
+            class="px-3 py-1 bg-teal-50 text-teal-700 text-[11px] font-bold rounded-xl border border-teal-200/60"></span>
         </div>
 
         <div>
           <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
             <span class="material-symbols-outlined text-sm">description</span> Mô tả môn học
           </div>
-          <div id="dialog-description" class="text-xs text-slate-600 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60 leading-relaxed min-h-[80px]">
+          <div id="dialog-description"
+            class="text-xs text-slate-600 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60 leading-relaxed min-h-[80px]">
             Đang tải dữ liệu...
           </div>
         </div>
@@ -465,7 +591,8 @@
 
       <!-- Dialog Footer -->
       <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
-        <button id="dialog-btn-close-bottom" class="expressive-btn bg-slate-900 text-white font-bold text-xs py-2.5 px-6 rounded-2xl shadow-sm">
+        <button id="dialog-btn-close-bottom"
+          class="expressive-btn bg-slate-900 text-white font-bold text-xs py-2.5 px-6 rounded-2xl shadow-sm">
           Đóng
         </button>
       </div>
@@ -474,9 +601,11 @@
   </div>
 
   <!-- DIALOG MY APPS EMBED -->
-  <div id="apps-dialog" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-0 md:p-6">
-    <div id="apps-dialog-panel" class="w-full h-full md:max-w-4xl md:h-[85vh] bg-white md:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
-      
+  <div id="apps-dialog"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-0 md:p-6">
+    <div id="apps-dialog-panel"
+      class="w-full h-full md:max-w-4xl md:h-[85vh] bg-white md:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
+
       <!-- Apps Dialog Header -->
       <div class="p-4 md:p-5 bg-slate-900 text-white flex items-center justify-between shrink-0">
         <div class="flex items-center gap-3">
@@ -488,14 +617,16 @@
             <p class="text-xs text-slate-400 mt-0.5">Danh sách ứng dụng của tôi</p>
           </div>
         </div>
-        <button id="apps-close-btn" onclick="closeAppsDialog()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-slate-700">
+        <button id="apps-close-btn" onclick="closeAppsDialog()"
+          class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-slate-700">
           <span class="material-symbols-outlined text-lg">close</span>
         </button>
       </div>
 
       <!-- Apps Dialog Body / Embed Iframe -->
       <div class="flex-1 w-full h-full bg-slate-50 overflow-hidden relative">
-        <iframe src="https://tuanphong3108.github.io/apps.html?is_embed=true" class="w-full h-full border-none" title="My Apps"></iframe>
+        <iframe src="https://tuanphong3108.github.io/apps.html?is_embed=true" class="w-full h-full border-none"
+          title="My Apps"></iframe>
       </div>
 
     </div>
@@ -505,7 +636,8 @@
   <md-dialog id="week-dialog">
     <div slot="headline">Chọn tuần</div>
     <div slot="content">
-      <div id="week-dialog-list" class="flex flex-col gap-2 md:grid md:grid-cols-4 max-h-[70vh] md:max-h-[50vh] overflow-y-auto pr-1"></div>
+      <div id="week-dialog-list"
+        class="flex flex-col gap-2 md:grid md:grid-cols-4 max-h-[70vh] md:max-h-[50vh] overflow-y-auto pr-1"></div>
     </div>
     <div slot="actions">
       <md-text-button onclick="document.getElementById('week-dialog').close()">Đóng</md-text-button>
@@ -513,38 +645,47 @@
   </md-dialog>
 
   <!-- LỚP PHỦ LOADING KHI CHUYỂN TUẦN (PC + Mobile) -->
-  <div id="week-loading-overlay" class="hidden no-print fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center">
+  <div id="week-loading-overlay"
+    class="hidden no-print fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center">
     <md-circular-progress indeterminate style="--md-circular-progress-size: 48px;"></md-circular-progress>
   </div>
 
   <!-- MOBILE WEATHER CONTAINER -->
-  <div id="mobile-weather-container" class="no-print block md:hidden fixed bottom-3 left-3 right-3 z-40 bg-slate-900/95 text-white backdrop-blur-md rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
-    
+  <div id="mobile-weather-container"
+    class="no-print block md:hidden fixed bottom-3 left-3 right-3 z-40 bg-slate-900/95 text-white backdrop-blur-md rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
+
     <!-- Mobile Notice Upper Dock: trượt lên từ dock thời tiết bằng grid-template-rows -->
     <div id="mobile-weather-notice" class="grid-notice">
-      <div class="grid-notice-inner bg-amber-500/10 border-b border-slate-800 p-2.5 px-3 flex items-center justify-between gap-2">
+      <div
+        class="grid-notice-inner bg-amber-500/10 border-b border-slate-800 p-2.5 px-3 flex items-center justify-between gap-2">
         <div class="flex items-center gap-1.5 text-xs text-amber-300 font-medium leading-tight flex-1">
           <span class="material-symbols-outlined text-base shrink-0">info</span>
           <span id="mobile-notice-text"></span>
         </div>
-        <button onclick="dismissWeatherNotice()" class="expressive-btn bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold px-2.5 py-1 rounded-xl text-[10px] shrink-0 cursor-pointer">
+        <button onclick="dismissWeatherNotice()"
+          class="expressive-btn bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold px-2.5 py-1 rounded-xl text-[10px] shrink-0 cursor-pointer">
           OK
         </button>
       </div>
     </div>
 
     <!-- Mobile Weather Dock -->
-    <div id="mobile-weather-dock" onclick="showLocationChoicePrompt()" class="p-3 flex items-center justify-between gap-3 cursor-pointer">
+    <div id="mobile-weather-dock" onclick="showLocationChoicePrompt()"
+      class="p-3 flex items-center justify-between gap-3 cursor-pointer">
       <div id="mobile-weather-left" class="flex items-center gap-2 shrink-0">
         <md-circular-progress indeterminate style="--md-circular-progress-size: 18px;"></md-circular-progress>
       </div>
-      <div id="mobile-weather-quote" class="text-right text-[11px] text-slate-300 italic font-medium leading-snug line-clamp-2 flex-1 pl-2 border-l border-slate-700/60"></div>
+      <div id="mobile-weather-quote"
+        class="text-right text-[11px] text-slate-300 italic font-medium leading-snug line-clamp-2 flex-1 pl-2 border-l border-slate-700/60">
+      </div>
     </div>
   </div>
 
   <!-- MOBILE LOCATION CHOICE DIALOG (SLIDE UP) -->
-  <div id="mobile-location-dialog" class="hidden no-print block md:hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end justify-center">
-    <div id="mobile-location-panel" class="w-full bg-slate-900 text-white rounded-t-3xl p-5 border-t border-slate-700 shadow-2xl">
+  <div id="mobile-location-dialog"
+    class="hidden no-print block md:hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end justify-center">
+    <div id="mobile-location-panel"
+      class="w-full bg-slate-900 text-white rounded-t-3xl p-5 border-t border-slate-700 shadow-2xl">
       <div class="w-12 h-1 bg-slate-700 rounded-full mx-auto mb-4"></div>
       <h3 class="text-sm font-bold text-slate-100 mb-1 flex items-center gap-2">
         <span class="material-symbols-outlined text-teal-400 text-lg">location_on</span>
@@ -552,14 +693,16 @@
       </h3>
       <p class="text-xs text-slate-300 mb-4 font-medium">Bạn muốn dùng vị trí nào để xem thời tiết?</p>
       <div class="flex flex-col gap-2.5">
-        <button onclick="chooseWeatherLocation('school')" class="expressive-btn w-full bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs py-3 px-4 rounded-2xl flex items-center justify-between border border-teal-600/50 shadow-sm cursor-pointer">
+        <button onclick="chooseWeatherLocation('school')"
+          class="expressive-btn w-full bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs py-3 px-4 rounded-2xl flex items-center justify-between border border-teal-600/50 shadow-sm cursor-pointer">
           <span class="flex items-center gap-2">
             <span class="material-symbols-outlined text-base">school</span>
             Vị trí trường
           </span>
           <span class="material-symbols-outlined text-sm text-teal-200">chevron_right</span>
         </button>
-        <button onclick="chooseWeatherLocation('user')" class="expressive-btn w-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-3 px-4 rounded-2xl flex items-center justify-between border border-slate-700 cursor-pointer">
+        <button onclick="chooseWeatherLocation('user')"
+          class="expressive-btn w-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-3 px-4 rounded-2xl flex items-center justify-between border border-slate-700 cursor-pointer">
           <span class="flex items-center gap-2">
             <span class="material-symbols-outlined text-base text-teal-400">my_location</span>
             Vị trí của bạn
@@ -570,7 +713,7 @@
     </div>
   </div>
 
-<script>
+  <script>
     // Tự động chuyển hướng tới offline.html khi mất mạng
     if (typeof navigator.onLine !== 'undefined' && !navigator.onLine) {
       window.location.replace('./offline.html');
@@ -596,7 +739,7 @@
             });
           }
         });
-      }).catch(() => {});
+      }).catch(() => { });
     }
 
     // Register Service Worker & Auto-Update
@@ -620,7 +763,7 @@
         }).catch(err => console.error('SW reg error:', err));
       });
     }
-  
+
     const subjectConfig = {
       'TOÁN': { bg: 'bg-sky-50/80', border: 'border-sky-200/60', icon: 'functions', text: 'text-sky-950', teacherText: 'text-sky-800', iconColor: 'text-sky-600' },
       'VĂN': { bg: 'bg-rose-50/80', border: 'border-rose-200/60', icon: 'menu_book', text: 'text-rose-950', teacherText: 'text-rose-800', iconColor: 'text-rose-600' },
@@ -665,7 +808,7 @@
 
     let selectedWeek = getCurrentWeekNum();
     let currentData = null;
-    
+
     // Auto detect today for Mobile Tab
     function getTodayKey() {
       const d = new Date().getDay(); // 0: Sun, 1: Mon, ..., 6: Sat
@@ -728,15 +871,15 @@
       try {
         const response = await fetch(`./asset/${week}.json`);
         if (!response.ok) throw new Error("No data");
-        
+
         currentData = await response.json();
         renderPCTable(currentData);
-        
+
         updateActiveTabUI(selectedDayMobile);
         renderMobileTimeline(currentData, selectedDayMobile);
 
         document.getElementById('week-date-range').textContent = `Áp dụng: ${currentData.dateRange || 'Đang cập nhật'}`;
-        
+
         if (window.innerWidth >= 768) {
           pcView.style.display = 'block';
           mobileView.style.display = 'none';
@@ -778,7 +921,7 @@
         periods.forEach((p, idx) => {
           html += `<tr class="hover:bg-slate-50/80 transition-colors">
             <td class="py-1.5 px-1 font-bold text-xs text-slate-500 bg-slate-50/50">Tiết ${idx + 1}</td>`;
-          
+
           ['t2', 't3', 't4', 't5', 't6', 't7'].forEach(day => {
             const cell = p[day];
             if (cell && cell.sub) {
@@ -875,7 +1018,7 @@
       const timeStr = now.toTimeString().split(' ')[0];
       const days = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
       const dayName = days[now.getDay()];
-      
+
       document.getElementById('live-clock-display').textContent = `${dayName}, ${timeStr}`;
       document.getElementById('mobile-live-clock').textContent = timeStr;
 
@@ -884,8 +1027,8 @@
 
       const checkList = [
         { p: 'Truy bài 📖', start: '07:00', end: '07:15' },
-        ...periodTimesSang.map((t, i) => ({ p: `Sáng - Tiết ${i+1}`, ...t })),
-        ...periodTimesChieu.map((t, i) => ({ p: `Chiều - Tiết ${i+1}`, ...t }))
+        ...periodTimesSang.map((t, i) => ({ p: `Sáng - Tiết ${i + 1}`, ...t })),
+        ...periodTimesChieu.map((t, i) => ({ p: `Chiều - Tiết ${i + 1}`, ...t }))
       ];
 
       for (let slot of checkList) {
@@ -952,13 +1095,13 @@
       targetDate.setDate(targetDate.getDate() + (selectedWeek - 1) * 7 + dayOffset);
 
       const today = new Date();
-      today.setHours(0,0,0,0);
-      
+      today.setHours(0, 0, 0, 0);
+
       const targetZero = new Date(targetDate);
-      targetZero.setHours(0,0,0,0);
+      targetZero.setHours(0, 0, 0, 0);
 
       const diffDays = Math.round((targetZero - today) / (1000 * 60 * 60 * 24));
-      
+
       let dayPrefix = '';
       if (diffDays === 0) dayPrefix = 'Hôm nay';
       else if (diffDays === 1) dayPrefix = 'Ngày mai';
@@ -967,8 +1110,8 @@
       const timeSlot = isChieu ? periodTimesChieu[periodNum - 1] : periodTimesSang[periodNum - 1];
       document.getElementById('dialog-time').textContent = `${dayPrefix}, ${timeSlot.start} - ${timeSlot.end}`;
 
-      const matchSubject = monHocData.find(m => 
-        subjectName.toUpperCase().includes(m.code) || 
+      const matchSubject = monHocData.find(m =>
+        subjectName.toUpperCase().includes(m.code) ||
         m.name.toUpperCase().includes(subjectName.toUpperCase()) ||
         subjectName.toUpperCase().includes(m.name.toUpperCase())
       );
@@ -981,7 +1124,7 @@
         categoryBox.style.display = 'inline-block';
         categoryBox.textContent = matchSubject.category || 'Môn học';
         descBox.textContent = matchSubject.description || 'Chưa có thông tin mô tả.';
-        
+
         keywordsBox.innerHTML = (matchSubject.keywords || [])
           .map(kw => `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-xl font-medium">#${kw}</span>`)
           .join('');
@@ -1106,11 +1249,10 @@
         const isSelected = i === selectedWeek;
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = `expressive-btn w-full md:w-auto text-sm md:text-xs font-bold py-3 md:py-2 rounded-xl border cursor-pointer ${
-          isSelected
+        btn.className = `expressive-btn w-full md:w-auto text-sm md:text-xs font-bold py-3 md:py-2 rounded-xl border cursor-pointer ${isSelected
             ? 'bg-teal-700 text-white border-teal-700'
             : 'bg-slate-100 text-slate-800 border-slate-200 hover:bg-slate-200'
-        }`;
+          }`;
         btn.textContent = opt.text;
         btn.onclick = () => {
           applyWeekSelection(i);
@@ -1152,115 +1294,184 @@
     // WEATHER INTEGRATION (OPEN-METEO API & MINECRAFT QUOTES)
     // ==========================================
     const weatherQuotes = {
-        clear: [
-            "Trời quang đãng, đi mine kim cương thôi!",
-            "Nắng đẹp thế này, đi tìm biome mới thôi.",
-            "Cày ruộng thôi, lúa chín tới nơi rồi!",
-            "Lên đường đi săn Enderman nào.",
-            "Đừng nhìn thẳng vào lũ da đen.",
-            "Hãy sử dụng đúng công cụ cho đúng việc!"
-        ],
-        cloudy: [
-            "Trời âm u quá, ở nhà craft thêm đuốc đi.",
-            "Mây mù che lối, coi chừng lạc đường khi đi mine.",
-            "Trang trí base chút không bro? Trời sắp xấu rồi.",
-            "Cần nhiên liệu cho đuốc? Hãy thử nung gỗ lấy than củi."
-        ],
-        rain: [
-            "Mưa rồi... Ở nhà craft đồ cho lành.",
-            "Thời điểm tốt để nấu quặng và phân loại rương.",
-            "Câu cá trong mưa? Nghe cũng chill đấy chứ.",
-            "Quái vật Endermen ghét giờ tắm!"
-        ],
-        storm: [
-            "SẤM SÉT! Cẩn thận Charged Creeper gõ cửa nhé.",
-            "Đội một quả bí ngô trên đầu sẽ giúp bạn tránh bị Enderman tấn công.",
-            "Lợn bị sét đánh sẽ trở thành Lợn Zombie!"
-        ],
-        hot: [
-            "Nóng vãi đạn! Chắc đang lạc vào Nether rồi.",
-            "Uống ngay chai nước đi bro, thanh Hunger đang tụt kìa.",
-            "Nắng này mà đi sa mạc thì chỉ có nước 'tăng xông'.",
-            "Đừng quên mang theo xô nước, hữu ích cả khi nóng lẫn khi ngã!"
-        ],
-        cold: [
-            "Lạnh teo bugi! Coi chừng bị đóng băng như Stray nhé.",
-            "Mặc thêm giáp vào cho ấm, biome này lạnh quá.",
-            "Đỉnh núi tuyết này không dành cho người yếu tim đâu.",
-            "Craft một cái lò nung để sưởi ấm tâm hồn đi nào."
-        ],
-        default: [
-            "Mèo rừng cho lũ Creeper biết ai mới là kẻ thống trị!",
-            "Bạn có biết có một Wiki Minecraft không?",
-            "Lợn zombie sẽ không tấn công bạn nếu bạn mặc giáp vàng.",
-            "Người cưỡi nhện là hình ảnh hiếm gặp của một con nhện được một bộ xương cưỡi!",
-            "Nếu bạn đặt độ khó trò chơi thành Hòa bình, máu của bạn sẽ tự động hồi phục!",
-            "Thu hoạch da bò và sử dụng nó để làm giáp và sách.",
-            "Bạn có mặt ở MINECON không?",
-            "Một số động vật sẽ đi theo bạn nếu bạn cầm lúa mì trên tay.",
-            "Rùa con sẽ rụng vảy khi lớn lên, hãy dùng chúng để chế tạo mai rùa.",
-            "Đá cuội có khả năng chống lại quả cầu lửa của Ghast.",
-            "Ngôn ngữ của Enderman thực chất là tiếng Anh viết ngược.",
-            "Đá obsidian được tạo ra khi nước chạm vào khối dung nham.",
-            "Người sắt sẽ chiến đấu cho bạn!",
-            "Nhạc cụ được chơi bởi một khối nốt nhạc phụ thuộc vào vật liệu bên dưới nó.",
-            "Nhạc của C418!",
-            "Một số người nổi tiếng chơi Minecraft!",
-            "MINECON 2015 được tổ chức tại London, Anh!",
-            "Bột xương có thể được dùng làm phân bón và giúp cây cối phát triển ngay lập tức!",
-            "Di chuyển đến các địa điểm nhanh hơn với xe đẩy và đường ray!",
-            "Quái vật Creeper được sinh ra từ một lỗi lập trình.",
-            "Zombie và Skeleton có thể sống sót qua ban ngày nếu chúng ở trong nước.",
-            "Xây dựng một cổng dịch chuyển sẽ cho phép bạn du hành đến thế giới Nether.",
-            "Sói và Người Sắt sẽ không tấn công Creeper.",
-            "Trồng một vài cây non và chúng sẽ lớn lên thành cây.",
-            "Không ai nhớ MINECON 2014 được tổ chức ở đâu.",
-            "Tên ban đầu của Minecraft là Cave Game.",
-            "Mojang có nhiều giải thưởng hơn cả nhân viên!",
-            "Đánh trả những quả cầu lửa vào Ghast!",
-            "Phiên bản đầu tiên của Minecraft được tạo ra chỉ trong 6 ngày!",
-            "Đặt hai rương cạnh nhau sẽ tạo thành một rương lớn.",
-            "Luôn cho rằng tin đồn là sai, thay vì cho rằng chúng là đúng!",
-            "Di chuyển một khối trong Nether tương đương với di chuyển tám khối ở thế giới ngoài.",
-            "Đào thẳng xuống hoặc thẳng lên không phải là một ý hay.",
-            "MINECON 2011 được tổ chức tại Las Vegas, Nevada, Hoa Kỳ!",
-            "Cho chó sói ăn xương để thuần hóa nó.",
-            "Một xô dung nham có thể nung chảy được 100 khối trong lò nung.",
-            "Lợn zombie sẽ không tấn công bạn nếu bạn mặc giáp vàng - trừ khi bạn tấn công chúng hoặc mở rương trong pháo đài.",
-            "Ngủ trên giường vào ban đêm sẽ tua nhanh trò chơi đến bình minh.",
-            "Tấn công một con sói sẽ khiến bất kỳ con sói nào ở gần đó trở nên hung dữ.",
-            "Nếu bạn có một cái xô rỗng, bạn có thể đổ đầy nước, dung nham hoặc sữa bò vào đó!",
-            "Ăn thức ăn nấu chín giúp giảm đói tốt hơn ăn thức ăn sống.",
-            "Quái vật Creeper sẽ phát nổ khi chúng đến gần bạn!",
-            "Bạn có thể nung chảy 20 vật phẩm trong lò nung bằng cách sử dụng một khối tảo bẹ khô làm nhiên liệu.",
-            "Cho chó sói ăn xương để thuần hóa nó. Sau đó, bạn có thể khiến nó ngồi hoặc đi theo bạn."
-        ]
+      clear: [
+        "Trời quang đãng, đi mine kim cương thôi!",
+        "Làm ngụm cà phê rồi bắt tay vào việc thôi bro.",
+        "Nắng đẹp thế này, đi tìm biome mới thôi.",
+        "Thời tiết đẹp thế này, bước ra ngoài hít thở tí không khí nào.",
+        "Cày ruộng thôi, lúa chín tới nơi rồi!",
+        "Nắng đẹp tròn trịa, tranh thủ xử lý xong mấy công việc tồn đọng thôi.",
+        "Lên đường đi săn Enderman nào.",
+        "Trời trong gió mát, quá thích hợp cho một chuyến đi dạo.",
+        "Đừng nhìn thẳng vào lũ da đen.",
+        "Giao tiếp ánh mắt tự tin sẽ giúp bạn ghi điểm trong mọi cuộc gặp.",
+        "Hãy sử dụng đúng công cụ cho đúng việc!",
+        "Hãy dùng đúng phương pháp cho đúng mục tiêu!"
+      ],
+      cloudy: [
+        "Trời âm u quá, ở nhà craft thêm đuốc đi.",
+        "Trời âm u quá, bật chút đèn làm việc cho đỡ sương sương buồn ngủ.",
+        "Mây mù che lối, coi chừng lạc đường khi đi mine.",
+        "Mây mù giăng lối, đi đường nhớ bật đèn xe và chú ý quan sát nhé.",
+        "Trang trí base chút không bro? Trời sắp xấu rồi.",
+        "Dọn dẹp lại không gian sống chút không bro? Trời sắp mưa rồi đấy.",
+        "Cần nhiên liệu cho đuốc? Hãy thử nung gỗ lấy than củi.",
+        "Cần thêm năng lượng? Thử làm một ly trà ấm xem sao."
+      ],
+      rain: [
+        "Mưa rồi... Ở nhà craft đồ cho lành.",
+        "Mưa rồi... Ở nhà học tập hay làm việc online cho lành.",
+        "Thời điểm tốt để nấu quặng và phân loại rương.",
+        "Thời điểm lý tưởng để sắp xếp lại tài liệu và lọc bớt đồ dư thừa.",
+        "Câu cá trong mưa? Nghe cũng chill đấy chứ.",
+        "Lắng nghe tiếng mưa rơi cũng là một cách chill tuyệt vời.",
+        "Quái vật Endermen ghét giờ tắm!",
+        "Cơn mưa bất chợt luôn là lý do hoàn hảo để sống chậm lại một chút."
+      ],
+      storm: [
+        "SẤM SÉT! Cẩn thận Charged Creeper gõ cửa nhé.",
+        "SẤM SÉT! Nhớ rút hết các thiết bị điện không cần thiết ra nhé.",
+        "Đội một quả bí ngô trên đầu sẽ giúp bạn tránh bị Enderman tấn công.",
+        "Chuẩn bị sẵn một chiếc ô hoặc áo mưa chất lượng sẽ cứu rỗi ngày của bạn.",
+        "Lợn bị sét đánh sẽ trở thành Lợn Zombie!",
+        "Giông bão rồi sẽ qua, quan trọng là giữ tâm lý vững vàng."
+      ],
+      hot: [
+        "Nóng vãi đạn! Chắc đang lạc vào Nether rồi.",
+        "Nóng như đổ lửa! Bật điều hòa hoặc tìm chỗ râm mát ngay thôi.",
+        "Uống ngay chai nước đi bro, thanh Hunger đang tụt kìa.",
+        "Uống đủ nước đi bro, thời tiết này rất dễ mất nước đấy.",
+        "Nắng này mà đi sa mạc thì chỉ có nước 'tăng xông'.",
+        "Trời nắng gắt thế này ra đường nhớ khoác áo nắng với bôi kem chống nắng vào.",
+        "Đừng quên mang theo xô nước, hữu ích cả khi nóng lẫn khi ngã!",
+        "Nước lọc luôn là giải pháp cứu cánh số một cho ngày oi bức!"
+      ],
+      cold: [
+        "Lạnh teo bugi! Coi chừng bị đóng băng như Stray nhé.",
+        "Lạnh buốt giá! Nhớ khoác thêm áo ấm kẻo lại trúng gió.",
+        "Mặc thêm giáp vào cho ấm, biome này lạnh quá.",
+        "Mặc ấm vào bro, giữ ấm cổ với bàn chân là quan trọng nhất.",
+        "Đỉnh núi tuyết này không dành cho người yếu tim đâu.",
+        "Thời tiết lạnh thế này chỉ muốn rúc trong chăn ấm thôi.",
+        "Craft một cái lò nung để sưởi ấm tâm hồn đi nào.",
+        "Pha một ly trà nóng để sưởi ấm cơ thể ngay nào."
+      ],
+      default: [
+        "Mèo rừng cho lũ Creeper biết ai mới là kẻ thống trị!",
+        "Sự kiên trì luôn là chìa khóa vượt qua mọi áp lực cuộc sống.",
+        "Bạn có biết có một Wiki Minecraft không?",
+        "Bạn có biết đọc sách mỗi ngày giúp cải thiện tư duy rất tốt không?",
+        "Lợn zombie sẽ không tấn công bạn nếu bạn mặc giáp vàng.",
+        "Tự tin và chuẩn bị kỹ lưỡng sẽ giúp bạn vượt qua mọi cuộc phỏng vấn.",
+        "Người cưỡi nhện là hình ảnh hiếm gặp của một con nhện được một bộ xương cưỡi!",
+        "Lập kế hoạch rõ ràng sẽ giúp bạn tiết kiệm được khối thời gian.",
+        "Nếu bạn đặt độ khó trò chơi thành Hòa bình, máu của bạn sẽ tự động hồi phục!",
+        "Giữ thái độ hòa nhã sẽ giúp bạn xây dựng được nhiều mối quan hệ tốt.",
+        "Thu hoạch da bò và sử dụng nó để làm giáp và sách.",
+        "Học hỏi kỹ năng mới luôn là khoản đầu tư không bao giờ lỗ.",
+        "Bạn có mặt ở MINECON không?",
+        "Hôm nay bạn đã hoàn thành mục tiêu nhỏ nào chưa?",
+        "Một số động vật sẽ đi theo bạn nếu bạn cầm lúa mì trên tay.",
+        "Ăn uống đủ chất và đúng giờ để giữ cho cơ thể luôn khỏe mạnh.",
+        "Rùa con sẽ rụng vảy khi lớn lên, hãy dùng chúng để chế tạo mai rùa.",
+        "Tích lũy kinh nghiệm từ những việc nhỏ nhất sẽ tạo nên bước tiến lớn.",
+        "Đá cuội có khả năng chống lại quả cầu lửa của Ghast.",
+        "Luyện tập thể thao đều đặn giúp bạn có tinh thần minh mẫn hơn.",
+        "Ngôn ngữ của Enderman thực chất là tiếng Anh viết ngược.",
+        "Học hỏi một ngôn ngữ mới sẽ mở ra cho bạn nhiều cơ hội mới.",
+        "Đá obsidian được tạo ra khi nước chạm vào khối dung nham.",
+        "Đọc kỹ hợp đồng và điều khoản trước khi đặt bút ký.",
+        "Người sắt sẽ chiến đấu cho bạn!",
+        "Những người bạn tốt luôn là chỗ dựa tinh thần vững chắc!",
+        "Nhạc cụ được chơi bởi một khối nốt nhạc phụ thuộc vào vật liệu bên dưới nó.",
+        "Âm nhạc đúng gu có thể thay đổi tâm trạng của bạn trong chớp mắt.",
+        "Nhạc của C418!",
+        "Thư giãn đúng cách giúp tăng năng suất làm việc lên đáng kể.",
+        "Một số người nổi tiếng chơi Minecraft!",
+        "Sự tỉ mỉ trong công việc sẽ giúp bạn tránh được những rắc rối không đáng có.",
+        "MINECON 2015 được tổ chức tại London, Anh!",
+        "Luôn xác minh thông tin trước khi chia sẻ bất kỳ tin tức nào!",
+        "Bột xương có thể được dùng làm phân bón và giúp cây cối phát triển ngay lập tức!",
+        "Quản lý tài chính cá nhân tốt sẽ giúp bạn chủ động hơn trong cuộc sống.",
+        "Di chuyển đến các địa điểm nhanh hơn với xe đẩy và đường ray!",
+        "Đừng ngần ngại bước ra khỏi vùng an toàn của bản thân.",
+        "Quái vật Creeper được sinh ra từ một lỗi lập trình.",
+        "Thất bại chỉ là bài học giúp bạn làm tốt hơn ở lần sau.",
+        "Zombie và Skeleton có thể sống sót qua ban ngày nếu chúng ở trong nước.",
+        "Sức khỏe tâm lý cũng quan trọng không kém gì sức khỏe thể chất.",
+        "Xây dựng một cổng dịch chuyển sẽ cho phép bạn du hành đến thế giới Nether.",
+        "Ghi chép lại những ý tưởng lóe lên trong đầu, biết đâu nó sẽ hữu ích.",
+        "Sói và Người Sắt sẽ không tấn công Creeper.",
+        "Kỷ luật bản thân chính là cầu nối giữa mục tiêu và thành công.",
+        "Trồng một vài cây non và chúng sẽ lớn lên thành cây.",
+        "Trồng một vài chậu cây xanh giúp không gian sống trở nên thoáng đãng hơn.",
+        "Không ai nhớ MINECON 2014 được tổ chức ở đâu.",
+        "Thời gian trôi qua rất nhanh, hãy trân trọng từng khoảnh khắc.",
+        "Tên ban đầu của Minecraft là Cave Game.",
+        "Chủ động học hỏi là cách nhanh nhất để phát triển bản thân.",
+        "Mojang có nhiều giải thưởng hơn cả nhân viên!",
+        "Dành thời gian cho gia đình luôn là điều đáng giá nhất.",
+        "Đánh trả những quả cầu lửa vào Ghast!",
+        "Đừng quên tự thưởng cho bản thân sau những ngày nỗ lực hết mình!",
+        "Phiên bản đầu tiên của Minecraft được tạo ra chỉ trong 6 ngày!",
+        "Tập trung vào giải pháp thay vì chỉ ngồi lo lắng về vấn đề.",
+        "Đặt hai rương cạnh nhau sẽ tạo thành một rương lớn.",
+        "Sắp xếp góc làm việc gọn gàng sẽ giúp tư duy của bạn thông suốt hơn.",
+        "Luôn cho rằng tin đồn là sai, thay vì cho rằng chúng là đúng!",
+        "Luôn kiểm tra lại thông tin cẩn thận trước khi đưa ra quyết định!",
+        "Di chuyển một khối trong Nether tương đương với di chuyển tám khối ở thế giới ngoài.",
+        "Đi du lịch giúp bạn mở rộng tầm mắt và có thêm nhiều trải nghiệm mới.",
+        "Đào thẳng xuống hoặc thẳng lên không phải là một ý hay.",
+        "Nói ít làm nhiều luôn tạo được sự tín nhiệm cao hơn.",
+        "MINECON 2011 được tổ chức tại Las Vegas, Nevada, Hoa Kỳ!",
+        "Sự tử tế miễn phí, nhưng giá trị nó mang lại là vô giá.",
+        "Cho chó sói ăn xương để thuần hóa nó.",
+        "Hãy học cách lắng nghe nhiều hơn trước khi đưa ra ý kiến.",
+        "Một xô dung nham có thể nung chảy được 100 khối trong lò nung.",
+        "Nội dung chuẩn bị kỹ càng sẽ giúp bạn tự tin trình bày trước đám đông.",
+        "Lợn zombie sẽ không tấn công bạn nếu bạn mặc giáp vàng - trừ khi bạn tấn công chúng hoặc mở rương trong pháo đài.",
+        "Hạn chế thức khuya để bảo vệ sức khỏe lâu dài bro nhé.",
+        "Ngủ trên giường vào ban đêm sẽ tua nhanh trò chơi đến bình minh.",
+        "Giữ lời hứa là cách nhanh nhất để xây dựng uy tín cá nhân.",
+        "Tấn công một con sói sẽ khiến bất kỳ con sói nào ở gần đó trở nên hung dữ.",
+        "Cẩn trọng trong lời nói giúp bạn tránh được những hiểu lầm không đáng có.",
+        "Nếu bạn có một cái xô rỗng, bạn có thể đổ đầy nước, dung nham hoặc sữa bò vào đó!",
+        "Chuẩn bị sẵn các vật dụng cá nhân cần thiết trước khi ra khỏi nhà!",
+        "Ăn thức ăn nấu chín giúp giảm đói tốt hơn ăn thức ăn sống.",
+        "Duy trì thói quen sinh hoạt lành mạnh sẽ mang lại nguồn năng lượng tích cực.",
+        "Quái vật Creeper sẽ phát nổ khi chúng đến gần bạn!",
+        "Lên danh sách những việc cần làm trong ngày để không bị bỏ sót nhiệm vụ.",
+        "Bạn có thể nung chảy 20 vật phẩm trong lò nung bằng cách sử dụng một khối tảo bẹ khô làm nhiên liệu.",
+        "Rèn luyện tính kiên nhẫn sẽ giúp bạn giải quyết các rắc rối dễ dàng hơn.",
+        "Cho chó sói ăn xương để thuần hóa nó. Sau đó, bạn có thể khiến nó ngồi hoặc đi theo bạn.",
+        "Xây dựng mối quan hệ chân thành sẽ giúp bạn luôn có đồng đội đồng hành."
+      ]
     };
 
     const PIXEL_BASE_URL = 'https://tuanphong3108.github.io/weather/';
-    
+
     const PIXEL_ICONS = {
-        '0': { day: 'clear_day.png', night: 'clear_night.png', type: 'clear' },
-        '1': { day: 'mostly_clear_day.png', night: 'mostly_clear_night.png', type: 'clear' },
-        '2': { day: 'sunny_with_cloudy.png', night: 'partly_cloudy_night.png', type: 'clear' },
-        '3': { day: 'mostly_cloudy_day.png', night: 'mostly_cloudy_night.png', type: 'cloudy' },
-        '45': { day: 'haze_fog_dust_smoke.png', night: 'haze_fog_dust_smoke.png', type: 'cloudy' },
-        '48': { day: 'haze_fog_dust_smoke.png', night: 'haze_fog_dust_smoke.png', type: 'cloudy' },
-        '51': { day: 'drizzle.png', night: 'drizzle.png', type: 'rain' },
-        '53': { day: 'drizzle.png', night: 'drizzle.png', type: 'rain' },
-        '55': { day: 'drizzle.png', night: 'drizzle.png', type: 'rain' },
-        '61': { day: 'showers_rain.png', night: 'showers_rain.png', type: 'rain' },
-        '63': { day: 'cloudy_with_rain.png', night: 'cloudy_with_rain.png', type: 'rain' },
-        '65': { day: 'heavy_rain.png', night: 'heavy_rain.png', type: 'rain' },
-        '71': { day: 'showers_snow.png', night: 'showers_snow.png', type: 'cold' },
-        '73': { day: 'cloudy_with_snow.png', night: 'cloudy_with_snow.png', type: 'cold' },
-        '75': { day: 'heavy_snow.png', night: 'heavy_snow.png', type: 'cold' },
-        '80': { day: 'scattered_showers_day.png', night: 'scattered_showers_night.png', type: 'rain' },
-        '81': { day: 'showers_rain.png', night: 'showers_rain.png', type: 'rain' },
-        '82': { day: 'heavy_rain.png', night: 'heavy_rain.png', type: 'rain' },
-        '95': { day: 'isolated_scattered_thunderstorms_day.png', night: 'isolated_scattered_thunderstorms_night.png', type: 'storm' },
-        '96': { day: 'strong_thunderstorms.png', night: 'strong_thunderstorms.png', type: 'storm' },
-        '99': { day: 'strong_thunderstorms.png', night: 'strong_thunderstorms.png', type: 'storm' }
+      '0': { day: 'clear_day.png', night: 'clear_night.png', type: 'clear' },
+      '1': { day: 'mostly_clear_day.png', night: 'mostly_clear_night.png', type: 'clear' },
+      '2': { day: 'sunny_with_cloudy.png', night: 'partly_cloudy_night.png', type: 'clear' },
+      '3': { day: 'mostly_cloudy_day.png', night: 'mostly_cloudy_night.png', type: 'cloudy' },
+      '45': { day: 'haze_fog_dust_smoke.png', night: 'haze_fog_dust_smoke.png', type: 'cloudy' },
+      '48': { day: 'haze_fog_dust_smoke.png', night: 'haze_fog_dust_smoke.png', type: 'cloudy' },
+      '51': { day: 'drizzle.png', night: 'drizzle.png', type: 'rain' },
+      '53': { day: 'drizzle.png', night: 'drizzle.png', type: 'rain' },
+      '55': { day: 'drizzle.png', night: 'drizzle.png', type: 'rain' },
+      '61': { day: 'showers_rain.png', night: 'showers_rain.png', type: 'rain' },
+      '63': { day: 'cloudy_with_rain.png', night: 'cloudy_with_rain.png', type: 'rain' },
+      '65': { day: 'heavy_rain.png', night: 'heavy_rain.png', type: 'rain' },
+      '71': { day: 'showers_snow.png', night: 'showers_snow.png', type: 'cold' },
+      '73': { day: 'cloudy_with_snow.png', night: 'cloudy_with_snow.png', type: 'cold' },
+      '75': { day: 'heavy_snow.png', night: 'heavy_snow.png', type: 'cold' },
+      '80': { day: 'scattered_showers_day.png', night: 'scattered_showers_night.png', type: 'rain' },
+      '81': { day: 'showers_rain.png', night: 'showers_rain.png', type: 'rain' },
+      '82': { day: 'heavy_rain.png', night: 'heavy_rain.png', type: 'rain' },
+      '95': { day: 'isolated_scattered_thunderstorms_day.png', night: 'isolated_scattered_thunderstorms_night.png', type: 'storm' },
+      '96': { day: 'strong_thunderstorms.png', night: 'strong_thunderstorms.png', type: 'storm' },
+      '99': { day: 'strong_thunderstorms.png', night: 'strong_thunderstorms.png', type: 'storm' }
     };
 
     function getRandomWeatherQuote(weatherType) {
@@ -1549,7 +1760,7 @@
               if (temp < minTemp) minTemp = temp;
               if (temp > maxTemp) maxTemp = temp;
 
-              if (['51','53','55','61','63','65','80','81','82','95','96','99'].includes(code)) {
+              if (['51', '53', '55', '61', '63', '65', '80', '81', '82', '95', '96', '99'].includes(code)) {
                 isTomorrowRainingCode = true;
               }
             }
@@ -1566,7 +1777,7 @@
       } else if (cw) {
         const currentCode = String(cw.weathercode);
         const currentTemp = cw.temperature;
-        const isRaining = ['51','53','55','61','63','65','80','81','82','95','96','99'].includes(currentCode);
+        const isRaining = ['51', '53', '55', '61', '63', '65', '80', '81', '82', '95', '96', '99'].includes(currentCode);
 
         if (isRaining) {
           return "Hãy mang theo ô đi";
@@ -1758,4 +1969,5 @@
     setInterval(checkNextWeekSchedule, 30 * 60 * 1000); // tự kiểm tra lại mỗi 30 phút phòng khi file được thêm sau
   </script>
 </body>
+
 </html>
