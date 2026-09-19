@@ -1,0 +1,87 @@
+{
+  "dateRange": "21/09/2026 - 27/09/2026",
+  "sang": [
+    {
+      "t2": { "sub": "HĐTN,HN", "teacher": "TÙNG" },
+      "t3": { "sub": "VĂN", "teacher": "LẬP" },
+      "t4": { "sub": "TOÁN", "teacher": "PHƯƠNG.T" },
+      "t5": { "sub": "GDKT&PL", "teacher": "T.HƯƠNG" },
+      "t6": { "sub": "TOÁN", "teacher": "PHƯƠNG.T" },
+      "t7": null
+    },
+    {
+      "t2": { "sub": "ANH", "teacher": "TÍNH" },
+      "t3": { "sub": "GDTC", "teacher": "THANH" },
+      "t4": { "sub": "GDTC", "teacher": "THANH" },
+      "t5": { "sub": "TIN", "teacher": "ĐIỆP" },
+      "t6": { "sub": "GDĐP", "teacher": "" },
+      "t7": null
+    },
+    {
+      "t2": { "sub": "ANH", "teacher": "TÍNH" },
+      "t3": { "sub": "ANH", "teacher": "TÍNH" },
+      "t4": { "sub": "SINH", "teacher": "L.HƯƠNG" },
+      "t5": { "sub": "TOÁN", "teacher": "PHƯƠNG.T" },
+      "t6": { "sub": "VĂN", "teacher": "LẬP" },
+      "t7": null
+    },
+    {
+      "t2": { "sub": "SỬ", "teacher": "Đ.HƯƠNG" },
+      "t3": { "sub": "GD Quốc Phòng", "teacher": "HÙNG" },
+      "t4": { "sub": "SINH", "teacher": "L.HƯƠNG" },
+      "t5": { "sub": "GDKT&PL", "teacher": "T.HƯƠNG" },
+      "t6": { "sub": "VĂN", "teacher": "LẬP" },
+      "t7": null
+    },
+    {
+      "t2": { "sub": "VĂN", "teacher": "LẬP" },
+      "t3": { "sub": "ĐỊA", "teacher": "HIỀN.Đ" },
+      "t4": { "sub": "TOÁN", "teacher": "PHƯƠNG.T" },
+      "t5": { "sub": "SINH", "teacher": "L.HƯƠNG" },
+      "t6": null,
+      "t7": null
+    }
+  ],
+  "chieu": [
+    {
+      "t2": { "sub": "GDĐP", "teacher": "" },
+      "t3": { "sub": "HĐTN 2", "teacher": "H.HẰNG" },
+      "t4": null,
+      "t5": null,
+      "t6": null,
+      "t7": null
+    },
+    {
+      "t2": { "sub": "HĐTN 3", "teacher": "L.HƯƠNG" },
+      "t3": { "sub": "ĐỊA", "teacher": "HIỀN.Đ" },
+      "t4": null,
+      "t5": null,
+      "t6": null,
+      "t7": null
+    },
+    {
+      "t2": null,
+      "t3": null,
+      "t4": null,
+      "t5": null,
+      "t6": null,
+      "t7": null
+    },
+    {
+      "t2": null,
+      "t3": null,
+      "t4": null,
+      "t5": null,
+      "t6": null,
+      "t7": null
+    },
+    {
+      "t2": null,
+      "t3": null,
+      "t4": null,
+      "t5": null,
+      "t6": null,
+      "t7": null
+    }
+  ]
+}
