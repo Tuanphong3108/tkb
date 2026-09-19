@@ -320,9 +320,13 @@
         </button>
         <div>
           <label class="text-xs font-bold text-slate-600 block mb-1">Chọn tuần:</label>
-          <select id="week-select-mobile" class="w-full bg-slate-100 text-slate-800 text-xs font-bold py-2 px-2.5 rounded-xl border border-slate-200">
-            <!-- Dynamic JS -->
+          <select id="week-select-mobile" class="hidden" tabindex="-1" aria-hidden="true">
+            <!-- Dynamic JS: chỉ giữ dữ liệu, không hiển thị -->
           </select>
+          <button type="button" id="week-select-mobile-btn" onclick="openWeekDialog()" class="expressive-btn w-full flex items-center justify-between gap-1.5 bg-slate-100 text-slate-800 text-xs font-bold py-2 px-2.5 rounded-xl border border-slate-200 cursor-pointer">
+            <span id="week-select-mobile-label">Tuần</span>
+            <span class="material-symbols-outlined text-sm text-slate-500">unfold_more</span>
+          </button>
         </div>
         <button id="print-btn-mobile" onclick="window.print()" class="expressive-btn w-full flex items-center gap-2 bg-teal-700 text-white text-xs font-bold py-2 px-3 rounded-xl mt-1">
           <span class="material-symbols-outlined text-sm">print</span> In Thời Khóa Biểu
@@ -494,7 +498,7 @@
   <md-dialog id="week-dialog">
     <div slot="headline">Chọn tuần</div>
     <div slot="content">
-      <div id="week-dialog-list" class="grid grid-cols-4 gap-2 max-h-[50vh] overflow-y-auto pr-1"></div>
+      <div id="week-dialog-list" class="flex flex-col gap-2 md:grid md:grid-cols-4 max-h-[60vh] md:max-h-[50vh] overflow-y-auto pr-1"></div>
     </div>
     <div slot="actions">
       <md-text-button onclick="document.getElementById('week-dialog').close()">Đóng</md-text-button>
@@ -1065,37 +1069,37 @@
       });
     });
 
-    // Cập nhật chữ hiển thị trên nút "Chọn tuần" ở PC
-    function updateWeekPcLabel(val) {
-      const label = document.getElementById('week-select-pc-label');
-      if (label) label.textContent = `Tuần ${val < 10 ? '0' + val : val}`;
+    // Cập nhật chữ hiển thị trên cả 2 nút "Chọn tuần" (PC + Mobile)
+    function updateWeekLabels(val) {
+      const weekStr = `Tuần ${val < 10 ? '0' + val : val}`;
+      const labelPC = document.getElementById('week-select-pc-label');
+      if (labelPC) labelPC.textContent = weekStr;
+      const labelMobile = document.getElementById('week-select-mobile-label');
+      if (labelMobile) labelMobile.textContent = weekStr;
     }
 
-    // Áp dụng tuần được chọn (dùng chung cho cả select mobile lẫn dialog MWC ở PC)
+    // Áp dụng tuần được chọn (dùng chung cho dialog MWC ở cả PC lẫn Mobile)
     function applyWeekSelection(val) {
       selectPC.value = val;
       selectMobile.value = val;
-      updateWeekPcLabel(val);
+      updateWeekLabels(val);
       loadSchedule(val);
     }
 
-    const handleWeekChange = (e) => {
-      applyWeekSelection(Number(e.target.value));
-    };
-    // PC không còn dùng dropdown mặc định của Chrome nữa (mở dialog MWC), chỉ Mobile giữ dropdown gốc
-    selectMobile.addEventListener('change', handleWeekChange);
-
-    // Dựng danh sách tuần cho dialog MWC (dùng lại chính option đã có của select PC)
+    // Dựng danh sách tuần cho dialog MWC (dùng lại chính option đã có của select PC).
+    // Mobile: xếp dọc, nút to hơn để dễ bấm. PC (từ md trở lên): giữ dạng lưới gọn.
     function renderWeekDialogList() {
       const container = document.getElementById('week-dialog-list');
       if (!container || !selectPC) return;
       container.innerHTML = '';
+      let selectedBtn = null;
+
       Array.from(selectPC.options).forEach(opt => {
         const i = Number(opt.value);
         const isSelected = i === selectedWeek;
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = `expressive-btn text-xs font-bold py-2 rounded-xl border cursor-pointer ${
+        btn.className = `expressive-btn w-full md:w-auto text-sm md:text-xs font-bold py-3 md:py-2 rounded-xl border cursor-pointer ${
           isSelected
             ? 'bg-teal-700 text-white border-teal-700'
             : 'bg-slate-100 text-slate-800 border-slate-200 hover:bg-slate-200'
@@ -1106,20 +1110,35 @@
           const dialog = document.getElementById('week-dialog');
           if (dialog) dialog.close();
         };
+        if (isSelected) selectedBtn = btn;
         container.appendChild(btn);
       });
+
+      return selectedBtn;
     }
 
-    // Mở dialog Material Web để chọn tuần (thay cho dropdown mặc định của Chrome trên PC)
+    // Mở dialog Material Web để chọn tuần (thay cho dropdown mặc định của Chrome, cả PC lẫn Mobile),
+    // tự cuộn tới tuần đang được chọn.
     function openWeekDialog() {
       const dialog = document.getElementById('week-dialog');
+      const container = document.getElementById('week-dialog-list');
       if (!dialog) return;
-      renderWeekDialogList();
+      const selectedBtn = renderWeekDialogList();
       dialog.show();
+      if (selectedBtn && container) {
+        // Tự tính scrollTop và cuộn đúng khung danh sách bên trong dialog (không để trình duyệt
+        // chọn nhầm phần tử cha khác để cuộn), đảm bảo tuần đang chọn hiện ngay trước mặt.
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            const targetScroll = selectedBtn.offsetTop - (container.clientHeight / 2) + (selectedBtn.clientHeight / 2);
+            container.scrollTop = Math.max(0, targetScroll);
+          });
+        });
+      }
     }
 
     // Initial load
-    updateWeekPcLabel(selectedWeek);
+    updateWeekLabels(selectedWeek);
     loadSchedule(selectedWeek);
 
     // ==========================================
