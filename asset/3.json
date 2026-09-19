@@ -2,7 +2,7 @@
   "dateRange": "21/09/2026 - 27/09/2026",
   "sang": [
     {
-      "t2": { "sub": "HĐTN,HN", "teacher": "TÙNG", "alert": "Alert testing" },
+      "t2": { "sub": "HĐTN,HN", "teacher": "TÙNG" },
       "t3": { "sub": "VĂN", "teacher": "LẬP" },
       "t4": { "sub": "TOÁN", "teacher": "PHƯƠNG.T" },
       "t5": { "sub": "GDKT&PL", "teacher": "T.HƯƠNG" },
@@ -44,7 +44,7 @@
   ],
   "chieu": [
     {
-      "t2": { "sub": "GDĐP", "teacher": "" },
+      "t2": { "sub": "GDĐP", "teacher": "", "alert":"Tiết học đầu tiên" },
       "t3": { "sub": "HĐTN 2", "teacher": "H.HẰNG" },
       "t4": null,
       "t5": null,
