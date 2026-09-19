@@ -92,19 +92,13 @@
     .slide-up-in   { animation: slideUpIn 0.28s cubic-bezier(0.2, 0, 0, 1) both; }
     .slide-down-out{ animation: slideDownOut 0.22s cubic-bezier(0.4, 0, 1, 1) both; }
 
-    /* ---- Dock cảnh báo thời tiết: tự trượt lên từ dock, thu lại khi đóng ---- */
+    /* ---- Dock cảnh báo thời tiết: tự trượt lên từ dock, thu lại khi đóng ----
+       Dùng max-height đo bằng JS (scrollHeight thật) thay vì kỹ thuật CSS Grid,
+       để chắc chắn co về đúng 0 trên mọi trình duyệt. ---- */
     .grid-notice {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows 0.3s cubic-bezier(0.2, 0, 0, 1);
       overflow: hidden;
-    }
-    .grid-notice.grid-notice-open {
-      grid-template-rows: 1fr;
-    }
-    .grid-notice-inner {
-      min-height: 0;
-      overflow: hidden;
+      max-height: 0px;
+      transition: max-height 0.3s cubic-bezier(0.2, 0, 0, 1);
     }
 
     /* ---- More Option (mobile): zoom ra từ nút 3 chấm ---- */
@@ -119,6 +113,19 @@
     }
     #week-loading-overlay.opacity-100 {
       opacity: 1;
+    }
+
+    /* ---- Dialog chọn tuần trên Mobile: full màn hình (theo docs Material Web:
+       dùng thẳng margin/width/height để chỉnh kích thước & vị trí của md-dialog) ---- */
+    @media (max-width: 767px) {
+      #week-dialog {
+        width: 100vw;
+        height: 100vh;
+        max-width: 100vw;
+        max-height: 100vh;
+        margin: 0;
+        --md-dialog-container-shape: 0px;
+      }
     }
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -498,7 +505,7 @@
   <md-dialog id="week-dialog">
     <div slot="headline">Chọn tuần</div>
     <div slot="content">
-      <div id="week-dialog-list" class="flex flex-col gap-2 md:grid md:grid-cols-4 max-h-[60vh] md:max-h-[50vh] overflow-y-auto pr-1"></div>
+      <div id="week-dialog-list" class="flex flex-col gap-2 md:grid md:grid-cols-4 max-h-[70vh] md:max-h-[50vh] overflow-y-auto pr-1"></div>
     </div>
     <div slot="actions">
       <md-text-button onclick="document.getElementById('week-dialog').close()">Đóng</md-text-button>
@@ -1397,6 +1404,18 @@
       }, 150);
     }
 
+    // ---- Helper dùng chung: panel co giãn theo chiều cao thật (đo bằng scrollHeight),
+    // đảm bảo lúc đóng luôn co về đúng 0, không phụ thuộc vào các kỹ thuật CSS phức tạp ----
+    function openNoticePanel(el) {
+      if (!el) return;
+      el.style.maxHeight = el.scrollHeight + 'px';
+    }
+
+    function closeNoticePanel(el) {
+      if (!el) return;
+      el.style.maxHeight = '0px';
+    }
+
     function showLocationChoicePrompt() {
       const pcPrompt = document.getElementById('pc-bubble-location-prompt');
       const pcNotice = document.getElementById('pc-bubble-notice-content');
@@ -1459,7 +1478,7 @@
 
     function dismissWeatherNotice() {
       const mobileNotice = document.getElementById('mobile-weather-notice');
-      if (mobileNotice) mobileNotice.classList.remove('grid-notice-open');
+      closeNoticePanel(mobileNotice);
 
       const pcNotice = document.getElementById('pc-bubble-notice-content');
       if (pcNotice) pcNotice.classList.add('hidden');
@@ -1491,7 +1510,7 @@
       const mobileNoticeText = document.getElementById('mobile-notice-text');
       if (mobileNotice && mobileNoticeText) {
         mobileNoticeText.textContent = msg;
-        mobileNotice.classList.add('grid-notice-open');
+        openNoticePanel(mobileNotice);
       }
     }
 
