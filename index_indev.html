@@ -128,6 +128,24 @@
       }
     }
 
+    /* ---- Cảnh báo tiết học (field "alert" trong JSON của tiết): icon/nhãn nhấp nháy đỏ,
+       tự trở lại bình thường khi in ---- */
+    @keyframes alertBlinkPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.25; }
+    }
+    .alert-blink-icon {
+      color: #dc2626 !important;
+      animation: alertBlinkPulse 1s ease-in-out infinite;
+    }
+    @media print {
+      .alert-blink-icon {
+        animation: none !important;
+        opacity: 1 !important;
+        color: inherit !important;
+      }
+    }
+
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
@@ -444,6 +462,14 @@
           </div>
         </div>
 
+        <div id="dialog-alert-box" class="hidden">
+          <div class="alert-blink-icon text-[11px] font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1 w-fit">
+            <span class="material-symbols-outlined text-sm">warning</span>
+            <span>Lưu ý:</span>
+          </div>
+          <div id="dialog-alert-text" class="text-xs text-red-700 bg-red-50 p-3.5 rounded-2xl border border-red-200/60 leading-relaxed"></div>
+        </div>
+
         <div class="flex items-center gap-2">
           <span id="dialog-category" class="px-3 py-1 bg-teal-50 text-teal-700 text-[11px] font-bold rounded-xl border border-teal-200/60"></span>
         </div>
@@ -647,6 +673,11 @@
       return subjectConfig['DEFAULT'];
     }
 
+    // Escape chuỗi để nhét an toàn vào thuộc tính onclick='...' (tránh vỡ cú pháp khi có dấu nháy đơn)
+    function escAttr(s) {
+      return String(s || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    }
+
     let monHocData = [];
     async function loadMonHocData() {
       try {
@@ -786,11 +817,12 @@
             const cell = p[day];
             if (cell && cell.sub) {
               const style = getSubjectStyle(cell.sub);
+              const iconClass = cell.alert ? `${style.iconColor} alert-blink-icon` : style.iconColor;
               html += `
                 <td class="p-1">
-                  <div onclick="openSubjectDialog('${cell.sub}', '${cell.teacher || ''}', '${day}', ${idx + 1}, ${isChieu})" 
+                  <div onclick="openSubjectDialog('${escAttr(cell.sub)}', '${escAttr(cell.teacher || '')}', '${day}', ${idx + 1}, ${isChieu}, '${escAttr(cell.alert || '')}')" 
                        class="subject-card cursor-pointer p-2 rounded-xl ${style.bg} border ${style.border} flex flex-col items-center hover:shadow-md transition-all">
-                    <span class="material-symbols-outlined ${style.iconColor} text-base mb-0.5">${style.icon}</span>
+                    <span class="material-symbols-outlined ${iconClass} text-base mb-0.5">${style.icon}</span>
                     <span class="font-bold ${style.text} text-xs">${cell.sub}</span>
                     <span class="teacher-name text-[10px] font-semibold ${style.teacherText}">${cell.teacher || ''}</span>
                   </div>
@@ -826,12 +858,13 @@
           if (cell && cell.sub) {
             hasAnySubject = true;
             const style = getSubjectStyle(cell.sub);
+            const iconClass = cell.alert ? `${style.iconColor} alert-blink-icon` : style.iconColor;
             html += `
-              <div onclick="openSubjectDialog('${cell.sub}', '${cell.teacher || ''}', '${dayKey}', ${idx + 1}, ${isChieu})" 
+              <div onclick="openSubjectDialog('${escAttr(cell.sub)}', '${escAttr(cell.teacher || '')}', '${dayKey}', ${idx + 1}, ${isChieu}, '${escAttr(cell.alert || '')}')" 
                    class="subject-card active:scale-95 transition-transform p-3 rounded-2xl ${style.bg} border ${style.border} flex items-center justify-between shadow-sm cursor-pointer">
                 <div class="flex items-center gap-3">
                   <div class="w-9 h-9 rounded-xl bg-white/80 flex items-center justify-center shadow-xs">
-                    <span class="material-symbols-outlined ${style.iconColor} text-xl">${style.icon}</span>
+                    <span class="material-symbols-outlined ${iconClass} text-xl">${style.icon}</span>
                   </div>
                   <div>
                     <div class="font-bold ${style.text} text-sm">${cell.sub}</div>
@@ -1001,13 +1034,22 @@
       }
     }
 
-    async function openSubjectDialog(subjectName, teacher, dayCode, periodNum, isChieu) {
+    async function openSubjectDialog(subjectName, teacher, dayCode, periodNum, isChieu, alertText) {
       const dialog = document.getElementById('subject-dialog');
       const style = getSubjectStyle(subjectName);
 
       document.getElementById('dialog-icon').textContent = style.icon;
       document.getElementById('dialog-title').textContent = subjectName;
       document.getElementById('dialog-teacher').textContent = teacher || 'Chưa cập nhật giáo viên';
+
+      const alertBox = document.getElementById('dialog-alert-box');
+      const alertTextBox = document.getElementById('dialog-alert-text');
+      if (alertText) {
+        alertTextBox.textContent = alertText;
+        alertBox.classList.remove('hidden');
+      } else {
+        alertBox.classList.add('hidden');
+      }
 
       const dayOffset = dayMap[dayCode];
       const targetDate = new Date(week1Start);
