@@ -661,9 +661,9 @@
             const installingWorker = reg.installing;
             if (installingWorker) {
               installingWorker.onstatechange = () => {
-                // Đã cài bản mới xong -> Reload trang ngay
+                // Đã cài bản Service Worker mới xong -> đi qua màn hình cập nhật cho đồng bộ trải nghiệm
                 if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  window.location.reload();
+                  window.location.replace('./updating.html');
                 }
               };
             }
@@ -671,6 +671,57 @@
         }).catch(err => console.error('SW reg error:', err));
       });
     }
+
+    // ==== TỰ ĐỘNG KIỂM TRA CẬP NHẬT MỖI 30 GIÂY ====
+    // Kiểm tra bằng trạng thái GitHub Actions của repo https://github.com/Tuanphong3108/tkb
+    // (deploy tại tuanphong3108.github.io/tkb): lấy lần chạy "success" GẦN NHẤT, so thời gian
+    // của nó với mốc đã lưu từ lần kiểm tra trước. Khác nhau (mới hơn) nghĩa là đã có bản build/
+    // deploy mới thành công -> chuyển qua updating.html. Lưu mốc thời gian mới NGAY TRƯỚC KHI
+    // chuyển trang, để lần kiểm tra kế tiếp (sau khi quay lại) không bị hiểu nhầm là còn cập nhật.
+    const REPO_ACTIONS_API_URL = 'https://api.github.com/repos/Tuanphong3108/tkb/actions/runs?status=success&per_page=1';
+
+    let updateCheckInFlight = false;
+
+    async function checkForAppUpdate() {
+      if (updateCheckInFlight || !navigator.onLine) return;
+      updateCheckInFlight = true;
+
+      try {
+        // cache: 'no-cache' để tận dụng conditional request/304 của GitHub, hầu như không
+        // tốn rate limit (60 req/giờ) khi chưa có gì mới giữa các lần kiểm tra.
+        const res = await fetch(REPO_ACTIONS_API_URL, { cache: 'no-cache' });
+        if (res.ok) {
+          const data = await res.json();
+          const runs = data.workflow_runs || [];
+          if (runs.length > 0) {
+            const latestRun = runs[0];
+            const latestTime = latestRun.updated_at || latestRun.run_started_at || latestRun.created_at;
+            const storedTime = localStorage.getItem('app_last_success_run_at');
+
+            if (storedTime === null) {
+              // Lần đầu tiên chưa có mốc nào: chỉ lưu lại, không coi là có cập nhật
+              localStorage.setItem('app_last_success_run_at', latestTime);
+            } else if (storedTime !== latestTime) {
+              // Có lần Actions chạy thành công mới hơn -> lưu mốc mới rồi mới chuyển trang.
+              // Không đụng tới weather_location_choice/weather_cache nên lựa chọn vị trí thời
+              // tiết của người dùng luôn được giữ nguyên qua các lần cập nhật.
+              localStorage.setItem('app_last_success_run_at', latestTime);
+              updateCheckInFlight = false;
+              window.location.replace('./updating.html');
+              return;
+            }
+          }
+        }
+      } catch (err) {
+        // Lỗi mạng/rate-limit tạm thời, bỏ qua, thử lại ở lần kiểm tra kế tiếp
+      }
+
+      updateCheckInFlight = false;
+    }
+
+    checkForAppUpdate();
+    setInterval(checkForAppUpdate, 30000);
+
   
     const subjectConfig = {
       'TOÁN': { bg: 'bg-sky-50/80', border: 'border-sky-200/60', icon: 'functions', text: 'text-sky-950', teacherText: 'text-sky-800', iconColor: 'text-sky-600' },

@@ -47,6 +47,29 @@ self.addEventListener('activate', (e) => {
   );
 });
 
+// Cho phép trang gọi vào để buộc xoá SẠCH toàn bộ Cache Storage (kể cả cache offline.html hiện có),
+// dùng khi có bản cập nhật mới (index.html điều hướng qua updating.html để yêu cầu việc này).
+self.addEventListener('message', (e) => {
+  if (e.data && e.data.type === 'HARD_RESET_CACHE') {
+    e.waitUntil(
+      (async () => {
+        let success = true;
+        try {
+          const cacheNames = await caches.keys();
+          await Promise.all(cacheNames.map((name) => caches.delete(name)));
+        } catch (err) {
+          console.error('Lỗi khi hard reset cache:', err);
+          success = false;
+        } finally {
+          if (e.ports && e.ports[0]) {
+            e.ports[0].postMessage({ success });
+          }
+        }
+      })()
+    );
+  }
+});
+
 // 3. Xử lý Request: KHÔNG CACHE BẤT CỨ THỨ GÌ HẾT
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
