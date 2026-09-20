@@ -1999,7 +1999,7 @@
 
     async function checkNextWeekSchedule() {
       if (nextWeekNoticeShown) return; // đã thấy rồi thì khỏi kiểm tra lại
-
+      
       const actualWeek = getCurrentWeekNum(); // tuần thực tế hiện tại theo TKB
       const nextWeek = actualWeek + 1;
       if (nextWeek > 36) return;
