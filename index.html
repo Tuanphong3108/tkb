@@ -722,6 +722,15 @@
     checkForAppUpdate();
     setInterval(checkForAppUpdate, 30000);
 
+    // Apple/Safari (đặc biệt PWA chạy standalone từ Home Screen) hay treo hẳn các timer JS
+    // khi app bị đưa xuống nền, nên setInterval phía trên có thể "ngủ quên" khá lâu. Bù lại
+    // bằng cách check ngay mỗi khi người dùng quay lại mở app lên.
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        checkForAppUpdate();
+      }
+    });
+
   
     const subjectConfig = {
       'TOÁN': { bg: 'bg-sky-50/80', border: 'border-sky-200/60', icon: 'functions', text: 'text-sky-950', teacherText: 'text-sky-800', iconColor: 'text-sky-600' },
@@ -1999,7 +2008,7 @@
 
     async function checkNextWeekSchedule() {
       if (nextWeekNoticeShown) return; // đã thấy rồi thì khỏi kiểm tra lại
-      
+
       const actualWeek = getCurrentWeekNum(); // tuần thực tế hiện tại theo TKB
       const nextWeek = actualWeek + 1;
       if (nextWeek > 36) return;

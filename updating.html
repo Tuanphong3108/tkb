@@ -268,8 +268,13 @@
         // Ép Service Worker kiểm tra & cài đặt bản sw.js mới nhất nếu có
         if ('serviceWorker' in navigator) {
           statusText.textContent = 'Đang tải phiên bản mới...';
-          const reg = await navigator.serviceWorker.getRegistration();
-          if (reg) await reg.update();
+          // Safari/iOS hay giữ lại bản Service Worker cũ khá dai dẳng dù đã gọi update(),
+          // nên hủy đăng ký hẳn rồi đăng ký lại từ đầu cho chắc chắn nhận đúng bản mới nhất.
+          const regs = await navigator.serviceWorker.getRegistrations();
+          for (const reg of regs) {
+            await reg.unregister();
+          }
+          await navigator.serviceWorker.register('./sw.js');
         }
 
         statusText.textContent = 'Hoàn tất!';
