@@ -133,7 +133,9 @@
       "t2": {
         "sub": "HĐTN 3",
         "teacher": "L.HƯƠNG",
-        "alert": "Cần chuẩn bị: Hỏi bố mẹ năm sinh (của cả bố và mẹ) + địa chỉ nhà mới (sau sáp nhập), ghi sẵn ra giấy. Việc sẽ làm: Tiết Sinh hoạt cô sẽ gọi từng bạn lên đối soát thông tin. Lưu ý: Bắt buộc chuẩn bị trước, không được quên vì chỉ làm trong đúng tiết Sinh hoạt."
+        "alert": "- Cần chuẩn bị: Hỏi bố mẹ năm sinh (của cả bố và mẹ) + địa chỉ nhà mới (sau sáp nhập), ghi sẵn ra giấy. 
+        - Việc sẽ làm: Tiết Sinh hoạt GVCN sẽ gọi từng học sinh lên để đối soát thông tin. 
+        - Lưu ý: Bắt buộc chuẩn bị trước, không được quên vì chỉ làm trong đúng tiết Sinh hoạt."
       },
       "t3": {
         "sub": "ĐỊA",
@@ -141,8 +143,8 @@
       },
       "t4": null,
       "t5": null,
-        "t6": null,
-        "t7": null
-      }
-    ]
-  }
+      "t6": null,
+      "t7": null
+    }
+  ]
+}
