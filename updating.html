@@ -253,8 +253,16 @@
     }
 
     async function performUpdate() {
+      // Dev Mode: giả lập cập nhật thất bại (cờ 1 lần, đặt bởi TKB.update.simulateFailure())
+      const devSimulateFailure = sessionStorage.getItem('dev_simulate_update_failure') === '1';
+      sessionStorage.removeItem('dev_simulate_update_failure');
+
       try {
         statusText.textContent = 'Đang xoá cache cũ...';
+
+        if (devSimulateFailure) {
+          throw new Error('(Dev Mode) Giả lập cập nhật thất bại');
+        }
 
         const resetOk = await hardResetCacheViaSW();
 
