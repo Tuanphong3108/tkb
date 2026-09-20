@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tkb-offline-cache-v1';
+const CACHE_NAME = 'tkb-offline-cachev2';
 const OFFLINE_URL = 'offline.html';
 
 // 1. Cài đặt SW: CHỈ cache duy nhất file offline.html

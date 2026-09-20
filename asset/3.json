@@ -44,7 +44,7 @@
   ],
   "chieu": [
     {
-      "t2": { "sub": "GDĐP", "teacher": "", "alert":"Tiết học đầu tiên" },
+      "t2": { "sub": "GDĐP", "teacher": "", "alert":"Alert testing" },
       "t3": { "sub": "HĐTN 2", "teacher": "H.HẰNG" },
       "t4": null,
       "t5": null,
