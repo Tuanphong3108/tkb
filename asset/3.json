@@ -18,7 +18,7 @@
       "t7": null
     },
     {
-      "t2": { "sub": "ANH", "teacher": "TÍNH" },
+      "t2": { "sub": "ANH", "teacher": "TÍNH", "alert":"NGUYÊN (lớp trưởng) BỊ GAY!!!!" },
       "t3": { "sub": "ANH", "teacher": "TÍNH" },
       "t4": { "sub": "SINH", "teacher": "L.HƯƠNG" },
       "t5": { "sub": "TOÁN", "teacher": "PHƯƠNG.T" },
