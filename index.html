@@ -742,7 +742,7 @@
       'SỬ': { bg: 'bg-orange-50/80', border: 'border-orange-200/60', icon: 'history_edu', text: 'text-orange-950', teacherText: 'text-orange-800', iconColor: 'text-orange-600' },
       'GDKT&PL': { bg: 'bg-purple-50/80', border: 'border-purple-200/60', icon: 'balance', text: 'text-purple-950', teacherText: 'text-purple-800', iconColor: 'text-purple-600' },
       'GDTC': { bg: 'bg-lime-50/80', border: 'border-lime-200/60', icon: 'sports_soccer', text: 'text-lime-950', teacherText: 'text-lime-800', iconColor: 'text-lime-600' },
-      'GD QUỐC PHÒNG': { bg: 'bg-stone-100/90', border: 'border-stone-300/60', icon: 'shield', text: 'text-stone-900', teacherText: 'text-stone-700', iconColor: 'text-stone-600' },
+      'GD Quốc Phòng': { bg: 'bg-stone-100/90', border: 'border-stone-300/60', icon: 'shield', text: 'text-stone-900', teacherText: 'text-stone-700', iconColor: 'text-stone-600' },
       'HĐTN': { bg: 'bg-amber-50/80', border: 'border-amber-200/60', icon: 'groups', text: 'text-amber-950', teacherText: 'text-amber-800', iconColor: 'text-amber-600' },
       'DEFAULT': { bg: 'bg-slate-100/80', border: 'border-slate-200', icon: 'school', text: 'text-slate-900', teacherText: 'text-slate-700', iconColor: 'text-slate-600' }
     };
@@ -2040,27 +2040,6 @@
         alert: { testActive: false, injectedRef: null }
       };
 
-      let devToolsWatcher = null;
-      function startDevToolsCloseWatcher() {
-        if (devToolsWatcher) return;
-        devToolsWatcher = setInterval(() => {
-          const widthGap = window.outerWidth - window.innerWidth;
-          const heightGap = window.outerHeight - window.innerHeight;
-          // Ngưỡng phổ biến để nhận biết DevTools dạng "docked" (gắn liền cửa sổ) đã đóng lại.
-          // Lưu ý: không nhận diện được DevTools dạng cửa sổ rời (undocked) - khi đó dùng
-          // TKB.disable() để thoát thủ công.
-          if (widthGap < 160 && heightGap < 160) {
-            TKB.disable();
-          }
-        }, 1500);
-      }
-      function stopDevToolsCloseWatcher() {
-        if (devToolsWatcher) {
-          clearInterval(devToolsWatcher);
-          devToolsWatcher = null;
-        }
-      }
-
       function requireDevMode() {
         if (!TKB._enabled) {
           console.log('%c⚠️ Cần kích hoạt Developer Mode trước: gõ TKB.enable()', 'color:#f59e0b;font-weight:bold;');
@@ -2103,6 +2082,74 @@
         document.querySelectorAll('.alert-blink-icon, .alert-blink-cell').forEach((el) => {
           el.classList.remove('alert-blink-icon', 'alert-blink-cell');
         });
+      }
+
+      // ---- UI Panel nổi, chỉ xuất hiện khi Developer Mode đang BẬT ----
+      const DEV_BTN_STYLE = 'background:#1e293b;color:#e2e8f0;font-weight:600;padding:6px 4px;border-radius:8px;border:1px solid #334155;cursor:pointer;font-size:11px;';
+
+      function injectDevPanel() {
+        if (document.getElementById('tkb-dev-panel')) return;
+
+        if (!document.getElementById('tkb-dev-style')) {
+          const style = document.createElement('style');
+          style.id = 'tkb-dev-style';
+          style.textContent = '@keyframes tkbDevPulse { 0%,100%{opacity:1;} 50%{opacity:0.25;} }';
+          document.head.appendChild(style);
+        }
+
+        const panel = document.createElement('div');
+        panel.id = 'tkb-dev-panel';
+        panel.style.cssText = 'position:fixed;bottom:16px;right:16px;z-index:99999;font-family:sans-serif;';
+        panel.innerHTML = `
+          <div id="tkb-dev-badge" style="display:flex;align-items:center;gap:8px;background:#0f172a;color:#fff;font-size:12px;font-weight:700;padding:10px 14px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,0.35);cursor:pointer;user-select:none;border:1px solid rgba(239,68,68,0.5);">
+            <span style="width:8px;height:8px;border-radius:50%;background:#ef4444;animation:tkbDevPulse 1.4s ease-in-out infinite;"></span>
+            <span>DEV MODE</span>
+          </div>
+          <div id="tkb-dev-menu" style="display:none;margin-top:8px;width:270px;max-height:70vh;overflow-y:auto;background:#0f172a;color:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,0.35);border:1px solid #334155;padding:12px;font-size:11px;">
+            <div style="font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">📱 Xem thử</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+              <button onclick="TKB.ui.forceView('pc')" style="${DEV_BTN_STYLE}">🖥️ PC</button>
+              <button onclick="TKB.ui.forceView('mobile')" style="${DEV_BTN_STYLE}">📱 Mobile</button>
+              <button onclick="TKB.ui.forceView('auto')" style="${DEV_BTN_STYLE}">🔄 Auto</button>
+            </div>
+            <div style="font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">🌦️ Thời tiết</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+              <button onclick="TKB.weather.rain()" style="${DEV_BTN_STYLE}">🌧️ Mưa</button>
+              <button onclick="TKB.weather.storm()" style="${DEV_BTN_STYLE}">⛈️ Bão</button>
+              <button onclick="TKB.weather.error()" style="${DEV_BTN_STYLE}">❓ Lỗi</button>
+            </div>
+            <div style="font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">🔴 Cảnh báo tiết</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+              <button onclick="TKB.alert.testIcon()" style="${DEV_BTN_STYLE}">Icon nhấp nháy</button>
+              <button onclick="TKB.alert.testCell()" style="${DEV_BTN_STYLE}">Cả ô nhấp nháy</button>
+              <button onclick="TKB.alert.injectRandom()" style="${DEV_BTN_STYLE}">Alert ngẫu nhiên</button>
+              <button onclick="TKB.alert.reset()" style="${DEV_BTN_STYLE}">Reset alert</button>
+            </div>
+            <div style="font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">🪟 Giao diện</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+              <button onclick="TKB.ui.testDialog()" style="${DEV_BTN_STYLE}">Dialog</button>
+              <button onclick="TKB.ui.testBubble('weather')" style="${DEV_BTN_STYLE}">Bubble</button>
+              <button onclick="TKB.tkb.loading(4)" style="${DEV_BTN_STYLE}">Loading</button>
+              <button onclick="TKB.ui.testAnimations()" style="${DEV_BTN_STYLE}">Animation</button>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+              <button onclick="TKB.status()" style="${DEV_BTN_STYLE}">📋 Status</button>
+              <button onclick="TKB.network.reset();TKB.tkb.reset();TKB.alert.reset();TKB.weather.reset();" style="${DEV_BTN_STYLE}">♻️ Reset tất cả</button>
+            </div>
+            <button onclick="TKB.disable()" style="width:100%;background:#dc2626;color:#fff;font-weight:700;padding:8px;border-radius:10px;border:none;cursor:pointer;">🚪 Thoát Dev Mode</button>
+          </div>
+        `;
+        document.body.appendChild(panel);
+
+        document.getElementById('tkb-dev-badge').addEventListener('click', () => {
+          const menu = document.getElementById('tkb-dev-menu');
+          menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        });
+      }
+
+      function removeDevPanel() {
+        const panel = document.getElementById('tkb-dev-panel');
+        if (panel) panel.remove();
       }
 
       // ---- Bọc window.fetch để mô phỏng mạng/lỗi API/tuần trống/JSON hỏng ----
@@ -2150,16 +2197,20 @@
             return;
           }
           this._enabled = true;
-          startDevToolsCloseWatcher();
+          injectDevPanel();
           console.log('%c✅ TKB DEVELOPER MODE: KÍCH HOẠT THÀNH CÔNG!', 'color:#22c55e;font-weight:bold;font-size:14px;');
           console.log('%cGõ TKB.help() để xem danh sách lệnh chi tiết.', 'color:#94a3b8;');
         },
 
         disable() {
           if (!this._enabled) return;
-          this._enabled = false;
+          // Khôi phục fetch thật trước (bỏ mọi giả lập network) để bước kiểm tra update bên dưới
+          // chạy đúng với dữ liệu thật, không bị dính offline/lỗi giả đang bật dở.
           resetAllSimulations();
-          stopDevToolsCloseWatcher();
+          console.log('%c🔄 Tự động chạy TKB.update.simulateNewVersion() để dọn cache thừa & reset TKB...', 'color:#d97706;font-weight:bold;');
+          this.update.simulateNewVersion(); // _enabled vẫn true tại đây nên lệnh này chạy bình thường
+          this._enabled = false;
+          removeDevPanel();
           console.log('%c🛑 TKB DEVELOPER MODE: ĐÃ THOÁT.', 'color:#ef4444;font-weight:bold;font-size:14px;');
         },
 
@@ -2175,13 +2226,16 @@
   TKB.network.offline()          Simulate Offline
   TKB.network.weatherError()     Simulate Weather API Error
   TKB.network.slow(ms)           Simulate Slow Network (mặc định 3000ms)
+  TKB.network.status()           Xem trạng thái mô phỏng mạng hiện tại
   TKB.network.reset()            Reset Network Simulation
 
 🗓️ TKB
   TKB.tkb.gotoWeek(n)             Chọn tuần bất kỳ (1-36)
+  TKB.tkb.today()                 Về đúng tuần thực tế hiện tại
   TKB.tkb.emptyWeek()             Simulate Empty Week
   TKB.tkb.loading(seconds)        Simulate Loading (mặc định 5s)
   TKB.tkb.invalidJson()           Simulate Invalid JSON
+  TKB.tkb.dump()                  In dữ liệu tuần đang xem ra console
   TKB.tkb.reset()                 Reset TKB Simulation
 
 🔴 Lesson Alert
@@ -2189,6 +2243,8 @@
   TKB.alert.inject(session, periodNum, dayKey, msg)
                                    Thêm alert giả vào 1 tiết cụ thể
                                    vd: TKB.alert.inject('sang', 3, 't5', 'Kiểm tra 15p')
+  TKB.alert.injectRandom()        Thêm alert giả vào 1 tiết ngẫu nhiên
+  TKB.alert.list()                Liệt kê các tiết đang có alert
   TKB.alert.testIcon()            Test icon nhấp nháy (ô đầu tiên đang hiện)
   TKB.alert.testCell()            Test cả block tiết nhấp nháy
   TKB.alert.reset()               Reset toàn bộ Alert Test
@@ -2198,12 +2254,16 @@
   TKB.weather.storm()             Force Storm Alert
   TKB.weather.error()             Force ??? (lỗi widget thời tiết)
   TKB.weather.setTemp(t, type)    Set nhiệt độ giả — type: clear/cloudy/rain/storm/hot/cold
+  TKB.weather.forceHot()          Set nhanh nhiệt độ nóng (38°C)
+  TKB.weather.forceCold()         Set nhanh nhiệt độ lạnh (8°C)
+  TKB.weather.status()            Xem cache thời tiết & vị trí đã lưu
   TKB.weather.reset()             Reset Weather Simulation
 
 🔄 Update
   TKB.update.simulateNewVersion() Simulate New Version
   TKB.update.forceUpdate()        Force Update (chuyển thẳng tới updating.html)
   TKB.update.simulateFailure()    Simulate Update Failure
+  TKB.update.status()             Xem mốc Actions đã lưu & trạng thái kiểm tra
   TKB.update.clearState()         Clear Update State
 
 📱 UI
@@ -2213,11 +2273,27 @@
   TKB.ui.testLoadingOverlay(sec)  Test loading overlay (mặc định 5s)
   TKB.ui.testAnimations()         Test animation (chạy cả chuỗi)
 
+📋 Khác
+  TKB.status()                    Xem tổng quan toàn bộ trạng thái Dev Mode
+  Khi Dev Mode BẬT sẽ có 1 bảng điều khiển nổi ở góc phải màn hình (bấm vào để mở/thu gọn)
+
 🚪 Thoát Developer Mode
-  TKB.disable()  hoặc  TKB.exit()
-  (Tự động thoát khi đóng DevTools loại "docked" - gắn liền cửa sổ trình duyệt)
+  TKB.disable()  hoặc  TKB.exit()  (hoặc bấm nút "🚪 Thoát Dev Mode" trên bảng điều khiển)
+  Lúc thoát sẽ tự chạy TKB.update.simulateNewVersion() để dọn cache thừa & reset lại TKB
 `
           );
+        },
+
+        status() {
+          console.log('%c📋 TKB Developer Mode — Trạng thái hiện tại', 'color:#7c3aed;font-weight:bold;font-size:13px;');
+          console.log({
+            enabled: this._enabled,
+            network: { ...devState.network },
+            tkb: { ...devState.tkb, selectedWeek, actualWeek: getCurrentWeekNum() },
+            alert: { testActive: devState.alert.testActive, hasInjectedRef: !!devState.alert.injectedRef },
+            weatherLocationChoice: localStorage.getItem('weather_location_choice'),
+            appLastSuccessRunAt: localStorage.getItem('app_last_success_run_at')
+          });
         },
 
         network: {
@@ -2243,6 +2319,10 @@
             devState.network.weatherError = false;
             devState.network.slowMs = 0;
             console.log('%c♻️ Đã reset toàn bộ Network Simulation.', 'color:#0ea5e9;font-weight:bold;');
+          },
+          status() {
+            if (!requireDevMode()) return;
+            console.log('%c🌐 Network Simulation:', 'color:#0ea5e9;font-weight:bold;', { ...devState.network });
           }
         },
 
@@ -2256,6 +2336,12 @@
             }
             applyWeekSelection(week);
             console.log(`%c🗓️ Đã chuyển tới tuần ${week}.`, 'color:#8b5cf6;font-weight:bold;');
+          },
+          today() {
+            if (!requireDevMode()) return;
+            const week = getCurrentWeekNum();
+            applyWeekSelection(week);
+            console.log(`%c🗓️ Đã về đúng tuần thực tế hiện tại: Tuần ${week}.`, 'color:#8b5cf6;font-weight:bold;');
           },
           emptyWeek() {
             if (!requireDevMode()) return;
@@ -2277,6 +2363,14 @@
             showWeekLoadingOverlay();
             console.log(`%c⏳ Đang hiện Loading Overlay trong ${sec}s...`, 'color:#8b5cf6;font-weight:bold;');
             setTimeout(hideWeekLoadingOverlay, sec * 1000);
+          },
+          dump() {
+            if (!requireDevMode()) return;
+            if (!currentData) {
+              console.log('%c⚠️ Chưa có dữ liệu tuần nào được tải.', 'color:#f59e0b;');
+              return;
+            }
+            console.log(`%c🗓️ Dữ liệu Tuần ${selectedWeek} đang xem:`, 'color:#8b5cf6;font-weight:bold;', currentData);
           },
           reset() {
             if (!requireDevMode()) return;
@@ -2323,6 +2417,49 @@
             list[idx][dayKey].alert = message || 'Cảnh báo thử nghiệm từ Developer Mode';
             rerenderCurrent();
             console.log(`%c🔴 Đã thêm alert giả vào ${String(dayKey).toUpperCase()} - ${session === 'chieu' ? 'Chiều' : 'Sáng'} Tiết ${periodNum}.`, 'color:#dc2626;font-weight:bold;');
+          },
+          injectRandom() {
+            if (!requireDevMode()) return;
+            if (!currentData) {
+              console.log('%c⚠️ Chưa có dữ liệu tuần nào được tải.', 'color:#f59e0b;');
+              return;
+            }
+            const candidates = [];
+            for (const session of ['sang', 'chieu']) {
+              const list = currentData[session] || [];
+              list.forEach((p, idx) => {
+                ['t2', 't3', 't4', 't5', 't6', 't7'].forEach((dayKey) => {
+                  if (p[dayKey] && p[dayKey].sub) candidates.push({ session, idx, dayKey, cell: p[dayKey] });
+                });
+              });
+            }
+            if (candidates.length === 0) {
+              console.log('%c⚠️ Tuần này không có tiết nào để gắn alert.', 'color:#f59e0b;');
+              return;
+            }
+            const pick = candidates[Math.floor(Math.random() * candidates.length)];
+            pick.cell.alert = 'Cảnh báo thử nghiệm ngẫu nhiên (Dev Mode)';
+            rerenderCurrent();
+            console.log(`%c🔴 Đã thêm alert ngẫu nhiên vào ${pick.dayKey.toUpperCase()} - ${pick.session === 'chieu' ? 'Chiều' : 'Sáng'} Tiết ${pick.idx + 1} (${pick.cell.sub}).`, 'color:#dc2626;font-weight:bold;');
+          },
+          list() {
+            if (!requireDevMode()) return;
+            if (!currentData) {
+              console.log('%c⚠️ Chưa có dữ liệu tuần nào được tải.', 'color:#f59e0b;');
+              return;
+            }
+            const found = [];
+            for (const session of ['sang', 'chieu']) {
+              const list = currentData[session] || [];
+              list.forEach((p, idx) => {
+                ['t2', 't3', 't4', 't5', 't6', 't7'].forEach((dayKey) => {
+                  if (p[dayKey] && p[dayKey].alert) {
+                    found.push({ session, period: idx + 1, dayKey, sub: p[dayKey].sub, alert: p[dayKey].alert });
+                  }
+                });
+              });
+            }
+            console.log(`%c🔴 Danh sách tiết đang có alert (${found.length}):`, 'color:#dc2626;font-weight:bold;', found);
           },
           testIcon() {
             if (!requireDevMode()) return;
@@ -2395,6 +2532,23 @@
             updateWeatherUI(t, iconMap[wtype], t >= 35 ? 'hot' : wtype);
             console.log(`%c🌡️ Đã set nhiệt độ giả: ${t}°C (${wtype}).`, 'color:#0891b2;font-weight:bold;');
           },
+          forceHot() {
+            if (!requireDevMode()) return;
+            this.setTemp(38, 'hot');
+          },
+          forceCold() {
+            if (!requireDevMode()) return;
+            this.setTemp(8, 'cold');
+          },
+          status() {
+            if (!requireDevMode()) return;
+            console.log('%c🌦️ Weather Status:', 'color:#0891b2;font-weight:bold;', {
+              locationChoice: localStorage.getItem('weather_location_choice'),
+              cache: (() => {
+                try { return JSON.parse(localStorage.getItem('weather_cache')); } catch (e) { return null; }
+              })()
+            });
+          },
           reset() {
             if (!requireDevMode()) return;
             dismissWeatherNotice();
@@ -2420,6 +2574,13 @@
             sessionStorage.setItem('dev_simulate_update_failure', '1');
             console.log('%c🔄 Simulate Update Failure: chuyển tới updating.html để xem trạng thái lỗi...', 'color:#d97706;font-weight:bold;');
             window.location.href = './updating.html';
+          },
+          status() {
+            if (!requireDevMode()) return;
+            console.log('%c🔄 Update Status:', 'color:#d97706;font-weight:bold;', {
+              appLastSuccessRunAt: localStorage.getItem('app_last_success_run_at'),
+              simulateFailureFlag: sessionStorage.getItem('dev_simulate_update_failure') === '1'
+            });
           },
           clearState() {
             if (!requireDevMode()) return;
