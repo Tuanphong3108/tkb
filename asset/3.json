@@ -14,7 +14,7 @@
       "t3": { "sub": "GDTC", "teacher": "THANH" },
       "t4": { "sub": "GDTC", "teacher": "THANH" },
       "t5": { "sub": "TIN", "teacher": "ĐIỆP" },
-      "t6": { "sub": "GDĐP", "teacher": "" },
+      "t6": { "sub": "GDĐP", "teacher": "T.HƯƠNG" },
       "t7": null
     },
     {
@@ -44,7 +44,7 @@
   ],
   "chieu": [
     {
-      "t2": { "sub": "GDĐP", "teacher": "" },
+      "t2": { "sub": "GDĐP", "teacher": "T.HƯƠNG" },
       "t3": { "sub": "HĐTN 2", "teacher": "H.HẰNG" },
       "t4": null,
       "t5": null,
