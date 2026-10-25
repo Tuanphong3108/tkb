@@ -8,7 +8,7 @@ self.addEventListener('install', (e) => {
       // Tải và lưu trữ offline.html với cache: 'reload' để luôn lấy bản mới nhất từ server
       return cache.addAll([
         new Request(OFFLINE_URL, { cache: 'reload' }),
-        new Request('./' + OFFLINE_URL, { cache: 'reload' })
+        new Request('./' + OFFLINE_URL, { cache: 'reload' }) 
       ]);
     })
   );
