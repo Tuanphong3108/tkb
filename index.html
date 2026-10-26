@@ -453,6 +453,11 @@
       /* ================= Dark mode (ghi đè các class Tailwind bản sáng) ================= */
       html.dark body { background-color: #020617; color: #f8fafc; }
       html.dark .ap-label { color: #94a3b8; }
+      /* TKB: trong dark mode, toàn bộ chữ/icon trong ô môn học là trắng (chữ màu dễ chìm). Icon alert đỏ nhấp nháy giữ nguyên */
+      html.dark .subject-card :is(span, div):not(.alert-blink-icon) { color: #ffffff; }
+      html.dark .subject-card span.teacher-name:not(.alert-blink-icon),
+      html.dark .subject-card div.text-xs.font-semibold:not(.alert-blink-icon) { color: rgba(255,255,255,.82); }
+      html.dark .subject-card .alert-blink-icon { color: #f87171 !important; }
       html.dark .ap-opt { color: #e2e8f0; }
       html.dark .ap-opt.active { background: #334155; color: #5eead4; }
       html.dark .ap-row { color: #f8fafc; }
