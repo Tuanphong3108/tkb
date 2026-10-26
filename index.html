@@ -32,6 +32,152 @@
   <!-- Tắt tự động nhận diện số điện thoại trên Safari -->
   <meta name="format-detection" content="telephone=no">
   
+  <!-- Theme / UI mode: chạy sớm để không bị nháy màu khi tải trang -->
+  <script>
+  (function () {
+    var LS = { theme: 'app_theme', ui: 'app_ui', plat: 'tkb_force_platform' };
+    function get(k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } }
+    function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+    // Tên Material Symbols -> mã ký tự SF Symbols (lấy từ font hệ thống của máy Apple, KHÔNG nhúng hình icon của Apple)
+    var SF = { apps:0x1001F7,balance:0x100B6D,biotech:0x1010B6,chevron_right:0x10018A,close:0x100184,description:0x10023F,event_available:0x101EE7,folder_off:0x10021B,functions:0x10016E,groups:0x10074A,history_edu:0x10090F,info:0x100174,location_on:0x1002D2,menu_book:0x10025A,more_vert:0x100360,my_location:0x1002D1,person:0x100269,print:0x10039A,public:0x1001AA,school:0x100AD3,shield:0x100666,sports_soccer:0x1009A5,tag:0x1002E1,terminal:0x100A7C,translate:0x100330,unfold_more:0x10018F,warning:0x1001FE,wb_sunny:0x1001AD,wb_twilight:0x1001B3,dark_mode:0x1001B9,light_mode:0x1001AD,brightness_auto:0x100002,computer:0x1007DB,water_drop:0x100811,palette:0x100765,check:0x100185 };
+
+    function isApple() {
+      var f = get(LS.plat, '');
+      if (f === 'apple') return true;
+      if (f === 'other') return false;
+      var ua = navigator.userAgent || '', pf = navigator.platform || '';
+      if (/iPhone|iPad|iPod/.test(ua)) return true;
+      // macOS và cả iPadOS (iPad bật "Request Desktop Website" báo platform = MacIntel)
+      if (/^Mac/.test(pf) || /Macintosh|Mac OS X/.test(ua)) return true;
+      return false;
+    }
+
+    var sfCache = null;
+    function sfAvailable() {
+      if (sfCache !== null) return sfCache;
+      sfCache = false;
+      try {
+        var c = document.createElement('canvas').getContext('2d');
+        c.font = '32px -apple-system, BlinkMacSystemFont, system-ui';
+        var miss = c.measureText(String.fromCodePoint(0x10FFFD)).width;
+        var a = c.measureText(String.fromCodePoint(0x10039E)).width;
+        var b = c.measureText(String.fromCodePoint(0x1008CB)).width;
+        sfCache = (a > 0 && a !== miss) || (b > 0 && b !== miss);
+      } catch (e) {}
+      return sfCache;
+    }
+
+    var S = { theme: get(LS.theme, 'system'), ui: get(LS.ui, 'system') };
+    if (['dark', 'light', 'system'].indexOf(S.theme) < 0) S.theme = 'system';
+    if (['system', 'glass', 'material'].indexOf(S.ui) < 0) S.ui = 'system';
+    var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : { matches: false };
+    var sfOn = false, observer = null, ready = false, raf = 0;
+
+    function swapIcons() {
+      if (!ready) return;
+      if (observer) observer.disconnect();
+      var list = document.querySelectorAll('.material-symbols-outlined');
+      for (var i = 0; i < list.length; i++) {
+        var el = list[i], cur = el.textContent.trim(), name;
+        if (el.dataset.sfc && el.dataset.sfc === cur) name = el.dataset.mi;
+        else name = cur;
+        if (!name) continue;
+        el.dataset.mi = name;
+        var code = SF[name];
+        if (sfOn && code) {
+          var ch = String.fromCodePoint(code);
+          if (el.textContent !== ch) el.textContent = ch;
+          el.dataset.sfc = ch;
+          el.classList.add('sf-sym');
+        } else {
+          if (el.textContent !== name) el.textContent = name;
+          delete el.dataset.sfc;
+          el.classList.remove('sf-sym');
+        }
+      }
+      if (observer) observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+    }
+    function scheduleSwap() {
+      if (raf) return;
+      raf = requestAnimationFrame(function () { raf = 0; swapIcons(); });
+    }
+
+    function sysUi() { return isApple() ? 'glass' : 'material'; }
+    function apply() {
+      var root = document.documentElement;
+      var dark = S.theme === 'dark' || (S.theme === 'system' && mq.matches);
+      var glass = (S.ui === 'system' ? sysUi() : S.ui) === 'glass';
+      root.classList.toggle('dark', dark);
+      root.classList.toggle('ui-glass', glass);
+      root.classList.toggle('ui-material', !glass);
+      root.style.colorScheme = dark ? 'dark' : 'light';
+      sfOn = glass && sfAvailable();
+      root.classList.toggle('sf-on', sfOn);
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', dark ? '#020617' : (glass ? '#e9eef7' : '#0f172a'));
+      swapIcons();
+      updatePickers();
+    }
+
+    var PICKER_HTML =
+      '<div class="ap-label">GIAO DIỆN</div>' +
+      '<div class="ap-seg">' +
+        '<button type="button" class="ap-opt" data-theme-opt="dark"><span class="material-symbols-outlined">dark_mode</span><span>Tối</span></button>' +
+        '<button type="button" class="ap-opt" data-theme-opt="light"><span class="material-symbols-outlined">light_mode</span><span>Sáng</span></button>' +
+        '<button type="button" class="ap-opt" data-theme-opt="system"><span class="material-symbols-outlined">brightness_auto</span><span>Hệ thống</span></button>' +
+      '</div>' +
+      '<div class="ap-label" style="margin-top:6px">UI</div>' +
+      '<div class="ap-list">' +
+        '<button type="button" class="ap-row" data-ui-opt="system"><span class="material-symbols-outlined">computer</span><span>Hệ thống <small data-sys-hint></small></span><span class="material-symbols-outlined ap-check">check</span></button>' +
+        '<button type="button" class="ap-row" data-ui-opt="glass"><span class="material-symbols-outlined">water_drop</span><span>Liquid Glass</span><span class="material-symbols-outlined ap-check">check</span></button>' +
+        '<button type="button" class="ap-row" data-ui-opt="material"><span class="material-symbols-outlined">palette</span><span>Material You</span><span class="material-symbols-outlined ap-check">check</span></button>' +
+      '</div>';
+
+    function updatePickers() {
+      if (!ready) return;
+      var t = document.querySelectorAll('[data-theme-opt]');
+      for (var i = 0; i < t.length; i++) t[i].classList.toggle('active', t[i].getAttribute('data-theme-opt') === S.theme);
+      var u = document.querySelectorAll('[data-ui-opt]');
+      for (var j = 0; j < u.length; j++) u[j].classList.toggle('active', u[j].getAttribute('data-ui-opt') === S.ui);
+      var h = document.querySelectorAll('[data-sys-hint]');
+      for (var k = 0; k < h.length; k++) h[k].textContent = '(' + (sysUi() === 'glass' ? 'Liquid Glass' : 'Material You') + ')';
+    }
+
+    function setTheme(v) { S.theme = v; set(LS.theme, v); apply(); }
+    function setUi(v) { S.ui = v; set(LS.ui, v); apply(); }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var hosts = document.querySelectorAll('[data-app-picker]');
+      for (var i = 0; i < hosts.length; i++) {
+        hosts[i].innerHTML = PICKER_HTML;
+        hosts[i].addEventListener('click', function (e) {
+          var t = e.target.closest('[data-theme-opt]'), u = e.target.closest('[data-ui-opt]');
+          if (t) setTheme(t.getAttribute('data-theme-opt'));
+          else if (u) setUi(u.getAttribute('data-ui-opt'));
+        });
+      }
+      ready = true;
+      observer = new MutationObserver(scheduleSwap);
+      apply();
+    });
+
+    if (mq.addEventListener) mq.addEventListener('change', function () { if (S.theme === 'system') apply(); });
+    else if (mq.addListener) mq.addListener(function () { if (S.theme === 'system') apply(); });
+
+    window.AppUI = {
+      setTheme: setTheme, setUi: setUi, refresh: apply,
+      status: function () {
+        return { apple: isApple(), forcedPlatform: get(LS.plat, '') || null, theme: S.theme, ui: S.ui,
+                 darkNow: document.documentElement.classList.contains('dark'),
+                 glassNow: document.documentElement.classList.contains('ui-glass'),
+                 sfSymbolsAvailable: sfAvailable(), sfIconsOn: sfOn };
+      }
+    };
+    apply();
+  })();
+  </script>
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -237,6 +383,199 @@
         color: #000000 !important;
       }
     }
+
+    /* ================= Picker Giao diện / UI (trong menu 3 chấm) ================= */
+    .ap-label { font-size: 11px; font-weight: 700; color: #94a3b8; padding: 0 4px; }
+    .ap-seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 3px; border-radius: 14px; background: rgba(100,116,139,.14); }
+    .ap-opt { border: 0; background: transparent; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px; border-radius: 11px; font-size: 11px; font-weight: 700; color: #475569; cursor: pointer; transition: background .2s, color .2s, box-shadow .2s; }
+    .ap-opt .material-symbols-outlined { font-size: 18px; }
+    .ap-opt.active { background: #fff; color: #0f766e; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+    .ap-list { display: flex; flex-direction: column; gap: 2px; }
+    .ap-row { border: 0; background: transparent; display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 8px; border-radius: 12px; font-size: 12px; font-weight: 700; color: #334155; text-align: left; cursor: pointer; transition: background .2s, color .2s; }
+    .ap-row .material-symbols-outlined { font-size: 18px; }
+    .ap-row small { font-size: 10px; font-weight: 600; color: #94a3b8; }
+    .ap-row:hover { background: rgba(100,116,139,.12); }
+    .ap-row .ap-check { margin-left: auto; font-size: 16px; color: #0d9488; opacity: 0; }
+    .ap-row.active { background: rgba(13,148,136,.12); color: #0f766e; }
+    .ap-row.active .ap-check { opacity: 1; }
+    #pc-more-menu { transform-origin: top right; }
+
+    /* ================= SF Symbols (chỉ bật trên máy Apple có font SF) ================= */
+    .material-symbols-outlined.sf-sym {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif !important;
+      font-variation-settings: normal !important;
+      font-feature-settings: normal !important;
+      font-weight: 500;
+      letter-spacing: 0;
+      font-style: normal;
+      line-height: 1;
+    }
+    .material-symbols-outlined.sf-sym[data-mi="more_vert"] { rotate: 90deg; }
+
+    @media screen {
+      /* ================= Dark mode (ghi đè các class Tailwind bản sáng) ================= */
+      html.dark body { background-color: #020617; color: #e2e8f0; }
+      html.dark .ap-label { color: #64748b; }
+      html.dark .ap-opt { color: #cbd5e1; }
+      html.dark .ap-opt.active { background: #334155; color: #5eead4; }
+      html.dark .ap-row { color: #e2e8f0; }
+      html.dark .ap-row small { color: #64748b; }
+      html.dark .ap-row.active { background: rgba(45,212,191,.14); color: #5eead4; }
+      html.dark .ap-row .ap-check { color: #5eead4; }
+      html.dark md-dialog {
+        --md-dialog-container-color: #1e293b;
+        --md-dialog-headline-color: #f1f5f9;
+        --md-dialog-supporting-text-color: #cbd5e1;
+        --md-sys-color-surface-container-high: #1e293b;
+        --md-sys-color-on-surface: #e2e8f0;
+        --md-sys-color-on-surface-variant: #cbd5e1;
+      }
+html.dark .bg-amber-50\/80{background-color:rgba(69,26,3,0.8)}
+      html.dark .bg-cyan-50\/80{background-color:rgba(8,51,68,0.8)}
+      html.dark .bg-emerald-50\/80{background-color:rgba(2,44,34,0.8)}
+      html.dark .bg-indigo-50\/80{background-color:rgba(30,27,75,0.8)}
+      html.dark .bg-lime-50\/80{background-color:rgba(26,46,5,0.8)}
+      html.dark .bg-orange-50\/80{background-color:rgba(67,20,7,0.8)}
+      html.dark .bg-purple-50\/80{background-color:rgba(59,7,100,0.8)}
+      html.dark .bg-red-50{background-color:#450a0a}
+      html.dark .bg-rose-50\/80{background-color:rgba(76,5,25,0.8)}
+      html.dark .bg-sky-50\/80{background-color:rgba(8,47,73,0.8)}
+      html.dark .bg-slate-100{background-color:#1e293b}
+      html.dark .bg-slate-100\/80{background-color:rgba(30,41,59,0.8)}
+      html.dark .bg-slate-200{background-color:#334155}
+      html.dark .bg-slate-50{background-color:#020617}
+      html.dark .bg-slate-50\/50{background-color:rgba(2,6,23,0.5)}
+      html.dark .bg-slate-700{background-color:#475569}
+      html.dark .bg-slate-800{background-color:#334155}
+      html.dark .bg-slate-900{background-color:#1e293b}
+      html.dark .bg-slate-900\/40{background-color:rgba(30,41,59,0.4)}
+      html.dark .bg-slate-900\/60{background-color:rgba(30,41,59,0.6)}
+      html.dark .bg-slate-900\/95{background-color:rgba(30,41,59,0.95)}
+      html.dark .bg-stone-100\/90{background-color:rgba(12,10,9,0.9)}
+      html.dark .bg-teal-100{background-color:#042f2e}
+      html.dark .bg-teal-50{background-color:#042f2e}
+      html.dark .bg-teal-50\/80{background-color:rgba(4,47,46,0.8)}
+      html.dark .bg-white{background-color:#0f172a}
+      html.dark .bg-white\/60{background-color:rgba(15,23,42,0.6)}
+      html.dark .bg-white\/80{background-color:rgba(15,23,42,0.8)}
+      html.dark .border-amber-200\/60{border-color:rgba(180,83,9,0.6)}
+      html.dark .border-cyan-200\/60{border-color:rgba(14,116,144,0.6)}
+      html.dark .border-emerald-200\/60{border-color:rgba(4,120,87,0.6)}
+      html.dark .border-indigo-200\/60{border-color:rgba(67,56,202,0.6)}
+      html.dark .border-lime-200\/60{border-color:rgba(77,124,15,0.6)}
+      html.dark .border-orange-200\/60{border-color:rgba(194,65,12,0.6)}
+      html.dark .border-purple-200\/60{border-color:rgba(126,34,206,0.6)}
+      html.dark .border-red-200\/60{border-color:rgba(185,28,28,0.6)}
+      html.dark .border-rose-200\/60{border-color:rgba(190,18,60,0.6)}
+      html.dark .border-sky-200\/60{border-color:rgba(3,105,161,0.6)}
+      html.dark .border-slate-100{border-color:#1e293b}
+      html.dark .border-slate-200{border-color:#334155}
+      html.dark .border-slate-200\/60{border-color:rgba(51,65,85,0.6)}
+      html.dark .border-slate-200\/80{border-color:rgba(51,65,85,0.8)}
+      html.dark .border-stone-300\/60{border-color:rgba(87,83,78,0.6)}
+      html.dark .border-teal-100{border-color:#115e59}
+      html.dark .border-teal-200{border-color:#0f766e}
+      html.dark .border-teal-200\/60{border-color:rgba(15,118,110,0.6)}
+      html.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]){border-color:#1e293b}
+      html.dark .hover\:bg-slate-200:hover{background-color:#334155}
+      html.dark .hover\:bg-slate-200\/80:hover{background-color:rgba(51,65,85,0.8)}
+      html.dark .hover\:bg-slate-50\/80:hover{background-color:rgba(2,6,23,0.8)}
+      html.dark .hover\:bg-slate-700:hover{background-color:#475569}
+      html.dark .text-amber-600{color:#fcd34d}
+      html.dark .text-amber-800{color:#fde68a}
+      html.dark .text-cyan-600{color:#67e8f9}
+      html.dark .text-cyan-800{color:#a5f3fc}
+      html.dark .text-emerald-600{color:#6ee7b7}
+      html.dark .text-emerald-800{color:#a7f3d0}
+      html.dark .text-indigo-600{color:#a5b4fc}
+      html.dark .text-indigo-800{color:#c7d2fe}
+      html.dark .text-lime-600{color:#bef264}
+      html.dark .text-lime-800{color:#d9f99d}
+      html.dark .text-orange-600{color:#fdba74}
+      html.dark .text-orange-800{color:#fed7aa}
+      html.dark .text-purple-600{color:#d8b4fe}
+      html.dark .text-purple-800{color:#e9d5ff}
+      html.dark .text-red-700{color:#fca5a5}
+      html.dark .text-rose-600{color:#fda4af}
+      html.dark .text-rose-800{color:#fecdd3}
+      html.dark .text-sky-600{color:#7dd3fc}
+      html.dark .text-sky-800{color:#bae6fd}
+      html.dark .text-slate-400{color:#64748b}
+      html.dark .text-slate-500{color:#94a3b8}
+      html.dark .text-slate-600{color:#94a3b8}
+      html.dark .text-slate-700{color:#cbd5e1}
+      html.dark .text-slate-800{color:#e2e8f0}
+      html.dark .text-slate-900{color:#f1f5f9}
+      html.dark .text-stone-600{color:#d6d3d1}
+      html.dark .text-stone-700{color:#d6d3d1}
+      html.dark .text-stone-900{color:#e7e5e4}
+      html.dark .text-teal-600{color:#5eead4}
+      html.dark .text-teal-700{color:#5eead4}
+      html.dark .text-teal-800{color:#99f6e4}
+      html.dark .text-teal-900{color:#99f6e4}
+
+      /* ================= Liquid Glass ================= */
+      html.ui-glass {
+        --g-bg: rgba(255,255,255,.58);
+        --g-bg-soft: rgba(255,255,255,.30);
+        --g-bd: rgba(255,255,255,.70);
+        --g-sh: 0 10px 40px rgba(31,38,135,.14);
+        --g-hi: inset 0 1px 0 rgba(255,255,255,.75), inset 0 -1px 0 rgba(255,255,255,.25);
+      }
+      html.ui-glass.dark {
+        --g-bg: rgba(30,41,59,.48);
+        --g-bg-soft: rgba(255,255,255,.06);
+        --g-bd: rgba(255,255,255,.14);
+        --g-sh: 0 10px 40px rgba(0,0,0,.45);
+        --g-hi: inset 0 1px 0 rgba(255,255,255,.18), inset 0 -1px 0 rgba(255,255,255,.04);
+      }
+      html.ui-glass body {
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, 'Google Sans Flex', sans-serif;
+        background-color: #eaf0f9;
+        background-image:
+          radial-gradient(60% 50% at 12% 8%, rgba(45,212,191,.38), transparent 62%),
+          radial-gradient(50% 45% at 92% 18%, rgba(96,165,250,.38), transparent 62%),
+          radial-gradient(55% 50% at 72% 96%, rgba(244,114,182,.28), transparent 62%),
+          radial-gradient(45% 40% at 6% 88%, rgba(167,139,250,.28), transparent 62%);
+        background-attachment: fixed;
+      }
+      html.ui-glass.dark body {
+        background-color: #020617;
+        background-image:
+          radial-gradient(60% 50% at 12% 8%, rgba(20,184,166,.28), transparent 62%),
+          radial-gradient(50% 45% at 92% 18%, rgba(59,130,246,.26), transparent 62%),
+          radial-gradient(55% 50% at 72% 96%, rgba(219,39,119,.18), transparent 62%),
+          radial-gradient(45% 40% at 6% 88%, rgba(124,58,237,.22), transparent 62%);
+      }
+      html.ui-glass header,
+      html.ui-glass main,
+      html.ui-glass #more-menu,
+      html.ui-glass #pc-more-menu,
+      html.ui-glass #apps-dialog-panel,
+      html.ui-glass #subject-dialog-panel {
+        background-color: var(--g-bg) !important;
+        -webkit-backdrop-filter: blur(28px) saturate(180%);
+        backdrop-filter: blur(28px) saturate(180%);
+        border-color: var(--g-bd) !important;
+        box-shadow: var(--g-sh), var(--g-hi) !important;
+      }
+      html.ui-glass header, html.ui-glass main { border-radius: 28px; }
+      html.ui-glass main .bg-white { background-color: var(--g-bg-soft) !important; }
+      html.ui-glass .bg-slate-100 { background-color: var(--g-bg-soft) !important; border-color: var(--g-bd) !important; box-shadow: var(--g-hi); }
+      html.ui-glass .expressive-btn { border-radius: 9999px; }
+      html.ui-glass #mobile-weather-container {
+        background-color: rgba(15,23,42,.52) !important;
+        -webkit-backdrop-filter: blur(26px) saturate(180%);
+        backdrop-filter: blur(26px) saturate(180%);
+        border-color: rgba(255,255,255,.18) !important;
+        box-shadow: 0 10px 40px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.25);
+      }
+      html.ui-glass md-dialog {
+        --md-dialog-container-color: var(--g-bg);
+        --md-dialog-container-shape: 28px;
+      }
+      html.ui-glass .ap-seg { background: var(--g-bg-soft); box-shadow: var(--g-hi); }
+    }
   </style>
 </head>
 <body class="min-h-screen w-full flex flex-col justify-between p-3 md:p-6 pb-24 md:pb-6 bg-slate-50 text-slate-800">
@@ -315,13 +654,6 @@
           </div>
         </div>
 
-        <!-- Nút My Apps PC -->
-        <button onclick="openAppsDialog()" class="expressive-btn relative overflow-hidden flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3.5 py-2.5 rounded-2xl border border-slate-200 cursor-pointer shadow-xs">
-          <md-ripple></md-ripple>
-          <span class="material-symbols-outlined text-base text-teal-600">apps</span>
-          <span class="text-xs">My apps</span>
-        </button>
-
         <!-- Dropdown Chọn Tuần: mở dialog Material Web thay vì dropdown mặc định của Chrome -->
         <div class="relative">
           <select id="week-select-pc" class="hidden" tabindex="-1" aria-hidden="true">
@@ -353,6 +685,21 @@
           <span class="material-symbols-outlined text-base">print</span>
           <span class="text-xs font-semibold">In A4</span>
         </button>
+
+        <!-- Menu 3 chấm PC: My apps + Giao diện -->
+        <div class="relative">
+          <button type="button" id="pc-more-btn" aria-label="Tùy chọn" class="expressive-btn w-10 h-10 rounded-2xl bg-slate-100 hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-700 cursor-pointer">
+            <span class="material-symbols-outlined">more_vert</span>
+          </button>
+          <div id="pc-more-menu" class="hidden no-print absolute right-0 top-full mt-2 bg-white border border-slate-200 shadow-xl rounded-2xl p-3 z-50 w-64 flex-col gap-2">
+            <div class="text-[11px] font-bold text-slate-400 px-1">TÙY CHỌN</div>
+            <button onclick="openAppsDialog()" class="w-full flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2 px-3 rounded-xl border border-slate-200 cursor-pointer">
+              <span class="material-symbols-outlined text-sm text-teal-600">apps</span> My apps
+            </button>
+            <div class="h-px bg-slate-200 my-0.5"></div>
+            <div data-app-picker class="flex flex-col gap-1.5"></div>
+          </div>
+        </div>
       </div>
 
       <!-- Action Mobile (Nút More) -->
@@ -363,7 +710,7 @@
       </div>
 
       <!-- Mobile More Menu Popup -->
-      <div id="more-menu" class="hidden no-print absolute right-4 top-16 bg-white border border-slate-200 shadow-xl rounded-2xl p-3 z-50 w-52 flex-col gap-2">
+      <div id="more-menu" class="hidden no-print absolute right-4 top-16 bg-white border border-slate-200 shadow-xl rounded-2xl p-3 z-50 w-60 flex-col gap-2">
         <div class="text-[11px] font-bold text-slate-400 px-1">TÙY CHỌN</div>
         <button onclick="openAppsDialog()" class="w-full flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2 px-3 rounded-xl border border-slate-200">
           <span class="material-symbols-outlined text-sm text-teal-600">apps</span> My apps
@@ -378,6 +725,8 @@
             <span class="material-symbols-outlined text-sm text-slate-500">unfold_more</span>
           </button>
         </div>
+        <div class="h-px bg-slate-200"></div>
+        <div data-app-picker class="flex flex-col gap-1.5"></div>
         <button id="print-btn-mobile" onclick="window.print()" class="expressive-btn w-full flex items-center gap-2 bg-teal-700 text-white text-xs font-bold py-2 px-3 rounded-xl mt-1">
           <span class="material-symbols-outlined text-sm">print</span> In Thời Khóa Biểu
         </button>
@@ -742,7 +1091,7 @@
       'SỬ': { bg: 'bg-orange-50/80', border: 'border-orange-200/60', icon: 'history_edu', text: 'text-orange-950', teacherText: 'text-orange-800', iconColor: 'text-orange-600' },
       'GDKT&PL': { bg: 'bg-purple-50/80', border: 'border-purple-200/60', icon: 'balance', text: 'text-purple-950', teacherText: 'text-purple-800', iconColor: 'text-purple-600' },
       'GDTC': { bg: 'bg-lime-50/80', border: 'border-lime-200/60', icon: 'sports_soccer', text: 'text-lime-950', teacherText: 'text-lime-800', iconColor: 'text-lime-600' },
-      'GD QUỐC PHÒNG': { bg: 'bg-stone-100/90', border: 'border-stone-300/60', icon: 'shield', text: 'text-stone-900', teacherText: 'text-stone-700', iconColor: 'text-stone-600' },
+      'GD Quốc Phòng': { bg: 'bg-stone-100/90', border: 'border-stone-300/60', icon: 'shield', text: 'text-stone-900', teacherText: 'text-stone-700', iconColor: 'text-stone-600' },
       'HĐTN': { bg: 'bg-amber-50/80', border: 'border-amber-200/60', icon: 'groups', text: 'text-amber-950', teacherText: 'text-amber-800', iconColor: 'text-amber-600' },
       'DEFAULT': { bg: 'bg-slate-100/80', border: 'border-slate-200', icon: 'school', text: 'text-slate-900', teacherText: 'text-slate-700', iconColor: 'text-slate-600' }
     };
@@ -1218,41 +1567,57 @@
 
     const moreBtn = document.getElementById('more-menu-btn');
     const moreMenu = document.getElementById('more-menu');
+    const pcMoreBtn = document.getElementById('pc-more-btn');
+    const pcMoreMenu = document.getElementById('pc-more-menu');
 
-    // More Option: zoom-in từ nút 3 chấm khi mở, zoom-out rồi mới ẩn khi đóng
-    function openMoreMenu() {
-      moreMenu.classList.remove('hidden');
-      moreMenu.classList.add('flex');
-      moreMenu.classList.remove('zoom-fade-out');
-      void moreMenu.offsetWidth;
-      moreMenu.classList.add('zoom-fade-in');
+    // Menu 3 chấm (mobile + PC): zoom-in từ nút 3 chấm khi mở, zoom-out rồi mới ẩn khi đóng
+    function openMenuEl(m) {
+      clearTimeout(m._closeTimer);
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+      m.classList.remove('zoom-fade-out');
+      void m.offsetWidth;
+      m.classList.add('zoom-fade-in');
     }
 
-    function closeMoreMenu() {
-      if (moreMenu.classList.contains('hidden')) return;
-      moreMenu.classList.remove('zoom-fade-in');
-      moreMenu.classList.add('zoom-fade-out');
-      setTimeout(() => {
-        moreMenu.classList.add('hidden');
-        moreMenu.classList.remove('flex', 'zoom-fade-out');
+    function closeMenuEl(m) {
+      if (m.classList.contains('hidden')) return;
+      m.classList.remove('zoom-fade-in');
+      m.classList.add('zoom-fade-out');
+      clearTimeout(m._closeTimer);
+      m._closeTimer = setTimeout(() => {
+        m.classList.add('hidden');
+        m.classList.remove('flex', 'zoom-fade-out');
       }, 150);
     }
 
+    function openMoreMenu() { closeMenuEl(pcMoreMenu); openMenuEl(moreMenu); }
+    function openPcMoreMenu() { closeMenuEl(moreMenu); openMenuEl(pcMoreMenu); }
+    function closeMoreMenu() { closeMenuEl(moreMenu); closeMenuEl(pcMoreMenu); }
+
     moreBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (moreMenu.classList.contains('hidden')) {
-        openMoreMenu();
-      } else {
-        closeMoreMenu();
-      }
+      if (moreMenu.classList.contains('hidden')) openMoreMenu(); else closeMoreMenu();
     });
 
-    moreMenu.addEventListener('click', (e) => {
+    pcMoreBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (pcMoreMenu.classList.contains('hidden')) openPcMoreMenu(); else closeMoreMenu();
+    });
+
+    moreMenu.addEventListener('click', (e) => e.stopPropagation());
+    pcMoreMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // Bấm My apps (nút mở dialog) thì đóng menu; bấm picker thì giữ menu để đổi tiếp
+      if (e.target.closest('button[onclick]')) closeMoreMenu();
     });
 
     document.addEventListener('click', () => {
       closeMoreMenu();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMoreMenu();
     });
 
     // Tab switcher events
@@ -2069,6 +2434,7 @@
       }
 
       function resetAllSimulations() {
+        try { localStorage.removeItem('tkb_force_platform'); if (window.AppUI) window.AppUI.refresh(); } catch (e) {}
         devState.network.offline = false;
         devState.network.weatherError = false;
         devState.network.slowMs = 0;
@@ -2131,6 +2497,12 @@
               <button onclick="TKB.ui.testBubble('weather')" style="${DEV_BTN_STYLE}">Bubble</button>
               <button onclick="TKB.tkb.loading(4)" style="${DEV_BTN_STYLE}">Loading</button>
               <button onclick="TKB.ui.testAnimations()" style="${DEV_BTN_STYLE}">Animation</button>
+              <button onclick="TKB.ui.platform('apple')" style="${DEV_BTN_STYLE}">🍎 Giả lập Apple</button>
+              <button onclick="TKB.ui.platform('other')" style="${DEV_BTN_STYLE}">🤖 Giả lập khác</button>
+              <button onclick="TKB.ui.mode('glass')" style="${DEV_BTN_STYLE}">💧 Glass</button>
+              <button onclick="TKB.ui.mode('material')" style="${DEV_BTN_STYLE}">🎨 Material</button>
+              <button onclick="TKB.ui.theme('dark')" style="${DEV_BTN_STYLE}">🌙 Tối</button>
+              <button onclick="TKB.ui.theme('light')" style="${DEV_BTN_STYLE}">☀️ Sáng</button>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
               <button onclick="TKB.status()" style="${DEV_BTN_STYLE}">📋 Status</button>
@@ -2267,6 +2639,10 @@
   TKB.update.clearState()         Clear Update State
 
 📱 UI
+  TKB.ui.platform(p)              Giả lập thiết bị — p: 'apple' | 'other' | (bỏ trống = nhận diện thật)
+  TKB.ui.theme(t)                 Giao diện — t: 'dark' | 'light' | 'system'
+  TKB.ui.mode(m)                  Kiểu UI — m: 'glass' | 'material' | 'system'
+  TKB.ui.appearance()             Xem trạng thái theme/UI/SF Symbols hiện tại
   TKB.ui.forceView(mode)          PC/Mobile preview — mode: 'pc' | 'mobile' | 'auto'
   TKB.ui.testDialog()             Test dialog
   TKB.ui.testBubble(type)         Test bubble — type: 'weather' | 'week'
@@ -2591,6 +2967,30 @@
         },
 
         ui: {
+          platform(p) {
+            if (!requireDevMode()) return;
+            try {
+              if (p === 'apple' || p === 'other') localStorage.setItem('tkb_force_platform', p);
+              else localStorage.removeItem('tkb_force_platform');
+            } catch (e) {}
+            window.AppUI.refresh();
+            console.log('%c🍎 Platform giả lập: ' + (p === 'apple' || p === 'other' ? p : 'auto (nhận diện thật)'), 'color:#7c3aed;font-weight:bold;');
+            console.table(window.AppUI.status());
+          },
+          theme(t) {
+            if (!requireDevMode()) return;
+            window.AppUI.setTheme(['dark', 'light'].includes(t) ? t : 'system');
+            console.table(window.AppUI.status());
+          },
+          mode(m) {
+            if (!requireDevMode()) return;
+            window.AppUI.setUi(['glass', 'material'].includes(m) ? m : 'system');
+            console.table(window.AppUI.status());
+          },
+          appearance() {
+            if (!requireDevMode()) return;
+            console.table(window.AppUI.status());
+          },
           forceView(mode) {
             if (!requireDevMode()) return;
             const pcView = document.getElementById('pc-view');
