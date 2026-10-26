@@ -412,7 +412,7 @@
     }
     .material-symbols-outlined.sf-sym[data-mi="more_vert"] { rotate: 90deg; }
 
-    @media screen {
+@media screen {
       /* ================= Dark mode (ghi đè các class Tailwind bản sáng) ================= */
       html.dark body { background-color: #020617; color: #e2e8f0; }
       html.dark .ap-label { color: #64748b; }
@@ -430,7 +430,7 @@
         --md-sys-color-on-surface: #e2e8f0;
         --md-sys-color-on-surface-variant: #cbd5e1;
       }
-html.dark .bg-amber-50\/80{background-color:rgba(69,26,3,0.8)}
+      html.dark .bg-amber-50\/80{background-color:rgba(69,26,3,0.8)}
       html.dark .bg-cyan-50\/80{background-color:rgba(8,51,68,0.8)}
       html.dark .bg-emerald-50\/80{background-color:rgba(2,44,34,0.8)}
       html.dark .bg-indigo-50\/80{background-color:rgba(30,27,75,0.8)}
@@ -513,6 +513,23 @@ html.dark .bg-amber-50\/80{background-color:rgba(69,26,3,0.8)}
       html.dark .text-teal-700{color:#5eead4}
       html.dark .text-teal-800{color:#99f6e4}
       html.dark .text-teal-900{color:#99f6e4}
+
+      /* Tự chuyển toàn bộ chữ trong ô TKB (môn, giáo viên) thành màu trắng khi vào chế độ tối */
+      html.dark .subject-card span,
+      html.dark .subject-card div,
+      html.dark #tkb-tbody td,
+      html.dark #mobile-timeline .subject-card * {
+        color: #ffffff !important;
+      }
+
+      /* Cột số tiết (PC) và badge tiết (Mobile) làm sáng dịu mắt */
+      html.dark #tkb-tbody td:first-child {
+        color: #94a3b8 !important;
+      }
+      html.dark #mobile-timeline .bg-white\/60 {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        color: #f1f5f9 !important;
+      }
 
       /* ================= Liquid Glass ================= */
       html.ui-glass {
