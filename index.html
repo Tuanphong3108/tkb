@@ -56,8 +56,8 @@
             } catch (e) {}
             return sfCache;
         }
-        var S = { theme: get(LS.theme, 'system'), ui: get(LS.ui, 'system') };
-        if (['dark', 'light', 'system'].indexOf(S.theme) < 0) S.theme = 'system';
+        var S = { theme: get(LS.theme, 'light'), ui: get(LS.ui, 'system') };
+        if (['dark', 'light', 'system'].indexOf(S.theme) < 0) S.theme = 'light';
         if (['system', 'glass', 'material'].indexOf(S.ui) < 0) S.ui = 'system';
         var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : { matches: false };
         var sfOn = false, observer = null, ready = false, raf = 0;
@@ -191,27 +191,27 @@
             filter: grayscale(1);
         }
         
-        @keyframes zoomFadeIn {
-            from { opacity: 0; transform: scale(0.92); }
-            to   { opacity: 1; transform: scale(1); }
-        }
-        @keyframes zoomFadeOut {
-            from { opacity: 1; transform: scale(1); }
-            to   { opacity: 0; transform: scale(0.92); }
-        }
-        .zoom-fade-in  { animation: zoomFadeIn 0.18s cubic-bezier(0.2, 0, 0, 1) both; }
-        .zoom-fade-out { animation: zoomFadeOut 0.15s cubic-bezier(0.4, 0, 1, 1) both; }
-        
-        @keyframes slideUpIn {
-            from { transform: translateY(100%); }
-            to   { transform: translateY(0); }
-        }
-        @keyframes slideDownOut {
-            from { transform: translateY(0); }
-            to   { transform: translateY(100%); }
-        }
-        .slide-up-in   { animation: slideUpIn 0.28s cubic-bezier(0.2, 0, 0, 1) both; }
-        .slide-down-out{ animation: slideDownOut 0.22s cubic-bezier(0.4, 0, 1, 1) both; }
+        /* Material You Animations (Google MD3 Expressive) */
+        html.ui-material .zoom-fade-in  { animation: mdZoomIn 0.22s cubic-bezier(0.05, 0.7, 0.1, 1) both; }
+        html.ui-material .zoom-fade-out { animation: mdZoomOut 0.18s cubic-bezier(0.3, 0, 0.8, 0.15) both; }
+        html.ui-material .slide-up-in   { animation: mdSlideUp 0.32s cubic-bezier(0.05, 0.7, 0.1, 1) both; }
+        html.ui-material .slide-down-out{ animation: mdSlideDown 0.25s cubic-bezier(0.3, 0, 0.8, 0.15) both; }
+
+        @keyframes mdZoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes mdZoomOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.95); } }
+        @keyframes mdSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes mdSlideDown { from { transform: translateY(0); } to { transform: translateY(100%); } }
+
+        /* Apple Liquid Glass Animations (Spring physics bounce) */
+        html.ui-glass .zoom-fade-in  { animation: appleZoomIn 0.28s cubic-bezier(0.28, 1.45, 0.48, 1) both; }
+        html.ui-glass .zoom-fade-out { animation: appleZoomOut 0.2s cubic-bezier(0.4, 0, 1, 1) both; }
+        html.ui-glass .slide-up-in   { animation: appleSlideUp 0.38s cubic-bezier(0.28, 1.45, 0.48, 1) both; }
+        html.ui-glass .slide-down-out{ animation: appleSlideDown 0.28s cubic-bezier(0.4, 0, 1, 1) both; }
+
+        @keyframes appleZoomIn { from { opacity: 0; transform: scale(0.88) translateY(12px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        @keyframes appleZoomOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.88) translateY(12px); } }
+        @keyframes appleSlideUp { from { transform: translateY(100%) scale(0.96); } to { transform: translateY(0) scale(1); } }
+        @keyframes appleSlideDown { from { transform: translateY(0) scale(1); } to { transform: translateY(100%) scale(0.96); } }
         
         .grid-notice {
             overflow: hidden;
@@ -389,13 +389,13 @@
                 --lg-danger: #FF3B30;
                 --lg-success: #34C759;
 
-                --g-bg: rgba(255, 255, 255, 0.52);
-                --g-bg-elevated: rgba(255, 255, 255, 0.70);
-                --g-bg-soft: rgba(255, 255, 255, 0.34);
-                --g-bd-top: rgba(255, 255, 255, 0.92);
-                --g-bd-bottom: rgba(255, 255, 255, 0.38);
-                --g-sh: 0 16px 44px -8px rgba(15, 23, 42, 0.14), 0 4px 14px rgba(15, 23, 42, 0.06);
-                --g-hi: inset 0 1.5px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(255, 255, 255, 0.45);
+                --g-bg: rgba(255, 255, 255, 0.58);
+                --g-bg-elevated: rgba(255, 255, 255, 0.78);
+                --g-bg-soft: rgba(255, 255, 255, 0.42);
+                --g-bd-top: rgba(255, 255, 255, 0.95);
+                --g-bd-bottom: rgba(255, 255, 255, 0.45);
+                --g-sh: 0 16px 48px -8px rgba(15, 23, 42, 0.16), 0 4px 16px rgba(15, 23, 42, 0.08);
+                --g-hi: inset 0 1.5px 2px rgba(255, 255, 255, 0.98), inset 0 -1px 2px rgba(255, 255, 255, 0.5);
             }
             html.ui-glass.dark {
                 --lg-accent: #0A84FF;
@@ -404,65 +404,112 @@
                 --lg-danger: #FF453A;
                 --lg-success: #30D158;
 
-                --g-bg: rgba(28, 30, 38, 0.52);
-                --g-bg-elevated: rgba(38, 41, 52, 0.72);
-                --g-bg-soft: rgba(255, 255, 255, 0.08);
-                --g-bd-top: rgba(255, 255, 255, 0.28);
-                --g-bd-bottom: rgba(255, 255, 255, 0.08);
-                --g-sh: 0 18px 48px -8px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.38);
-                --g-hi: inset 0 1px 1.5px rgba(255, 255, 255, 0.32), inset 0 -1px 2px rgba(255, 255, 255, 0.08);
+                --g-bg: rgba(28, 30, 38, 0.58);
+                --g-bg-elevated: rgba(38, 41, 52, 0.78);
+                --g-bg-soft: rgba(255, 255, 255, 0.10);
+                --g-bd-top: rgba(255, 255, 255, 0.32);
+                --g-bd-bottom: rgba(255, 255, 255, 0.10);
+                --g-sh: 0 20px 52px -8px rgba(0, 0, 0, 0.65), 0 4px 18px rgba(0, 0, 0, 0.4);
+                --g-hi: inset 0 1px 2px rgba(255, 255, 255, 0.38), inset 0 -1px 2px rgba(255, 255, 255, 0.1);
             }
             html.ui-glass body {
                 font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, 'Google Sans Flex', sans-serif;
-                background-color: #EEF2F9;
+                background-color: #E8EEF8;
                 background-image:
-                    radial-gradient(circle at 12% 8%, rgba(0, 122, 255, 0.22), transparent 42%),
-                    radial-gradient(circle at 86% 12%, rgba(175, 82, 222, 0.20), transparent 45%),
-                    radial-gradient(circle at 50% 96%, rgba(52, 199, 89, 0.15), transparent 48%),
-                    radial-gradient(circle at 90% 80%, rgba(255, 149, 0, 0.14), transparent 40%);
+                    radial-gradient(circle at 12% 8%, rgba(0, 122, 255, 0.26), transparent 42%),
+                    radial-gradient(circle at 86% 12%, rgba(175, 82, 222, 0.22), transparent 45%),
+                    radial-gradient(circle at 50% 96%, rgba(52, 199, 89, 0.18), transparent 48%),
+                    radial-gradient(circle at 90% 80%, rgba(255, 149, 0, 0.16), transparent 40%);
                 background-attachment: fixed;
+                color: #0F172A;
             }
             html.ui-glass.dark body {
-                background-color: #090B10;
+                background-color: #06080D;
                 background-image:
-                    radial-gradient(circle at 12% 8%, rgba(10, 132, 255, 0.24), transparent 44%),
-                    radial-gradient(circle at 86% 12%, rgba(191, 90, 242, 0.20), transparent 46%),
-                    radial-gradient(circle at 50% 96%, rgba(48, 209, 88, 0.14), transparent 50%),
-                    radial-gradient(circle at 90% 80%, rgba(255, 159, 10, 0.12), transparent 42%);
+                    radial-gradient(circle at 12% 8%, rgba(10, 132, 255, 0.28), transparent 44%),
+                    radial-gradient(circle at 86% 12%, rgba(191, 90, 242, 0.22), transparent 46%),
+                    radial-gradient(circle at 50% 96%, rgba(48, 209, 88, 0.16), transparent 50%),
+                    radial-gradient(circle at 90% 80%, rgba(255, 159, 10, 0.14), transparent 42%);
+                color: #F1F5F9;
             }
             
-            /* Apple Liquid Glass Lensing Filter Integration */
+            /* Apple Liquid Glass Lensing Filter Integration for All Floating Containers & Bubbles */
             html.ui-glass header,
             html.ui-glass main,
             html.ui-glass #more-menu,
             html.ui-glass #pc-more-menu,
             html.ui-glass #apps-dialog-panel,
             html.ui-glass #subject-dialog-panel,
-            html.ui-glass md-dialog {
+            html.ui-glass md-dialog,
+            html.ui-glass #pc-weather-bubble,
+            html.ui-glass #pc-week-bubble,
+            html.ui-glass #mobile-weather-container,
+            html.ui-glass #mobile-location-panel {
                 background-color: var(--g-bg-elevated) !important;
-                backdrop-filter: url(#apple-liquid-lensing) blur(28px) saturate(210%) brightness(1.04);
-                -webkit-backdrop-filter: blur(28px) saturate(210%) brightness(1.04);
+                backdrop-filter: url(#apple-liquid-lensing) blur(32px) saturate(220%) brightness(1.05);
+                -webkit-backdrop-filter: blur(32px) saturate(220%) brightness(1.05);
                 border: 1px solid var(--g-bd-bottom) !important;
                 border-top-color: var(--g-bd-top) !important;
                 box-shadow: var(--g-hi), var(--g-sh) !important;
+                color: #0F172A !important;
             }
+            html.ui-glass.dark header,
+            html.ui-glass.dark main,
+            html.ui-glass.dark #more-menu,
+            html.ui-glass.dark #pc-more-menu,
+            html.ui-glass.dark #apps-dialog-panel,
+            html.ui-glass.dark #subject-dialog-panel,
+            html.ui-glass.dark md-dialog,
+            html.ui-glass.dark #pc-weather-bubble,
+            html.ui-glass.dark #pc-week-bubble,
+            html.ui-glass.dark #mobile-weather-container,
+            html.ui-glass.dark #mobile-location-panel {
+                color: #F1F5F9 !important;
+            }
+
             html.ui-glass header, html.ui-glass main { border-radius: 30px; }
             html.ui-glass main .bg-white { background-color: var(--g-bg-soft) !important; }
-            html.ui-glass .bg-slate-100 { background-color: var(--g-bg-soft) !important; border-color: var(--g-bd-bottom) !important; box-shadow: var(--g-hi); }
+            html.ui-glass .bg-slate-100 { background-color: var(--g-bg-soft) !important; border-color: var(--g-bd-bottom) !important; box-shadow: var(--g-hi); color: #0F172A !important; }
+            html.ui-glass.dark .bg-slate-100 { color: #F1F5F9 !important; }
             html.ui-glass .expressive-btn { border-radius: 9999px; }
-            html.ui-glass #mobile-weather-container {
-                background-color: var(--g-bg-elevated) !important;
-                backdrop-filter: url(#apple-liquid-lensing) blur(26px) saturate(200%);
-                -webkit-backdrop-filter: blur(26px) saturate(200%);
-                border-color: var(--g-bd-bottom) !important;
-                border-top-color: var(--g-bd-top) !important;
-                box-shadow: var(--g-hi), var(--g-sh);
-            }
+            
             html.ui-glass md-dialog {
                 --md-dialog-container-color: transparent;
                 --md-dialog-container-shape: 30px;
             }
             html.ui-glass .ap-seg { background: var(--g-bg-soft); box-shadow: var(--g-hi); }
+
+            /* High Contrast Text Adjustments for Light Liquid Glass Mode */
+            html.ui-glass header h1, 
+            html.ui-glass header h2, 
+            html.ui-glass header span, 
+            html.ui-glass header p,
+            html.ui-glass #pc-weather-widget span,
+            html.ui-glass #pc-weather-bubble,
+            html.ui-glass #pc-week-bubble,
+            html.ui-glass #mobile-weather-container,
+            html.ui-glass #mobile-location-panel {
+                color: #0F172A !important;
+            }
+            html.ui-glass.dark header h1, 
+            html.ui-glass.dark header h2, 
+            html.ui-glass.dark header span, 
+            html.ui-glass.dark header p,
+            html.ui-glass.dark #pc-weather-widget span,
+            html.ui-glass.dark #pc-weather-bubble,
+            html.ui-glass.dark #pc-week-bubble,
+            html.ui-glass.dark #mobile-weather-container,
+            html.ui-glass.dark #mobile-location-panel {
+                color: #F1F5F9 !important;
+            }
+            /* Keep warning/notice texts distinctly readable */
+            html.ui-glass #pc-bubble-text, html.ui-glass #mobile-notice-text {
+                color: #B45309 !important;
+                font-weight: 700 !important;
+            }
+            html.ui-glass.dark #pc-bubble-text, html.ui-glass.dark #mobile-notice-text {
+                color: #FCD34D !important;
+            }
         }
    </style>
 </head>
@@ -508,20 +555,19 @@
                     </div>
                     
                     <!-- PC Chat Bubble Notice / Location Prompt -->
-                    <div id="pc-weather-bubble" class="hidden absolute top-full left-0 mt-2 z-50 bg-slate-900 text-white text-xs p-3.5 rounded-2xl shadow-2xl border border-slate-700 w-72 animate-in fade-in zoom-in-95 no-print">
-                        <div class="absolute -top-1.5 left-6 w-3 h-3 bg-slate-900 transform rotate-45 border-t border-l border-slate-700"></div>
+                    <div id="pc-weather-bubble" class="hidden absolute top-full left-0 mt-2 z-50 bg-white text-slate-900 text-xs p-3.5 rounded-2xl shadow-2xl border border-slate-200 w-72 zoom-fade-in no-print">
                         
                         <!-- Location Choice Prompt -->
                         <div id="pc-bubble-location-prompt" class="hidden">
-                            <div class="text-[11px] font-bold text-slate-200 mb-2 flex items-center gap-1.5">
-                                <span class="material-symbols-outlined text-sm text-teal-400">location_on</span>
+                            <div class="text-[11px] font-bold text-slate-800 mb-2 flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-sm text-teal-600">location_on</span>
                                 Bạn muốn dùng vị trí nào để xem thời tiết?
                             </div>
                             <div class="flex items-center gap-2 mt-2.5">
                                 <button onclick="chooseWeatherLocation('school')" class="expressive-btn flex-1 bg-teal-700 hover:bg-teal-800 text-white font-bold text-[11px] py-1.5 px-2 rounded-xl text-center border border-teal-600/50 cursor-pointer">
                                     Vị trí Trường
                                 </button>
-                                <button onclick="chooseWeatherLocation('user')" class="expressive-btn flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[11px] py-1.5 px-2 rounded-xl text-center border border-slate-700 cursor-pointer">
+                                <button onclick="chooseWeatherLocation('user')" class="expressive-btn flex-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] py-1.5 px-2 rounded-xl text-center border border-slate-300 cursor-pointer">
                                     Vị trí Của tôi
                                 </button>
                             </div>
@@ -529,11 +575,11 @@
 
                         <!-- Weather Notice Content -->
                         <div id="pc-bubble-notice-content" class="hidden flex items-start justify-between gap-2 relative z-10">
-                            <div class="flex items-start gap-1.5 leading-snug text-amber-300 font-medium text-[11px]">
+                            <div class="flex items-start gap-1.5 leading-snug text-amber-700 font-medium text-[11px]">
                                 <span class="material-symbols-outlined text-base shrink-0 mt-0.5">info</span>
                                 <span id="pc-bubble-text"></span>
                             </div>
-                            <button onclick="dismissWeatherNotice()" class="text-slate-400 hover:text-white p-0.5 shrink-0 cursor-pointer">
+                            <button onclick="dismissWeatherNotice()" class="text-slate-400 hover:text-slate-700 p-0.5 shrink-0 cursor-pointer">
                                 <span class="material-symbols-outlined text-sm">close</span>
                             </button>
                         </div>
@@ -568,14 +614,13 @@
                     </button>
                     
                     <!-- PC Chat Bubble: Thông báo TKB tuần sau -->
-                    <div id="pc-week-bubble" class="hidden absolute top-full right-0 mt-2 z-40 bg-slate-900 text-white text-xs p-3.5 rounded-2xl shadow-2xl border border-slate-700 w-64 animate-in fade-in zoom-in-95 no-print">
-                        <div class="absolute -top-1.5 right-6 w-3 h-3 bg-slate-900 transform rotate-45 border-t border-l border-slate-700"></div>
+                    <div id="pc-week-bubble" class="hidden absolute top-full right-0 mt-2 z-40 bg-white text-slate-900 text-xs p-3.5 rounded-2xl shadow-2xl border border-slate-200 w-64 zoom-fade-in no-print">
                         <div class="flex items-start justify-between gap-2 relative z-10">
-                            <div class="flex items-start gap-1.5 leading-snug text-teal-300 font-medium text-[11px]">
+                            <div class="flex items-start gap-1.5 leading-snug text-teal-700 font-medium text-[11px]">
                                 <span class="material-symbols-outlined text-base shrink-0 mt-0.5">event_available</span>
                                 <span id="pc-week-bubble-text"></span>
                             </div>
-                            <button onclick="dismissNextWeekNotice()" class="text-slate-400 hover:text-white p-0.5 shrink-0 cursor-pointer">
+                            <button onclick="dismissNextWeekNotice()" class="text-slate-400 hover:text-slate-700 p-0.5 shrink-0 cursor-pointer">
                                 <span class="material-symbols-outlined text-sm">close</span>
                             </button>
                         </div>
@@ -594,7 +639,7 @@
                     <button type="button" id="pc-more-btn" aria-label="Tùy chọn" class="expressive-btn w-10 h-10 rounded-2xl bg-slate-100 hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-700 cursor-pointer">
                         <span class="material-symbols-outlined">more_vert</span>
                     </button>
-                    <div id="pc-more-menu" class="hidden no-print absolute right-0 top-full mt-2 bg-white border border-slate-200 shadow-xl rounded-2xl p-3 z-50 w-64 flex-col gap-2">
+                    <div id="pc-more-menu" class="hidden no-print absolute right-0 top-full mt-2 bg-white border border-slate-200 shadow-xl rounded-2xl p-3 z-50 w-64 flex-col gap-2 zoom-fade-in">
                         <div class="text-[11px] font-bold text-slate-400 px-1">TÙY CHỌN</div>
                         <button onclick="openAppsDialog()" class="w-full flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2 px-3 rounded-xl border border-slate-200 cursor-pointer">
                             <span class="material-symbols-outlined text-sm text-teal-600">apps</span> My apps
@@ -613,7 +658,7 @@
             </div>
 
             <!-- Mobile More Menu Popup -->
-            <div id="more-menu" class="hidden no-print absolute right-4 top-16 bg-white border border-slate-200 shadow-xl rounded-2xl p-3 z-50 w-60 flex-col gap-2">
+            <div id="more-menu" class="hidden no-print absolute right-4 top-16 bg-white border border-slate-200 shadow-xl rounded-2xl p-3 z-50 w-60 flex-col gap-2 zoom-fade-in">
                 <div class="text-[11px] font-bold text-slate-400 px-1">TÙY CHỌN</div>
                 <button onclick="openAppsDialog()" class="w-full flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2 px-3 rounded-xl border border-slate-200">
                     <span class="material-symbols-outlined text-sm text-teal-600">apps</span> My apps
@@ -692,7 +737,7 @@
 
     <!-- DIALOG CHI TIẾT MÔN HỌC -->
     <div id="subject-dialog" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-0 md:p-4">
-        <div id="subject-dialog-panel" class="w-full h-full md:h-auto md:max-w-md bg-white md:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
+        <div id="subject-dialog-panel" class="w-full h-full md:h-auto md:max-w-md bg-white md:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden zoom-fade-in">
             <div class="p-4 md:p-5 bg-slate-900 text-white flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div id="dialog-icon-wrapper" class="w-10 h-10 rounded-2xl bg-teal-500/20 text-teal-300 flex items-center justify-center">
@@ -748,7 +793,7 @@
 
     <!-- DIALOG MY APPS EMBED -->
     <div id="apps-dialog" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-0 md:p-6">
-        <div id="apps-dialog-panel" class="w-full h-full md:max-w-4xl md:h-[85vh] bg-white md:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden">
+        <div id="apps-dialog-panel" class="w-full h-full md:max-w-4xl md:h-[85vh] bg-white md:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden zoom-fade-in">
             <div class="p-4 md:p-5 bg-slate-900 text-white flex items-center justify-between shrink-0">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl bg-teal-500/20 text-teal-300 flex items-center justify-center">
@@ -786,10 +831,10 @@
     </div>
 
     <!-- MOBILE WEATHER CONTAINER -->
-    <div id="mobile-weather-container" class="no-print block md:hidden fixed bottom-3 left-3 right-3 z-40 bg-slate-900/95 text-white backdrop-blur-md rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
+    <div id="mobile-weather-container" class="no-print block md:hidden fixed bottom-3 left-3 right-3 z-40 bg-white/90 text-slate-900 backdrop-blur-md rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
         <div id="mobile-weather-notice" class="grid-notice">
-            <div class="grid-notice-inner bg-amber-500/10 border-b border-slate-800 p-2.5 px-3 flex items-center justify-between gap-2">
-                <div class="flex items-center gap-1.5 text-xs text-amber-300 font-medium leading-tight flex-1">
+            <div class="grid-notice-inner bg-amber-500/10 border-b border-slate-200 p-2.5 px-3 flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5 text-xs text-amber-800 font-medium leading-tight flex-1">
                     <span class="material-symbols-outlined text-base shrink-0">info</span>
                     <span id="mobile-notice-text"></span>
                 </div>
@@ -800,19 +845,19 @@
             <div id="mobile-weather-left" class="flex items-center gap-2 shrink-0">
                 <md-circular-progress indeterminate style="--md-circular-progress-size: 18px;"></md-circular-progress>
             </div>
-            <div id="mobile-weather-quote" class="text-right text-[11px] text-slate-300 italic font-medium leading-snug line-clamp-2 flex-1 pl-2 border-l border-slate-700/60"></div>
+            <div id="mobile-weather-quote" class="text-right text-[11px] text-slate-700 italic font-medium leading-snug line-clamp-2 flex-1 pl-2 border-l border-slate-300"></div>
         </div>
     </div>
 
     <!-- MOBILE LOCATION CHOICE DIALOG -->
     <div id="mobile-location-dialog" class="hidden no-print block md:hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end justify-center">
-        <div id="mobile-location-panel" class="w-full bg-slate-900 text-white rounded-t-3xl p-5 border-t border-slate-700 shadow-2xl">
-            <div class="w-12 h-1 bg-slate-700 rounded-full mx-auto mb-4"></div>
-            <h3 class="text-sm font-bold text-slate-100 mb-1 flex items-center gap-2">
-                <span class="material-symbols-outlined text-teal-400 text-lg">location_on</span>
+        <div id="mobile-location-panel" class="w-full bg-white text-slate-900 rounded-t-3xl p-5 border-t border-slate-200 shadow-2xl slide-up-in">
+            <div class="w-12 h-1 bg-slate-300 rounded-full mx-auto mb-4"></div>
+            <h3 class="text-sm font-bold text-slate-900 mb-1 flex items-center gap-2">
+                <span class="material-symbols-outlined text-teal-600 text-lg">location_on</span>
                 Vị trí thời tiết
             </h3>
-            <p class="text-xs text-slate-300 mb-4 font-medium">Bạn muốn dùng vị trí nào để xem thời tiết?</p>
+            <p class="text-xs text-slate-600 mb-4 font-medium">Bạn muốn dùng vị trí nào để xem thời tiết?</p>
             <div class="flex flex-col gap-2.5">
                 <button onclick="chooseWeatherLocation('school')" class="expressive-btn w-full bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs py-3 px-4 rounded-2xl flex items-center justify-between border border-teal-600/50 shadow-sm cursor-pointer">
                     <span class="flex items-center gap-2">
@@ -821,12 +866,12 @@
                     </span>
                     <span class="material-symbols-outlined text-sm text-teal-200">chevron_right</span>
                 </button>
-                <button onclick="chooseWeatherLocation('user')" class="expressive-btn w-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-3 px-4 rounded-2xl flex items-center justify-between border border-slate-700 cursor-pointer">
+                <button onclick="chooseWeatherLocation('user')" class="expressive-btn w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs py-3 px-4 rounded-2xl flex items-center justify-between border border-slate-300 cursor-pointer">
                     <span class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-base text-teal-400">my_location</span>
+                        <span class="material-symbols-outlined text-base text-teal-600">my_location</span>
                         Vị trí Của tôi
                     </span>
-                    <span class="material-symbols-outlined text-sm text-slate-400">chevron_right</span>
+                    <span class="material-symbols-outlined text-sm text-slate-500">chevron_right</span>
                 </button>
             </div>
         </div>
@@ -1526,14 +1571,14 @@
             if (pcWidget) {
                 pcWidget.innerHTML = `
                     <img src="${iconUrl}" class="w-6 h-6 object-contain" alt="Weather" />
-                    <span class="text-xs font-bold text-slate-800">${roundedTemp}°C</span>
+                    <span class="text-xs font-bold">${roundedTemp}°C</span>
                 `;
             }
             const mobileLeft = document.getElementById('mobile-weather-left');
             if (mobileLeft) {
                 mobileLeft.innerHTML = `
                     <img src="${iconUrl}" class="w-7 h-7 object-contain" alt="Weather" />
-                    <span class="text-sm font-bold text-white">${roundedTemp}°C</span>
+                    <span class="text-sm font-bold">${roundedTemp}°C</span>
                 `;
             }
             const quoteText = getRandomWeatherQuote(weatherType);
