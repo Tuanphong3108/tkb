@@ -47,7 +47,7 @@
       "t2": { "sub": "GDĐP", "teacher": "T.HƯƠNG" },
       "t3": { "sub": "ĐỊA", "teacher": "HIỀN.Đ" },
       "t4": null,
-      "t5": null,
+      "t5": { "sub": "TOÁN", "teacher": "N.HƯỜNG", "alert": "KIỂM TRA GIỮA KỲ I" },
       "t6": null,
       "t7": null
     },
@@ -55,15 +55,15 @@
       "t2": { "sub": "HĐTN 2", "teacher": "L.HƯƠNG" },
       "t3": { "sub": "HĐTN 3", "teacher": "LỮ" },
       "t4": null,
-      "t5": null,
+      "t5": { "sub": "TOÁN", "teacher": "N.HƯỜNG", "alert": "KIỂM TRA GIỮA KỲ I" },
       "t6": null,
       "t7": null
     },
     {
       "t2": null,
-      "t3": { "sub": "SỬ", "teacher": "LIÊN", "alert": "KIỂM TRA GIỮA KỲ I" },
+      "t3": null,
       "t4": null,
-      "t5": null,
+      "t5": { "sub": "SỬ", "teacher": "LIÊN", "alert": "KIỂM TRA GIỮA KỲ I" },
       "t6": null,
       "t7": null
     }
