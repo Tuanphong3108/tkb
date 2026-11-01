@@ -1,0 +1,71 @@
+{
+  "dateRange": "02/11/2026 - 08/11/2026",
+  "sang": [
+    {
+      "t2": { "sub": "HĐTN,HN", "teacher": "TÙNG" },
+      "t3": { "sub": "VĂN", "teacher": "LẬP" },
+      "t4": { "sub": "VĂN", "teacher": "LẬP" },
+      "t5": { "sub": "VĂN", "teacher": "PHƯƠNG.T", "alert": "KIỂM TRA GIỮA KỲ I" },
+      "t6": { "sub": "GDKT&PL", "teacher": "L.HƯƠNG", "alert": "KIỂM TRA GIỮA KỲ I" },
+      "t7": null
+    },
+    {
+      "t2": { "sub": "TIN", "teacher": "ĐIỆP" },
+      "t3": { "sub": "VĂN", "teacher": "LẬP" },
+      "t4": { "sub": "GDTC", "teacher": "THANH" },
+      "t5": { "sub": "VĂN", "teacher": "PHƯƠNG.T", "alert": "KIỂM TRA GIỮA KỲ I" },
+      "t6": { "sub": "SINH", "teacher": "L.HƯƠNG" },
+      "t7": null
+    },
+    {
+      "t2": { "sub": "ANH", "teacher": "TÍNH" },
+      "t3": { "sub": "SINH", "teacher": "L.HƯƠNG" },
+      "t4": { "sub": "GD QUỐC PHÒNG", "teacher": "HÙNG" },
+      "t5": { "sub": "TOÁN", "teacher": "PHƯƠNG.T" },
+      "t6": { "sub": "SINH", "teacher": "PHƯƠNG.T", "alert": "KIỂM TRA GIỮA KỲ I" },
+      "t7": null
+    },
+    {
+      "t2": { "sub": "ANH", "teacher": "TÍNH" },
+      "t3": { "sub": "GDTC", "teacher": "THANH" },
+      "t4": { "sub": "TIN", "teacher": "ĐIỆP" },
+      "t5": { "sub": "ĐỊA", "teacher": "N.HƯỜNG", "alert": "KIỂM TRA GIỮA KỲ I" },
+      "t6": { "sub": "TOÁN", "teacher": "PHƯƠNG.T" },
+      "t7": null
+    },
+    {
+      "t2": { "sub": "ĐỊA", "teacher": "HIỀN.Đ" },
+      "t3": { "sub": "GDKT&PL", "teacher": "T.HƯƠNG" },
+      "t4": { "sub": "GDKT&PL", "teacher": "T.HƯƠNG" },
+      "t5": null,
+      "t6": null,
+      "t7": null
+    }
+  ],
+  "chieu": [
+    {
+      "t2": { "sub": "GDĐP", "teacher": "T.HƯƠNG" },
+      "t3": { "sub": "ĐỊA", "teacher": "HIỀN.Đ" },
+      "t4": null,
+      "t5": null,
+      "t6": null,
+      "t7": null
+    },
+    {
+      "t2": { "sub": "HĐTN 2", "teacher": "L.HƯƠNG" },
+      "t3": { "sub": "HĐTN 3", "teacher": "LỮ" },
+      "t4": null,
+      "t5": null,
+      "t6": null,
+      "t7": null
+    },
+    {
+      "t2": null,
+      "t3": { "sub": "SỬ", "teacher": "LIÊN", "alert": "KIỂM TRA GIỮA KỲ I" },
+      "t4": null,
+      "t5": null,
+      "t6": null,
+      "t7": null
+    }
+  ]
+}
