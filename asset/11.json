@@ -26,7 +26,7 @@
       "t7": null
     },
     {
-      "t2": { "sub": "GDTC", "teacher": "THANH" },
+      "t2": { "sub": "GDTC", "teacher": "THANH", "alert":"Con chó sôi" },
       "t3": { "sub": "ANH", "teacher": "TÍNH" },
       "t4": { "sub": "SINH", "teacher": "L.HƯƠNG" },
       "t5": { "sub": "GDKT&PL", "teacher": "T.HƯƠNG" },
