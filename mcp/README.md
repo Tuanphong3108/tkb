@@ -11,6 +11,32 @@ Dữ liệu được cache tối đa khoảng 5 phút.
 - `get_schedule(date?)`: lịch học một ngày. `date` nhận `today` (mặc định), `tomorrow` hoặc `YYYY-MM-DD`.
 - `get_week(week?)`: lịch cả tuần. Mặc định là tuần hiện tại; tuần 1 bắt đầu ngày 07/09/2026.
 
+Cả hai tool đều chỉ đọc dữ liệu. Server khai báo `readOnlyHint`, `destructiveHint`, `idempotentHint` và `openWorldHint` để MCP client có thể phân loại hành vi tool.
+
+## Gemini Apps / Gemini Web readiness
+
+Worker đã được cập nhật theo các hướng dẫn tích hợp MCP của Google:
+
+- Trả về `serverInfo`, `capabilities.tools` và `instructions` trong `initialize`.
+- Khai báo mô tả tool rõ ràng, JSON Schema có kiểu dữ liệu và giới hạn đầu vào.
+- Khai báo safety annotations cho cả hai tool (read-only, non-destructive, idempotent).
+- Hỗ trợ thương lượng các MCP protocol version `2025-11-25`, `2025-06-18` và `2025-03-26`.
+- Dùng stateless Streamable HTTP: JSON-RPC qua POST; GET/SSE là endpoint tùy chọn và hiện trả HTTP 405.
+- Không tạo session ID; notification được trả HTTP 202.
+
+**Lưu ý:** Đây là các điều chỉnh để tăng khả năng tương thích theo tài liệu, không phải xác nhận Gemini đã kết nối thành công. Cần deploy Worker và kiểm tra thực tế trong Gemini Apps Developer Mode để xác minh tool discovery, schema và tool calls.
+
+## MCP transport & limitations
+
+- Transport: Streamable HTTP qua HTTP POST, JSON-RPC 2.0.
+- Server stateless; không quản lý session ID.
+- Methods: `initialize`, `ping`, `tools/list`, `tools/call` và các notification khởi tạo/hủy.
+- GET/SSE không được triển khai; request GET nhận HTTP 405.
+- Endpoint hiện không có OAuth, Dynamic Client Registration (DCR), hoặc xác thực người dùng.
+- Chỉ có công cụ đọc dữ liệu TKB; không có thao tác ghi/sửa dữ liệu.
+
+Đây là mô tả theo code hiện tại, **không phải chứng nhận MCP compliance**. Hãy kiểm thử với MCP Inspector hoặc client mục tiêu trước khi sử dụng thực tế.
+
 ## Deploy lên Cloudflare Workers
 
 ```bash
@@ -20,23 +46,6 @@ npx wrangler deploy
 ```
 
 Worker sẽ có URL dạng `https://tkb-mcp.<your-subdomain>.workers.dev`.
-
-## MCP transport & limitations
-
-- Transport hiện tại: Streamable HTTP qua HTTP POST, JSON-RPC 2.0.
-- Server stateless; không quản lý session ID.
-- Các method đang xử lý: `initialize`, `ping`, `tools/list`, `tools/call`.
-- GET/SSE không được triển khai; request không phải POST (ngoại trừ OPTIONS) nhận HTTP 405.
-- Endpoint hiện không có OAuth, Dynamic Client Registration (DCR), hoặc xác thực người dùng.
-- Chỉ có công cụ đọc dữ liệu TKB; không có thao tác ghi/sửa dữ liệu.
-
-Đây là mô tả đúng theo code hiện tại, **không phải chứng nhận MCP compliance**. Hãy kiểm thử với MCP Inspector hoặc client mục tiêu trước khi triển khai sử dụng thực tế.
-
-## Gemini Apps / Gemini Web
-
-Gemini Apps có tính năng Custom Apps nhận MCP server URL, nhưng quyền truy cập phụ thuộc điều kiện của Google. Tài liệu Google hiện tại nêu yêu cầu **từ 18 tuổi và ở Hoa Kỳ**, cùng các điều kiện về tài khoản và lịch sử hoạt động. Vì vậy, phần này chỉ ghi nhận tình trạng tương thích kỹ thuật; không hướng dẫn né điều kiện tuổi/khu vực và không khẳng định server đã được Gemini xác nhận tương thích.
-
-Ngoài ra, Worker hiện không có OAuth/DCR. Nếu client yêu cầu cơ chế xác thực hoặc capability khác, server sẽ cần được thiết kế và kiểm thử riêng trước khi có thể tuyên bố hỗ trợ.
 
 ## Dùng với Claude
 
