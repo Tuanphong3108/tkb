@@ -51,7 +51,7 @@ const TOOLS = [
     name: 'get_schedule',
     title: 'Get timetable for one day',
     description:
-      'Get the published school timetable for one date, including morning and afternoon sessions. ' +
+      'Get the published school timetable for one date, including morning and afternoon sessions and the full alert/notice text attached to each lesson. ' +
       'Use this when the user asks what classes they have today, tomorrow, or on a specific date. ' +
       'Ngày hợp lệ: today, tomorrow hoặc YYYY-MM-DD. Mặc định là hôm nay theo giờ Việt Nam (UTC+7).',
     inputSchema: {
@@ -70,7 +70,7 @@ const TOOLS = [
     name: 'get_week',
     title: 'Get full school week timetable',
     description:
-      'Get the complete published school timetable for one school week, Monday through Saturday. ' +
+      'Get the complete published school timetable for one school week, Monday through Saturday, including the full alert/notice text attached to each lesson. ' +
       'Use this when the user asks for their timetable this week or for a particular week. ' +
       'Week 1 starts on 2026-09-07. Omit week to use the current week in Vietnam time.',
     inputSchema: {
@@ -146,10 +146,18 @@ function cell(entry, names) {
 
 function dayLines(data, dayKey, names) {
   const out = [];
-  [['sang', 'Morning'], ['chieu', 'Afternoon']].forEach(([key, label]) => {
+  [['sang', 'Buổi sáng'], ['chieu', 'Buổi chiều']].forEach(([key, label]) => {
     (data[key] || []).forEach((period, i) => {
-      const value = cell(period[dayKey], names);
-      if (value) out.push(label + ' - period ' + (i + 1) + ': ' + value);
+      const entry = period && period[dayKey];
+      if (!entry) return;
+
+      const value = cell(entry, names);
+      if (value) out.push(label + ' - tiết ' + (i + 1) + ': ' + value);
+
+      // Preserve the complete alert text attached to this timetable cell.
+      if (typeof entry.alert === 'string' && entry.alert.trim()) {
+        out.push('⚠️ Thông báo (tiết ' + (i + 1) + '): ' + entry.alert.trim());
+      }
     });
   });
   return out;
