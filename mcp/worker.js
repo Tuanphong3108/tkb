@@ -29,7 +29,7 @@ const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Accept, Mcp-Protocol-Version, Last-Event-ID, Authorization',
-  'Access-Control-Expose-Headers': 'Mcp-Protocol-Version',
+  'Access-Control-Allow-Headers': 'Content-Type, Accept, Mcp-Protocol-Version, Last-Event-ID, Authorization',
   'Vary': 'Origin',
 };
 
@@ -37,7 +37,6 @@ const JSON_HEADERS = {
   ...CORS,
   'Content-Type': 'application/json; charset=utf-8',
   'Cache-Control': 'no-store',
-  'Mcp-Protocol-Version': DEFAULT_PROTOCOL_VERSION,
 };
 
 const READ_ONLY_ANNOTATIONS = {
