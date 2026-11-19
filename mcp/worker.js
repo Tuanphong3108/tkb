@@ -8,6 +8,22 @@ const DAY_KEYS = ['t2', 't3', 't4', 't5', 't6', 't7'];
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const VN_DAY_NAMES = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
 
+// Bell schedule copied from the timetable UI (index.html).
+const PERIOD_TIMES = {
+  sang: [
+    { start: '07:15', end: '08:00' },
+    { start: '08:10', end: '08:55' },
+    { start: '09:05', end: '09:50' },
+    { start: '09:55', end: '10:40' },
+    { start: '10:45', end: '11:30' },
+  ],
+  chieu: [
+    { start: '14:15', end: '15:00' },
+    { start: '15:10', end: '15:55' },
+    { start: '16:00', end: '16:45' },
+  ],
+};
+
 // MCP protocol versions supported by this stateless Streamable HTTP endpoint.
 const SUPPORTED_PROTOCOL_VERSIONS = [
   '2025-11-25',
@@ -133,26 +149,31 @@ async function getJson(path) {
   return res.json();
 }
 
-async function subjectNames() {
+async function subjectDetails() {
   const list = (await getJson('mon-hoc.json')) || [];
-  return Object.fromEntries(list.map((s) => [s.code, s.name]));
+  return Object.fromEntries(list.map((subject) => [subject.code, subject]));
 }
 
-function cell(entry, names) {
-  if (!entry || !entry.sub) return null;
-  const full = names[entry.sub] || entry.sub;
-  return entry.teacher ? full + ' (' + entry.teacher + ')' : full;
-}
-
-function dayLines(data, dayKey, names) {
+function dayLines(data, dayKey, subjects) {
   const out = [];
   [['sang', 'Buổi sáng'], ['chieu', 'Buổi chiều']].forEach(([key, label]) => {
     (data[key] || []).forEach((period, i) => {
       const entry = period && period[dayKey];
       if (!entry) return;
 
-      const value = cell(entry, names);
-      if (value) out.push(label + ' - tiết ' + (i + 1) + ': ' + value);
+      const subject = subjects[entry.sub];
+      const fullName = subject?.name || entry.sub;
+      const time = PERIOD_TIMES[key][i];
+      const timeLabel = time ? ' (' + time.start + '–' + time.end + ')' : '';
+      out.push(label + ' - tiết ' + (i + 1) + timeLabel + ': ' + fullName + ' [' + entry.sub + ']');
+      if (entry.teacher) out.push('  Giáo viên: ' + entry.teacher);
+      if (subject) {
+        if (subject.category) out.push('  Nhóm môn học: ' + subject.category);
+        if (subject.description) out.push('  Thông tin môn học: ' + subject.description);
+        if (Array.isArray(subject.keywords) && subject.keywords.length) {
+          out.push('  Chủ đề: ' + subject.keywords.join(', '));
+        }
+      }
 
       // Preserve the complete alert text attached to this timetable cell.
       if (typeof entry.alert === 'string' && entry.alert.trim()) {
@@ -179,7 +200,7 @@ async function getSchedule(args) {
   const data = week >= 1 ? await getJson(week + '.json') : null;
   if (!data) return head + ': chưa có thời khóa biểu cho tuần ' + week + '.';
 
-  const lines = dayLines(data, DAY_KEYS[dow - 1], await subjectNames());
+  const lines = dayLines(data, DAY_KEYS[dow - 1], await subjectDetails());
   return lines.length
     ? head + ' (tuần ' + week + ')\n' + lines.join('\n')
     : head + ' (tuần ' + week + '): không có tiết nào.';
@@ -194,9 +215,9 @@ async function getWeek(args) {
   const data = await getJson(week + '.json');
   if (!data) return 'Chưa có thời khóa biểu cho tuần ' + week + '.';
 
-  const names = await subjectNames();
+  const subjects = await subjectDetails();
   const blocks = DAY_KEYS.map((key, i) => {
-    const lines = dayLines(data, key, names);
+    const lines = dayLines(data, key, subjects);
     return displayDayName(i + 1) + ':\n' +
       (lines.length ? lines.map((line) => '  ' + line).join('\n') : '  Nghỉ (No classes)');
   });
