@@ -11,6 +11,8 @@ Dữ liệu được cache tối đa khoảng 5 phút.
 - `get_schedule(date?)`: lịch học một ngày. `date` nhận `today` (mặc định), `tomorrow` hoặc `YYYY-MM-DD`.
 - `get_week(week?)`: lịch cả tuần. Mặc định là tuần hiện tại; tuần 1 bắt đầu ngày 07/09/2026.
 
+- Cả hai tool đều trả về **đầy đủ nội dung `alert`** gắn với từng tiết học, không chỉ tên môn và giáo viên. Nếu một tiết có thông báo, nội dung sẽ được đưa vào kết quả dưới nhãn `⚠️ Thông báo`.
+
 Cả hai tool đều chỉ đọc dữ liệu. Server khai báo `readOnlyHint`, `destructiveHint`, `idempotentHint` và `openWorldHint` để MCP client có thể phân loại hành vi tool.
 
 ## Gemini Apps / Gemini Web readiness
